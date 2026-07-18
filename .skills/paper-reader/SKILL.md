@@ -41,12 +41,17 @@ description: >
 
 例如用户指定 `/Downloads/some-paper.pdf`。
 
-1. 从论文文件名推断 `paper-slug`：
-   - 取文件名去扩展名，转 kebab-case（如 `Some Paper (2024).pdf` → `some-paper-2024`）
-   - arXiv ID 则直接用作 slug（如 `2401.12345`）
-   - 粘贴文本取标题前 5 个词转 kebab-case
-2. 创建子目录：`papers/<paper-slug>/`
-3. **用 `mv` 将论文文件移动到该子目录**（不复制，不重命名）：
+1. **先提取论文标题**（快速解析 PDF 第一页前几行，或 arXiv 元数据）
+2. 用标题生成 `paper-slug`：
+   - 取论文标题，空格替换为 `-`，转小写
+   - 去除标点符号（括号、冒号、逗号等）
+   - **如果标题过长**（超过 5 个词），提炼为核心关键字（取最具辨识度的 3-5 个词）
+   - 示例：
+     - `SpanDB: A Memory-Efficient Span Database` → `spandb-memory-efficient-span-database`
+     - `FrozenHot: Accelerating Cache Warming for In-Memory Data Analytics` → `frozenhot-cache-warming`
+   - arXiv 论文同理，用标题生成 slug（不直接用 arxiv_id）
+3. 创建子目录：`papers/<paper-slug>/`
+4. **用 `mv` 将论文文件移动到该子目录**（不复制，不重命名）：
    ```
    mv /Downloads/some-paper.pdf papers/<paper-slug>/some-paper.pdf
    ```
@@ -65,7 +70,7 @@ papers/<paper-slug>/
 | 输入类型 | 解析方式 |
 |---|---|
 | PDF 文件 | 文件已由 Step 0 移动到 `papers/<slug>/` 下。用 `pdftotext` 或 `pdfplumber` 提取文本，保留页码标记 |
-| arXiv ID/URL | 抓取 PDF 存入 `papers/<arxiv_id>/<arxiv_id>.pdf`，再解析 |
+| arXiv ID/URL | 抓取 PDF 和元数据（含标题），用标题生成 slug 并存入 `papers/<slug>/`，再解析 |
 | 粘贴文本 | 直接使用 |
 
 **解析要求**：
