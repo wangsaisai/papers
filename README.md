@@ -1,6 +1,6 @@
 # 论文翻译与解读项目
 
-使用 `.workbuddy/skills/paper-reader/` 中的 Skill 对学术论文进行完整翻译和通俗解读。
+使用 `.skills/paper-reader/` 中的 Skill 对学术论文进行完整翻译和通俗解读。
 
 ## 使用方式
 
@@ -20,13 +20,12 @@
 
 ```
 article/
-├── .workbuddy/
-│   └── skills/
-│       └── paper-reader/            # 项目级 Skill
-│           ├── SKILL.md             # Skill 定义
-│           └── refs/
-│               ├── translation-rules.md       # 翻译规范细则
-│               └── interpretation-guide.md    # 解读写作指南
+├── .skills/
+│   └── paper-reader/                # 论文翻译与解读 Skill
+│       ├── SKILL.md                 # Skill 定义
+│       └── refs/
+│           ├── translation-rules.md       # 翻译规范细则
+│           └── interpretation-guide.md    # 解读写作指南
 ├── papers/                          # 论文存放与产物目录
 │   ├── README.md                    # 论文索引
 │   └── <paper-slug>/                # 每篇论文一个文件夹
