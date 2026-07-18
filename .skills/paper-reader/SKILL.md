@@ -1,7 +1,7 @@
 ---
 name: paper-reader
 display_name: 论文翻译与解读
-version: 1.0.0
+version: 1.1.0
 description: >
   论文翻译与解读 Skill。每篇论文一个独立文件夹，完整翻译正文（引用/参考文献不译），
   通俗易懂地解读论文核心价值（用类比帮助理解）。
@@ -16,10 +16,10 @@ description: >
 
 ## 一、核心原则
 
-1. **一篇一文件夹**：每篇论文的所有产物（翻译、解读、原文副本）都放在 `papers/<paper-slug>/` 下，绝不混放
+1. **一篇一文件夹**：每篇论文的所有产物（翻译、解读、论文原文）都放在 `papers/<paper-slug>/` 下，绝不混放。论文原作进子目录后不再重命名，保留原始文件名。
 2. **翻译求全**：正文逐段完整翻译，公式/引用/参考文献原样保留不译
 3. **解读求懂**：面向非该领域专家也能读懂，核心概念用类比解释，不只罗列术语
-4. **不动原文件**：绝不修改用户提供的原始 PDF / 文件，只读取
+4. **移动而非复制**：将论文文件 `mv` 到目标子目录，不产生额外副本
 
 ## 二、工作流（6 步）
 
@@ -27,20 +27,35 @@ description: >
 用户输入 → Step 0 准备文件夹 → Step 1 解析原文 → Step 2 完整翻译 → Step 3 通俗解读 → Step 4 生成索引
 ```
 
-### Step 0 — 准备文件夹
+### Step 0 — 确定目标目录并移动论文
 
-1. 从输入推断 `paper-slug`（论文短名）：
-   - PDF 文件：取文件名（去扩展名、去空格，转 kebab-case）
-   - arXiv：取 `arxiv_id`（如 `2401.12345`）
-   - 粘贴文本：取标题前 5 个词转 kebab-case
-2. 创建文件夹：`papers/<paper-slug>/`
-3. 如果文件夹已存在且有产物，询问用户是覆盖还是新建（新建则加 `-2` 后缀）
+**情景 A：论文已在 `papers/<某子目录>/` 下**
+
+例如用户指定 `papers/span-db/span-db-paper.pdf`，说明该论文已有专属目录。
+
+1. 复用已有子目录（如 `papers/span-db/`），无需新建
+2. **论文文件已在原位，不移动、不重命名**
+3. 如果该目录下已有翻译/解读产物，询问用户是覆盖还是更新
+
+**情景 B：论文在 `papers/` 目录外（或 papers 根目录下）**
+
+例如用户指定 `/Downloads/some-paper.pdf`。
+
+1. 从论文文件名推断 `paper-slug`：
+   - 取文件名去扩展名，转 kebab-case（如 `Some Paper (2024).pdf` → `some-paper-2024`）
+   - arXiv ID 则直接用作 slug（如 `2401.12345`）
+   - 粘贴文本取标题前 5 个词转 kebab-case
+2. 创建子目录：`papers/<paper-slug>/`
+3. **用 `mv` 将论文文件移动到该子目录**（不复制，不重命名）：
+   ```
+   mv /Downloads/some-paper.pdf papers/<paper-slug>/some-paper.pdf
+   ```
 
 **文件夹结构**（最终产物）：
 
 ```
 papers/<paper-slug>/
-├── original.pdf          # 原文副本（如果输入是 PDF）
+├── <原始文件名>.pdf      # 论文原文（mv 至此，文件名不变）
 ├── translation.md        # 完整翻译
 └── interpretation.md     # 通俗解读
 ```
@@ -49,8 +64,8 @@ papers/<paper-slug>/
 
 | 输入类型 | 解析方式 |
 |---|---|
-| PDF 文件 | 用 `pdftotext` 或 `pdfplumber` 提取文本，保留页码标记 |
-| arXiv ID/URL | 优先抓 TeX 源码（质量最高），失败则抓 PDF |
+| PDF 文件 | 文件已由 Step 0 移动到 `papers/<slug>/` 下。用 `pdftotext` 或 `pdfplumber` 提取文本，保留页码标记 |
+| arXiv ID/URL | 抓取 PDF 存入 `papers/<arxiv_id>/<arxiv_id>.pdf`，再解析 |
 | 粘贴文本 | 直接使用 |
 
 **解析要求**：
@@ -231,6 +246,6 @@ papers/<paper-slug>/
 - 参考文献翻译
 
 **安全边界**：
-- 只读取用户明确指定的文件路径
-- 产物只写入 `papers/` 目录
+- 用 `mv` 将论文文件移入 `papers/` 子目录（不复制、不重命名）
+- 翻译/解读产物只写入对应的 `papers/<slug>/` 目录
 - 外部网络调用仅限 `arxiv.org`
