@@ -1,0 +1,9 @@
+The full text of the paper has been extracted from the PDF using pdfplumber.
+See the PDF file at: /Users/bamboo/workspace/article/papers/exploring-llm-intelligent-agents/AGI.pdf
+Extraction date: 2026-07-18
+
+The extracted text spans 55 pages (3123 lines) covering:
+- Title: "Exploring Large Language Model Based Intelligent Agents: Definitions, Methods, and Prospects"
+- Authors: Yuheng Cheng, Ceyao Zhang, Zhengwen Zhang, et al.
+- Abstract through Conclusion (Sections 1-7)
+- 332 references
