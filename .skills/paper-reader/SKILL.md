@@ -1,7 +1,7 @@
 ---
 name: paper-reader
 display_name: 论文翻译与解读
-version: 1.1.0
+version: 2.0.0
 description: >
   论文翻译与解读 Skill。每篇论文一个独立文件夹，完整翻译正文（引用/参考文献不译），
   通俗易懂地解读论文核心价值（用类比帮助理解）。
@@ -16,7 +16,7 @@ description: >
 
 ## 一、核心原则
 
-1. **一篇一文件夹**：每篇论文的所有产物（翻译、解读、论文原文）都放在 `papers/<paper-slug>/` 下，绝不混放。论文原作进子目录后不再重命名，保留原始文件名。
+1. **一篇一文件夹**：每篇论文的所有产物（翻译、解读、论文原文）都放在 `papers/<topic>/<paper-slug>/` 下，按主题分类，绝不混放。论文原作进子目录后不再重命名，保留原始文件名。
 2. **翻译求全**：正文逐段完整翻译，公式/引用/参考文献原样保留不译
 3. **解读求懂**：面向非该领域专家也能读懂，核心概念用类比解释，不只罗列术语
 4. **移动而非复制**：将论文文件 `mv` 到目标子目录，不产生额外副本
@@ -27,13 +27,27 @@ description: >
 用户输入 → Step 0 准备文件夹 → Step 1 解析原文 → Step 2 完整翻译 → Step 3 通俗解读 → Step 4 生成索引
 ```
 
-### Step 0 — 确定目标目录并移动论文
+### Step 0 — 确定主题、目标目录并移动论文
 
-**情景 A：论文已在 `papers/<某子目录>/` 下**
+**已有主题列表**（见 `papers/README.md` 主题分类表，持续扩展）：
 
-例如用户指定 `papers/span-db/span-db-paper.pdf`，说明该论文已有专属目录。
+| 主题 | 中文名 | 涵盖范围 |
+|---|---|---|
+| storage-systems | 存储系统 | KV存储、缓存、文件系统 |
+| database-systems | 数据库系统 | 数据库架构、综述 |
+| distributed-systems | 分布式系统 | 资源调度、分布式计算 |
+| ml-systems | 机器学习系统 | ML框架、训练系统 |
+| llm | 大语言模型 | LLM训练/推理/智能体 |
+| ai-applications | AI应用 | AI在垂直领域的应用 |
+| math-foundations | 数学与算法基础 | 数学、数据结构、算法 |
 
-1. 复用已有子目录（如 `papers/span-db/`），无需新建
+> 如果论文不属于上述任何主题，根据论文内容新建一个主题目录（kebab-case 命名），并同步更新 `papers/README.md` 的主题分类表。
+
+**情景 A：论文已在 `papers/<topic>/<某子目录>/` 下**
+
+例如用户指定 `papers/storage-systems/span-db/SpanDB.pdf`，说明该论文已有专属目录。
+
+1. 复用已有子目录（如 `papers/storage-systems/span-db/`），无需新建
 2. **论文文件已在原位，不移动、不重命名**
 3. 如果该目录下已有翻译/解读产物，询问用户是覆盖还是更新
 
@@ -50,16 +64,17 @@ description: >
      - `SpanDB: A Memory-Efficient Span Database` → `spandb-memory-efficient-span-database`
      - `FrozenHot: Accelerating Cache Warming for In-Memory Data Analytics` → `frozenhot-cache-warming`
    - arXiv 论文同理，用标题生成 slug（不直接用 arxiv_id）
-3. 创建子目录：`papers/<paper-slug>/`
-4. **用 `mv` 将论文文件移动到该子目录**（不复制，不重命名）：
+3. **确定主题**：根据论文内容判断所属主题（参照上方主题列表）
+4. 创建子目录：`papers/<topic>/<paper-slug>/`
+5. **用 `mv` 将论文文件移动到该子目录**（不复制，不重命名）：
    ```
-   mv /Downloads/some-paper.pdf papers/<paper-slug>/some-paper.pdf
+   mv /Downloads/some-paper.pdf papers/<topic>/<paper-slug>/some-paper.pdf
    ```
 
 **文件夹结构**（最终产物）：
 
 ```
-papers/<paper-slug>/
+papers/<topic>/<paper-slug>/
 ├── <原始文件名>.pdf      # 论文原文（mv 至此，文件名不变）
 ├── translation.md        # 完整翻译
 └── interpretation.md     # 通俗解读
@@ -69,8 +84,8 @@ papers/<paper-slug>/
 
 | 输入类型 | 解析方式 |
 |---|---|
-| PDF 文件 | 文件已由 Step 0 移动到 `papers/<slug>/` 下。用 `pdftotext` 或 `pdfplumber` 提取文本，保留页码标记 |
-| arXiv ID/URL | 抓取 PDF 和元数据（含标题），用标题生成 slug 并存入 `papers/<slug>/`，再解析 |
+| PDF 文件 | 文件已由 Step 0 移动到 `papers/<topic>/<slug>/` 下。用 `pdftotext` 或 `pdfplumber` 提取文本，保留页码标记 |
+| arXiv ID/URL | 抓取 PDF 和元数据（含标题），用标题生成 slug，确定主题后存入 `papers/<topic>/<slug>/`，再解析 |
 | 粘贴文本 | 直接使用 |
 
 **解析要求**：
@@ -104,7 +119,7 @@ papers/<paper-slug>/
 6. **人名/地名/机构名**：保留英文原文，不强行音译
 7. **标题翻译**：Section 标题翻译为中文，但保留英文原文在括号中，如：`3. 方法（Method）`
 
-**输出文件**：`papers/<paper-slug>/translation.md`
+**输出文件**：`papers/<topic>/<paper-slug>/translation.md`
 
 **文件格式**：
 
@@ -172,24 +187,37 @@ papers/<paper-slug>/
 - 你（解读视角）发现的潜在问题
 - 读完后可以进一步追问的方向
 
-**输出文件**：`papers/<paper-slug>/interpretation.md`
+**输出文件**：`papers/<topic>/<paper-slug>/interpretation.md`
 
 ### Step 4 — 生成/更新索引
 
-在 `papers/README.md` 中维护一个论文索引表：
+在 `papers/README.md` 中维护论文索引，包含两部分：
+
+**第一部分：主题分类表**
 
 ```markdown
-# 论文库索引
+## 主题分类
 
-| 文件夹 | 标题 | 发布时间 | 翻译日期 | 一句话总结 |
-|---|---|---|---|---|
-| <paper-slug> | <英文标题> | YYYY-MM / YYYY | YYYY-MM-DD | <一句话总结> |
+| 主题 | 中文名 | 论文数 |
+|---|---|---|
+| <topic> | <中文名> | <数量> |
+```
+
+新增主题时在表中追加一行，并更新论文数量。
+
+**第二部分：论文索引表**
+
+```markdown
+## 论文索引
+
+| 主题 | 文件夹 | 标题 | 发布时间 | 翻译日期 | 一句话总结 |
+|---|---|---|---|---|---|
+| <topic> | <paper-slug> | <英文标题> | YYYY-MM / YYYY | YYYY-MM-DD | <一句话总结> |
 ```
 
 - **发布时间**：从论文原文获取（arXiv 提交日期、会议/期刊出版日期、或论文标题页日期）。格式：有月份用 `YYYY-MM`，仅有年份用 `YYYY`。
-- 每次新增论文时追加一行。如果 `papers/README.md` 不存在则创建。
-
-每次新增论文时追加一行。如果 `papers/README.md` 不存在则创建。
+- 每次新增论文时在对应主题下追加一行，并更新主题分类表中的论文数量。
+- 如果 `papers/README.md` 不存在则创建。
 
 ## 三、输入方式
 
@@ -254,6 +282,6 @@ papers/<paper-slug>/
 - 参考文献翻译
 
 **安全边界**：
-- 用 `mv` 将论文文件移入 `papers/` 子目录（不复制、不重命名）
-- 翻译/解读产物只写入对应的 `papers/<slug>/` 目录
+- 用 `mv` 将论文文件移入 `papers/<topic>/` 子目录（不复制、不重命名）
+- 翻译/解读产物只写入对应的 `papers/<topic>/<slug>/` 目录
 - 外部网络调用仅限 `arxiv.org`
