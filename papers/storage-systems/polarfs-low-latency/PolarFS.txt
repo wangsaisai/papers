@@ -1,0 +1,1047 @@
+    PolarFS: An Ultra-low Latency and Failure Resilient
+Distributed File System for Shared Storage Cloud Database
+
+                      Wei Cao, Zhenjun Liu, Peng Wang, Sen Chen, Caifeng Zhu,
+                                 Song Zheng, Yuhui Wang, Guoqing Ma
+              {mingsong.cw, zhenjun.lzj, wangpeng.wangp, chensen.cs, caifeng.zhucaifeng,
+                        catttree.zs, yuhui.wyh, guoqing.mgq}@alibaba-inc.com
+
+ABSTRACT                                                                           The capacity and throughput of a storage cluster can be eas-
+PolarFS is a distributed file system with ultra-low latency                        ily scaled out transparently. (3) Since data are all stored on
+and high availability, designed for the POLARDB database                           the storage cluster, there is no local persistent state on com-
+service, which is now available on the Alibaba Cloud. Po-                          pute nodes, making it easier and faster to perform database
+larFS utilizes a lightweight network stack and I/O stack in                        migration. Data reliability can also be improved because of
+user-space, taking full advantage of the emerging techniques                       the data replication and other high availability features of
+like RDMA, NVMe, and SPDK. In this way, the end-to-                                the underlying distributed storage system.
+end latency of PolarFS has been reduced drastically and                               Cloud database services also benefit from this architec-
+our experiments show that the write latency of PolarFS is                          ture. First, databases can build on a more secure and eas-
+quite close to that of local file system on SSD. To keep                           ily scalable environment based on virtualization techniques,
+replica consistency while maximizing I/O throughput for                            such as Xen [4], KVM [19] or Docker [26]. Second, some key
+PolarFS, we develop ParallelRaft, a consensus protocol de-                         features of databases, such as multiple read-only instances
+rived from Raft, which breaks Raft’s strict serialization by                       and checkpoints could be enhanced with the support of back-
+exploiting the out-of-order I/O completion tolerance capa-                         end storage clusters which provide fast I/O, data sharing,
+bility of databases. ParallelRaft inherits the understand-                         and snapshot.
+ability and easy implementation of Raft while providing                               However, data storage technology continues to change at
+much better I/O scalability for PolarFS. We also describe                          a rapid pace, so current cloud platforms have trouble tak-
+the shared storage architecture of PolarFS, which gives a                          ing full advantage of the emerging hardware standards such
+strong support for POLARDB.                                                        as RDMA and NVMe SSD. For instance, some widely used
+                                                                                   open-source distributed file systems, such as HDFS [5] and
+PVLDB Reference Format:                                                            Ceph [35], are found to have much higher latency than local
+Wei Cao, Zhenjun Liu, Peng Wang, Sen Chen, Caifeng Zhu, Song                       disks. When the latest PCIe SSDs are used, the perfor-
+Zheng, Yuhui Wang, Guoqing Ma. PolarFS: An Ultra-low La-                           mance gap could even reach orders of magnitude. The per-
+tency and Failure Resilient Distributed File System for Shared
+Storage Cloud Database. PVLDB, 11 (12): 1849 - 1862, 2018.
+                                                                                   formance of relational databases like MySQL running di-
+DOI: https://doi.org/10.14778/3229863.3229872                                      rectly on these storage systems is significantly worse than
+                                                                                   that on local PCIe SSDs with the same CPU and memory
+                                                                                   configurations.
+1.    INTRODUCTION                                                                    To tackle this issue, cloud computing vendors, like AWS,
+   Recently, decoupling storage from compute has become a                          Google Cloud Platform and Alibaba Cloud, provide instance
+trend for cloud computing industry. Such design makes the                          store. An instance store uses a local SSD and high I/O
+architecture more flexible and helps to exploit shared stor-                       VM instance to fulfill customers’ needs of high performance
+age capabilities: (1) Compute and storage nodes can use                            databases. Unfortunately, running cloud databases on an
+different types of server hardware and can be customized                           instance store has several drawbacks. First, instance store
+separately. For example, the compute nodes need no longer                          has limited capacity, not suitable for a large database ser-
+to consider the ratio of memory size to disk capacity, which                       vice. Second, it cannot survive underlying disk drive fail-
+is highly dependent on the application scenario and hard to                        ure. Databases have to manage data replication by them-
+predict. (2) Disks on storage nodes in a cluster can form a                        selves for data reliability. Third, an instance store uses a
+single storage pool, which reduces the risk of fragmentation,                      general-purpose file system, such as ext4 or XFS. When us-
+imbalance of disk usage among nodes, and space wastage.                            ing low I/O latency hardwares like RDMA or PCIe SSD, the
+                                                                                   message-passing cost between kernel space and user space
+                                                                                   compromises the I/O throughput. Even worse, an instance
+                                                                                   store cannot support a shared-everything database cluster
+This work is licensed under the Creative Commons Attribution-                      architecture, which is a key feature for an advanced cloud
+NonCommercial-NoDerivatives 4.0 International License. To view a copy              database service.
+of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/. For         In this paper, we describe our design and implementa-
+any use beyond those covered by this license, obtain permission by emailing        tion of PolarFS , a distributed file system, which provides
+info@vldb.org.
+Proceedings of the VLDB Endowment, Vol. 11, No. 12
+                                                                                   ultra-low latency, high throughput and high availability by
+Copyright 2018 VLDB Endowment 2150-8097/18/8.                                      adopting the following mechanisms. First, PolarFS takes full
+DOI: https://doi.org/10.14778/3229863.3229872
+
+
+
+
+                                                                                1849
+                                                                  tion) from primary nodes to RO nodes, so that all changes
+         Primary          Read Only         Read Only
+                                                                  are visible for RO nodes. (2) PolarFS ensures concurrent
+                                                                  modifications to file metadata are serialized so that the file
+             Read/Write         Read              Read
+                                                                  system itself is consistent across all database nodes. (3) In
+       Shared Storage                                             case of a network partition, two or more nodes might act as
+                                                                  primary nodes writing shared files concurrently in PolarFS,
+              S1           S2          …     Sn                   PolarFS can ensure that only the real primary node is served
+                                                                  successfully, preventing data corruption..
+                                                                     The contributions of this paper include:
+                                                                       • We describe how to build PolarFS, a state-of-art dis-
+       Figure 1: The POLARDB architecture.                               tributed file system with ultra-low latency, leveraging
+                                                                         emerging hardware and software optimizations. (Sec-
+                                                                         tion 3, 4, and 7)
+advantage of emerging hardware such as RDMA and NVMe
+SSD, and implements a lightweight network stack and I/O                • We propose ParallelRaft, a new protocol to achieve
+stack in user space to avoid trapping into kernel and dealing            consensus. ParallelRaft is designed for large scale,
+with kernel locks. Second, PolarFS provides a POSIX-like                 fault-tolerant and distributed file system. It is mod-
+file system API, which is intended to be compiled into the               ified based on Raft to suit storage semantics. Com-
+database process and replace the file system interfaces pro-             pared with Raft, ParallelRaft provides better support
+vided by operating system, so that the whole I/O path can                for high concurrent I/Os in PolarFS. (Section 5)
+be kept in user space. Third, the I/O model of the Po-
+larFS’s data plane is also designed to eliminate locks and             • We present the key features of PolarFS which give a
+avoid context switches on the critical data path: all unnec-             strong support POLARDB’s share storage architec-
+essary memory copies are also eliminated, meanwhile DMA                  ture. (Section 6)
+is heavily utilized to transfer data between main memory            Other parts of the paper are structured as follows. Section
+and RDMA NIC/NVMe disks. With all these features, the             2 gives background information about emerging hardware
+end-to-end latency of PolarFS has been reduced drastically,       that PolarFS uses. Section 8 presents and discusses our
+being quite close to that of local file system on SSD.            experimental evaluation. Section 9 reviews the related work
+   Distributed file systems deployed in the cloud production      and Section 10 concludes the paper.
+environment typically have thousands of machines. Within
+such a scale, failures caused by hardware or software bugs
+are common. Therefore, a consensus protocol is needed to          2.    BACKGROUND
+ensure that all committed modifications will not get lost in         This section briefly describes NVMe SSD, RDMA and
+corner cases, and replicas can always reach agreement and         their corresponding programming models.
+become bitwise identical.                                            NVMe SSD. SSD is evolving from legacy protocols like
+   The Paxos family[23, 22, 7, 18, 38] of protocols is widely     SAS, SATA to NVMe, which has a high-bandwidth and low-
+recognized for solving consensus. Raft[28], a variant of Paxos,   latency I/O interconnect. A NVMe SSD can deliver up to
+is much easier to understand and implement. Many dis-             500K I/O operations per second (IOPS) at sub 100µs la-
+tributed systems are developed based on Raft. However,            tency, and the latest 3D XPoint SSD even cuts I/O latency
+once Raft was applied to PolarFS, we found that Raft se-          down to around 10µs while providing much better QoS than
+riously impedes the I/O scalability of PolarFS when using         NAND SSDs. As SSDs are getting faster, the overhead of
+extra low latency hardware (e.g. NVMe SSD and RDMA                the legacy kernel I/O stack becomes the bottleneck [37, 36,
+whose latency are on the order of tens of microseconds). So       31]. As revealed by previous research [6], there are approx-
+we developed ParallelRaft, an enhanced consensus protocol         imately 20,000 instructions needed to be executed only to
+based on Raft, which allows out-of-order log acknowledging,       complete a single 4KB I/O request. Recently, Intel released
+committing and applying, while letting PolarFS comply with        Storage Performance Development Kit (SPDK) [12], a suite
+traditional I/O semantics. With this protocol, parallel I/O       of tools and libraries for building high performance NVMe
+concurrency of PolarFS has been improved significantly.           device based, scalable, user-mode storage applications. It
+   Finally, on top of PolarFS, we implemented POLARDB,            achieves high performance by moving all necessary drivers
+a relational database system modified from AliSQL (a fork         into user space and operating in a polling mode instead of
+of MySQL/InnoDB) [2], which is recently available as a            relying on interrupts, which avoids kernel context switches
+database service on Alibaba cloud computing platform. PO-         and eliminates interrupt handling overhead.
+LARDB follows the shared storage architecture, and sup-              RDMA. RDMA technique provides a low-latency net-
+ports multiple read-only instances. As shown in figure 1, the     work communication mechanism between servers inside data
+database nodes of POLARDB are divided into two types: a           center. For instance, transferring a 4KB data packet be-
+primary node and read only (RO) nodes. The primary node           tween two nodes connecting to the same switch takes about
+can handle both read and write queries, while the RO node         7µs, which is much faster than traditional TCP/IP network
+only provides read queries. Both primary and RO nodes             stack. A number of previous works [9, 14, 15, 17, 24, 25, 30]
+share redo log files and data files under the same database       show that RDMA can improve the system performance. Ap-
+directory in PolarFS.                                             plications interact with the RDMA NIC by accessing a queue
+   PolarFS supports the POLARDB with following features:          pair (QP) via the Verbs API. A QP is composed of a send
+(1) PolarFS can synchronize the modification of file meta-        queue and a receive queue, besides, each QP is associated an-
+data (e.g. file truncation or expansion, file creation or dele-   other completion queue (CQ). The CQ is typically used as
+
+
+
+                                                              1850
+                     /%*% &#;*.          @#:*>                                                              @#:*A
+                     +#<*&#$ &#;*.                 "123456                         "123456                           "123456
+                                                     $)789:                           $)789:                           $)789:
+                                          ?#$;-.>                           ?#$;-.A                          ?#$;-.>
+                    -.*%/%*%               +,;<=>        +,;<=A              +,;<=>    +,;<=A                 +,;<=>    +,;<=A
+
+
+                    "#$%&0*&$                    +%+,.
+                                                                  "#$%&'()*+,                                        "#$%&'()*+,
+
+
+
+
+                    0,;<='.&?.&             0,;<='.&?.&                          0,;<='.&?.&                        0,;<='.&?.&
+                                                                                                        !
+                         +,;<=                     +,;<=                              +,;<=                             +,;<=
+
+                                                                  "%&%$$.$4%9*
+
+
+
+                                          Figure 2: Storage Layer Abstraction.
+
+
+the polling target for completion event/signal. Send/Recv
+verbs are commonly referred to as two-sided operations since
+each Send operation needs a matching Recv operation in-
+voked by the remote process, while Read/Write verbs are
+known as one-sided operations because remote memory is
+manipulated by the NIC without involving any remote CPU.
+   PolarFS uses a hybrid of Send/Recv and Read/Write verbs.
+Small payloads are transferred by Send/Recv verbs directly.
+For a large chunk of data or a batch of data, nodes nego-
+tiate about the destination memory address on the remote
+node using Send/Recv verbs, and then complete the actual
+data transmission over Read/Write verbs. PolarFS elimi-
+nates context switches by polling the CQ in user space in-
+stead of relying on interrupts.
+
+3.    ARCHITECTURE
+   PolarFS consists of two main layers. The lower one is
+storage management, and the upper one manages file system
+metadata and provides file system API. Storage layer takes
+charge of all the disk resource of the storage nodes, and pro-
+vides a database volume for every database instance. File
+system layer supports file management in the volume, and                                            Figure 3: libpfs interfaces
+is responsible for mutual exclusion and synchronization of
+concurrent accesses to file system metadata. For a database
+instance, PolarFS stores the file system metadata in its vol-                    select statements executed on a RO node to access the file.
+ume.                                                                             Therefore, it is necessary to synchronize modifications of
+   Here we present major components in a PolarFS cluster,                        file system metadata across nodes to keep consistent, while
+as illustrated in Figure 2. libpfs is a user space file system                   serializing concurrent modifications to avoid the metadata
+implementation library with a set of POSIX-like file system                      being corrupted.
+API, which is linked into the POLARDB process; Polar-
+Switch resides on compute nodes to redirect I/O requests                          3.1.1        libpfs
+from applications to ChunkServers; ChunkServers are de-                             The libpfs is a lightweight file system implementation run-
+ployed on storage nodes to serve I/O requests; PolarCtrl                         ning completely in user space. As shown in Figure 3, The
+is the control plane, which includes a set of masters imple-                     libpfs provides a set of POSIX-like file system API. It is
+mented in micro-service, and agents deployed on all com-                         quite easy to port a database to run on top of PolarFS.
+pute and storage nodes. PolarCtrl uses a MySQL instance                             When a database node starts up, the pfs mount attaches
+as metadata repository.                                                          to its volume and initializes the file system state. The vol-
+                                                                                 name is the global identifier of the volume allocated to the
+3.1   File System Layer                                                          POLARDB instance, and the hostid is the index of the
+  The file system layer provides a shared and parallel file                      database node which is used as a identifier in the disk paxos
+system, designed to be accessed concurrently by multiple                         voting algorithm (see Section 6.2). During the mounting
+database nodes. For example, in the scenario of POLARDB,                         process, the libpfs loads file system metadata from the vol-
+when the primary database node executes a create table                           ume, and constructs data structures e.g. the directory tree,
+DDL statement a new file is created in PolarFS, enabling                         the file mapping table and the block mapping table in the
+
+
+
+                                                                         1851
+main memory (see Section 6.1). The pfs umount detaches                divided into multiple sub-requests. Finally an elemental re-
+the volume and releases resources during database destruc-            quest is sent to the ChunkServer where the leader of the
+tion. After the volume space grows, the pfs mount growfs              chunk resides.
+should be called to recognize newly allocated blocks and                 PolarSwitch finds out the locations of all replicas belong-
+mark them available. Rest functions are file and directory            ing to a chunk by looking up the local metadata cache, which
+operations which are equivalent to counterparts in POSIX              is synchronized with PolarCtrl. Replicas of a chunk form a
+API. Details of file system metadata management is de-                consensus group, one is the leader and others are followers.
+scribed in Section 6.                                                 Only the leader can answer I/O requests. leadership changes
+                                                                      in the consensus group are also synchronized and cached
+3.2     Storage Layer                                                 in PolarSwitch’s local cache. If response timeout happens,
+   The storage layer provides interfaces to manage and ac-            PolarSwitch would keep retrying with exponential backoff
+cess volumes for the file system layer. A volume is allocated         while detecting whether leader election happens, switch to
+for each database instance, and consists of a list of chunks.         new leader and retransmit immediately if it does.
+The capacity of a volume ranges from 10 GB to 100 TB,
+which meets the requirements of vast majority of databases,               3.2.2   ChunkServer
+and the capacity can be expanded on demand by appending                  ChunkServers are deployed on storage servers. There are
+chunks to the volume. A volume can be randomly accessed               multiple ChunkServer processes running on a storage server,
+(read, write) in 512B alignment, like traditional storage de-         each ChunkServer owns a standalone NVMe SSD disk and
+vices. Modifications to the same chunk carried in a single            is bound to a dedicated CPU core, so that there is no re-
+I/O request are atomic.                                               source contention between two ChunkServers. ChunkServer
+   Chunk. A volume is divided into chunks which are dis-              is responsible to store chunks and provides random accesses
+tributed among ChunkServers. A chunk is the minimum                   to chunks. Each chunk contains a write ahead log (WAL),
+unit of data distribution. A single Chunk does not span               modifications to the chunk are appended to the log before
+across more than one disk on ChunkServer and its replicas             updating chunk blocks to ensure atomicity and durability.
+are replicated to three distinct ChunkServers by default (al-         ChunkServer uses a piece of fixed size 3D XPoint SSD buffer
+ways located in different racks). Chunks can be migrated              as a write cache for WAL, logs are preferred to be placed in
+between ChunkServers when hot spots exist.                            3D XPoint buffer. If the buffer is full, ChunkServer will try
+   The size of a chunk is set to 10 GB in PolarFS, which is sig-      to recycle dated logs. If there is still not enough space in
+nificantly larger than the unit size in other systems, e.g. the       3D XPoint buffer, logs are written into NVMe SSD instead.
+64 MB chunk size used by GFS [11]. This choice decreases              Chunk blocks are always written into NVMe SSD.
+the amount of metadata maintained in metadata database                   ChunkServers replicate I/O requests with each other us-
+by orders of magnitude, and also simplifies the metadata              ing the ParallelRaft protocol and form a consensus group.
+management. For example, a 100 TB volume only contains                A ChunkServer leaves its consensus group for various rea-
+10,000 chunks. It is a relatively small cost to store 10,000          sons, and may be handled differently. Sometimes it’s caused
+records in metadata database. Moreover, all of these meta-            by occasional and temporary faults, e.g. network unavail-
+data can be cached in the main memory of PolarSwitch, thus            able temporarily, or the server is upgraded and rebooted.
+avoiding the extra metadata accessing costs on the critical           In this situation it’s better to wait for the disconnected
+I/O path.                                                             ChunkServer to come back online, join the group again and
+   The downside of this design is that the hot spot on one            catch up with others. In other cases, faults are permanent
+chunk cannot be further separated. But thanks to the high             or tend to last for a long time, e.g. the server is damaged or
+ratio of chunks to servers (now is around 1000:1), typically          taken offline. Then all chunks on the missing ChunkServer
+a large number of database instances (thousands or more),             should be migrated to others, in order to regain a sufficient
+and the inter-server chunk migration capability, PolarFS can          number of replicas.
+achieve load balance at the whole system level.                          A disconnected ChunkServer will always make effort to re-
+   Block. A chunk is further divided into blocks inside the           join the consensus group autonomously, in order to shorten
+ChunkServer, and each block is set to 64 KB. Blocks are               unavailable time. However complementary decisions can be
+allocated and mapped to a chunk on demand to achieve                  made by PolarCtrl. PolarCtrl periodically collects the list
+thin provisioning. A 10 GB chunk contains 163,840 data                of ChunkServers that has disconnected before, and picks off
+blocks. The mapping table of chunk’s LBA (Logical Block               ChunkServers seems like having permanent fault. Some-
+Address, the linear address range from 0 to 10 GB) to blocks          times it is hard to make the decision. A ChunkServer with
+are stored locally in ChunkServer, together with the bitmap           a slow disk, for example, may have a much longer latency
+of free blocks on each disk. The mapping table of a single            than others, but it can always respond to aliveness probes.
+chunk occupies 640 KB memory, which is quite small and                Machine learning algorithms based on performance metrics
+can be cached in memory of the ChunkServer.                           statistics of key components is helpful.
+
+3.2.1    PolarSwitch                                                      3.2.3   PolarCtrl
+  PolarSwitch is a daemon process deployed on the database               PolarCtrl is the control plane of a PolarFS cluster. It is de-
+server, together with one or more database instances. In              ployed on a group of dedicated machines (at least three) to
+each database process, libpfs forwards I/O requests to the            provide high-available services. PolarCtrl provides cluster
+PolarSwitch daemon. Each request contains addressing in-              controlling services, e.g. node management, volume man-
+formation like the volume identifier, offset and length, from         agement, resource allocation, metadata synchronization, mon-
+which the related chunks can be identified. An I/O request            itoring and so on. PolarCtrl is responsible for (1) keeping
+may span across chunks, in that case, the request is further          track of the membership and liveness of all ChunkServers
+
+
+
+                                                                   1852
+     -78)(&9
+                                                                           ,6@AB%$1C$1>      and then waits for its completion. At the other end , Po-
+                                                                (&#)*!+,                     larSwitch constantly polls all ring buffers, with one thread
+       /3:;<'
+                                ,-./+ 0 1 231 431 5                                          dedicated to a ring buffer. Once it finds new requests, Polar-
+ =DH?                           ,-./+ 2 1 531 631 2
+  (3AF
+                  =D?             7         7                                                Switch dequeues the requests from ring buffers and forwards
+                                                                           !"##$% &'($
+ 9@<<$1                         ,-./+ / 1 831 /31 +                                          them to ChunkServers with the routing information propa-
+     -./01%23456                                                                             gated from PolarCtrl.
+                                                                           !"#$ %%&'
+                                                                                                Chunkserver uses the write ahead logging (WAL) tech-
+                                                                                             nique to ensure atomicity and durability, in which I/O re-
+                   !"#$
+                                                       !"#$
+           !"#$
+     =G?                  =>?
+                                                      %&'()*+
+                                                                                             quests are written to the log before they are committed and
+                                                                                             applied. Logs are replicated to a collection of replicas, and a
+                                     ,6@AB%$1C$1D                          ,6@AB%$1C$1E      consensus protocol named ParallelRaft (Detailed in the next
+     (&#)*!+,                                                   (&#)*!+,
+                                                                                             section) is used to guarantee the data consistency among
+                                                                                             replicas. An I/O request is not recognized to be committed
+                                   !"##$% &'($                             !"##$% &'($
+                                                                                             until it is persistently recorded to the logs on a majority of
+                                                                                             replicas. Only after that this request can be responded to
+                                                                                             the client and applied on the data blocks.
+                                     !"#$ %%&'                             !"#$ %%&'
+                                                                                                Figure 4 shows how a write I/O request is executed inside
+                                                                                             PolarFS. (1) POLARDB sends a write I/O request to Po-
+           Figure 4: The Write I/O Execution Flow.                                           larSwitch through the ring buffer between PolarSwitch and
+                                                                                             libpfs. (2) PolarSwitch transfers the request to the corre-
+                                                                                             sponding chunk’s leader node according to the local cached
+in the cluster, starting migration of chunk replicas from one                                cluster metadata. (3) Upon the arrival of a new write re-
+server to the others if the ChunkServer is overloaded or un-                                 quest, the RDMA NIC in the leader node will put the write
+available for duration longer than a threshold value. (2)                                    request into the pre-registered buffer and add a request entry
+maintaining the state of all volumes and chunk locations                                     into the request queue. An I/O loop thread keeps polling the
+in metadata database. (3) creating volumes and assigning                                     request queue. Once it sees a new request arriving, it starts
+chunks to ChunkServers. (4) synchronizing metadata to Po-                                    processing the request right away. (4) The request is written
+larSwitch using both push and pull methods. (5) monitor-                                     to the log block on the disk through SPDK and is propagated
+ing the latency/IOPS metrics of each volume and chunk,                                       to the follower nodes through RDMA. Both operations are
+collecting trace data along the I/O path. (6) scheduling                                     asynchronous calls and the actual data transmission will be
+inner-replicas and inter-replicas CRC checks periodically.                                   triggered in parallel. (5) When the replication request ar-
+   PolarCtrl periodically synchronizes cluster metadata (e.g.                                rives at a follower node, the RDMA NIC in the follower node
+chunk locations of a volume) with PolarSwitch through con-                                   will also put the replication request into the pre-registered
+trol plane commands. PolarSwitch saves the metadata in its                                   buffer and add it into the replication queue. (6) Then the
+local cache. When receiving an I/O request from libpfs, Po-                                  I/O loop thread on the follower is triggered, and writes the
+larSwitch routes the request to the corresponding ChunkServer                                request to disk through SPDK asynchronously. (7) When
+according to the local cache. Occasionally, PolarSwitch would                                the write callback returns successfully, an acknowledge re-
+fetch metadata from PolarCtrl if the local cache falls behind                                sponse is sent back to the leader through RDMA. (8) When
+the centre metadata repository.                                                              responses are successfully received from majority of follow-
+   As a control plane, PolarCtrl is not on the critical I/O                                  ers, the leader applies the write request to the data blocks
+path, its service continuity can be provided using traditional                               through SPDK. (9) After that, the leader replies to Polar-
+high availability techniques. Even during the short interval                                 Switch through RDMA. (10) PolarSwitch then marks the
+between PolarCtrl’s crash and recovery, I/O flows in Po-                                     request done and notifies the client.
+larFS would not likely be affected due to the cached meta-                                      Read I/O requests are (more simply) processed by leader
+data on PolarSwith and the self-management of ChunkServer.                                   alone. In ChunkServer there is a submodule named IoSched-
+                                                                                             uler which is responsible to arbitrate the order of disk I/O
+4.         I/O EXECUTION MODEL                                                               operations issued by concurrent I/O requests to execute on
+                                                                                             the ChunkServer. IoScheduler guarantees that a read oper-
+   When POLARDB accesses its data, it will delegate a
+                                                                                             ation can always retrieve the latest committed data.
+file I/O request to libpfs by the PFS interface, usually by
+                                                                                                ChunkServer uses polling mode along with event-driven
+pfs pread or pfs pwrite. For write requests, there is almost
+                                                                                             finite state machine as the concurrency model. The I/O
+no need to modify file system meta data since device blocks
+                                                                                             thread keeps polling events from RDMA and NVMe queues,
+are preallocated to files by pfs fallocate, thus avoiding ex-
+                                                                                             processing incoming requests in the same thread. When one
+pensive meta data synchronization among write and read
+                                                                                             or more asynchronous I/O operations are issued and other
+nodes. This is a normal optimization for database systems.
+                                                                                             requests are needed to be handled, the I/O thread will pause
+   In most common cases, libpfs simply maps the file off-
+                                                                                             processing current request and save the context into a state
+set into a block offset based on the index tables already
+                                                                                             machine, then switch to process the next incoming event.
+built when mounting, and chops the file I/O request into
+                                                                                             Each I/O thread uses a dedicated core and uses separated
+one or more smaller fixed size block I/O requests. After the
+                                                                                             RDMA and NVMe queue pairs. As a result, an I/O thread
+transformation, the block I/O requests are sent by libpfs to
+                                                                                             is implemented without locking overheads since there is no
+PolarSwitch through a shared memory between them.
+                                                                                             shared data structure between I/O threads, even though
+   The shared memory is constructed as multiple ring buffers.
+                                                                                             there are multiple I/O threads on a single ChunkServer.
+At one end of the shared memory, libpfs enqueues a block
+I/O request into a ring buffer selected in a round robin way
+
+
+
+                                                                                          1853
+5.    CONSISTENCY MODEL                                               which also implicitly indicates that all preceding log entries
+                                                                      have been seen and saved. (2) When the leader commits a
+5.1    A Revision of Raft                                             log entry and broadcasts this event to all followers, it also
+   A production distributed storage system needs a consen-            admits all preceding log entries have been committed. Paral-
+sus protocol to guarantee all committed modifications are             lelRaft breaks these restrictions and executes all these steps
+not lost in any corner cases. At the beginning of the design          out-of-order. Therefore, there is a basic difference between
+process. we chose Raft after consideration of the implemen-           ParallelRaft and Raft. In ParallelRaft, when an entry has
+tation complexity. However, some pitfalls soon emerged.               been recognized to be committed, it does not mean that all
+   Raft is designed to be highly serialized for simplicity and        the previous entries have been committed successfully. To
+understandability. Its logs are not allowed to have holes on          ensure the correctness of this protocol, we have to guaran-
+both leader and followers, which means log entries are ac-            tee: (1) Without these serial restrictions, all the committed
+knowledged by follower, committed by leader and applied               states will also be complaint with the storage semantics used
+to all replicas in sequence. So when write requests execute           by classical rational databases. (2) All committed modifica-
+concurrently, they would be committed in sequence. Those              tions will not get lost in any corner cases.
+requests at the tail of queue cannot be committed and re-                The out-of-order log executing of ParallelRaft follows the
+sponded until all preceding requests are persistently stored          rules: If the writing ranges of the log entries are not over-
+to disks and answered, which increases average latency and            lapped with each other, then these log entries are considered
+cuts down throughput. We observed the throughput drop-                without conflict, and can be executed in any order. Other-
+ping by half as I/O depth rising from 8 to 32.                        wise, the conflicted entries will be executed in a strict se-
+   Raft is not quite suitable for the environment using mul-          quence as they arrived. In this way, the newer data will
+tiple connections to transfer logs between a leader and a             never be overwritten by older versions. ParallelRaft can
+follower. When one connection blocks or becomes slow, log             easily know the conflict because it stores the LBA range
+entries would arrive at follower out of order. In other words,        summary of any log entry not applied . The following part
+some log entries in the front of queue would actually arrive          describes how the Ack-Commit-Apply steps of ParallelRaft
+later than those at the back. But a Raft follower must accept         are optimized and how the necessary consistent semantics
+log entries in sequence, which means it cannot send an ac-            can be maintained.
+knowledge to inform the leader that subsequent log entries               Out-of-Order Acknowledge. After receiving a log en-
+have already been recorded to disk, until those preceding             try replicated from the leader, a Raft follower would not
+missing log entries arrived. Moreover, The leader would get           acknowledge it until all preceding log entries are stored per-
+stuck when most followers are blocked on some missing log             sistently, which introduces an extra waiting time, and the
+entries. In practice, however, using multiple connections is          average latency increases significantly when there are lots
+common for a highly concurrent environment. We need to                of concurrent I/O writes executing. However, in Parallel-
+revise the Raft protocol to tolerate this situation.                  Raft, once the log entry has been written successfully, the
+   In a transactional processing system such as database,             follower can acknowledge it immediately. In this way, the
+concurrency control algorithms allow transactions to be ex-           extra waiting time is avoided, so that the average latency is
+ecuted in an interleaved and out-of-order way while generat-          optimized.
+ing serializable results. These systems naturally can tolerate           Out-of-Order Commit. A raft leader commits log en-
+out-of-order I/O completions arising from traditional stor-           tries in serial order, and a log entry cannot be committed
+age semantics and address it by themselves to ensure data             until all preceding log entries are committed. Whereas in
+consistency. Actually, databases such as MySQL and Al-                ParallelRaft a log entry can be committed immediately af-
+iSQL do not care about the I/O sequences of underlying                ter a majority of replicas have been acknowledged. This
+storage. The lock system of a database will guarantee that            commit semantics is acceptable for a storage system which
+at any point of time, only one thread can work on one par-            usually do not promise strong consistency semantics like a
+ticular page. When different threads work on different pages          TP system. For example, NVMe does not check the LBA
+concurrently, database only need the I/Os be executed suc-            of read or write commands to ensure any type of ordering
+cessfully, their completion order would not matter. There-            between concurrent commands and there is no guarantee of
+fore we capitalize on that to relax some constraints of Raft          the order of completion for those commands [13].
+in PolarFS to develop a consensus protocol which is more                 Apply with Holes in the Log. As Raft, all log entries
+suitable for high I/O concurrency.                                    are applied in the strict sequence as they are logged in Paral-
+   This paper proposes an improved consensus protocol over            lelRaft, so that data file is coherent in all replicas. However,
+Raft named ParallelRaft, and the following sections will              with out-of-order log replication and commit, ParallelRaft
+present how ParallelRaft solves the above problems. The               allows holes to exist in the log. How can a log entry be ap-
+structure of ParallelRaft is quite similar to Raft. It imple-         plied safely with some preceding log entries still missing? It
+ments the replicated state machine through a replicated log.          brings a challenge to ParallelRaft.
+There are leader and followers, and leader replicates log en-            ParallelRaft introduces a novel data structure named look
+tries to followers. We follow the same approach of problem            behind buffer in each log entry to address this issue. The
+decomposition like Raft, and divide ParallelRaft into smaller         look behind buffer contains the LBA modified by the pre-
+pieces: log replication, leader election and catch up.                vious N log entries, so that a look behind buffer acts as a
+                                                                      bridge built over a possible hole in the log. N is the span
+5.2    Out-of-Order Log Replication                                   of this bridge, which is also the maximum size of a log hole
+                                                                      permitted. Please note that although several holes might
+   Raft is serialized in two aspects: (1) After the leader sends
+                                                                      exist in the log, the LBA summary of all log entries can al-
+a log entry to a follower, the follower needs to acknowledge it
+                                                                      ways be complete unless any hole size is larger than N. By
+to inform that this log entry has been received and recorded,
+
+
+
+                                                                   1854
+                                                                                                         
+means of this data structure, the follower can tell whether
+a log entry is conflicting, which means that the LBAs mod-                                            
+ified by this log entry are overlapping with some preceding                                                       
+but missing log entries. Log entries not conflicting with any                                                
+
+other entry can be applied safely, otherwise they should be
+added to a pending list and replied after the missing en-
+                                                                          Figure 5: ParallelRaft Leader Election.
+tries are retrieved. According to our experience in PolarFS
+with RDMA network, N set to 2 is good enough for its I/O
+concurrency.
+   Based on the above Out-of-Order execution methods and           failed leader. Therefore, we should commit it for user data
+rules, the wanted storage semantics for databases can be           safety.)
+successfully achieved. Moreover, the latency of multi-replica         Take the situation with 3 replicas for example, Figure 5
+concurrent write can also be shortened by eliminate unnec-         shows the process of leader election.
+essary serial restrictions in ParallelRaft for PolarFS.               First, the follower candidate sends its local log entries to
+                                                                   the leader candidate. The leader candidate receives these
+                                                                   entries and merges with its own log entries. Second, the
+5.3    Leader Election                                             leader candidate synchronizes states to the follower candi-
+   When doing new leader election, ParallelRaft could choose       date. After that, the leader candidate can commit all the
+the node which has the newest term and the longest log en-         entries and notify the follower candidate to commit. Finally
+try, just the same as Raft. In Raft, the newly elected leader      the leader candidate upgrades to a leader, and the follower
+contains all the committed entries from previous terms. How-       candidate upgrades to a follower as well.
+ever, the leader elected in ParallelRaft might not initially          With above mechanisms, all committed entries can be re-
+meet this requirement because of possible holes in the log.        covered by the new leader, which means that ParallelRaft
+Hence an additional merge stage is needed to make the              will not lost any committed state.
+leader have all the committed entries before starting pro-            In ParallelRaft, a checkpoint is made from time to time, all
+cessing requests. Before the merge stage finishes, the new         log entries before the checkpoint are applied to data blocks
+elected node is only leader candidate, after the merge stage       and the checkpoint is allowed to contain some log entries
+finished, it has all the committed entries and becomes the         committed after the checkpoint. For simplicity, all log en-
+real leader. In the merge stage, the leader candidate needs        tries before the checkpoint can be regarded as pruned, al-
+to merge unseen entries from rest members of a quorum.             though in practice they are reserved for a while until short
+After that, the leader would start to commit entries from          of resource or some threshold reached.
+previous terms to the quorum, which is same as Raft.                  In our real implementation, ParallelRaft choose the node
+   When merging entries, ParallelRaft also uses a similar          with newest checkpoint as the leader candidate instead of
+mechanism as Raft. An entry with the same term and index           the one with the longest log, for the sake of the Catch Up
+will be promised to be the same entry. There are several ab-       implementation. With the merge stage, it is easy to see
+normal conditions: (1) For a committed but missing entry,          that the new leader will reach the same state when starting
+the leader candidate can always find the same committed            serving. Therefore, this choice does not compromise the
+entry from at least one of the follower candidates, because        correctness of ParallelRaft.
+this committed entry has been accepted by the majority of
+quorum. (2) For an entry that is not committed on any of
+the candidate, if this entry is not saved on any of them ei-       5.4    Catch Up
+ther, the leader can skip this log entry safely since it cannot       When a lagging follower wants to keep up with the leader’s
+have been committed previously according to the Parallel-          current data state, it will use fast-catch-up or streaming-
+Raft or Raft mechanism. (3) If some candidates saved this          catch-up to re-synchronize with the leader. Which one is
+uncommitted entry (with same index but different term),            used depends on how stale the state of the follower is. The
+then leader candidate chooses the entry version with the           fast catch up mechanism is designed for incremental synchro-
+highest term, and recognizes this entry as a valid entry. We       nization between leader and follower, when the differences
+must do this because of the other two facts: (3.a) Parallel-       between them are relatively small. But the follower could
+Raft’s merge stage must be done before a new leader can            lag far behind the leader. For instance, the follower has
+serve for user requests, which determines that if a higher         been offline for days, so a full data re-synchronization is in-
+term is set to an entry, the lower one with the same en-           evitable. PolarFS thus proposes a method named streaming
+try index must not have been committed before, and the             catch up for this task.
+lower term entry must have never attended to previous suc-            Figure 6 presents the different conditions of leader and
+cessfully completed merge stages, otherwise the higher term        follower when re-synchronization starts. In Case 1, leader’s
+entry cannot be with the same index. (3.b) When a system           checkpoint is newer than the follower’s latest log index, and
+crashed with a uncommitted entry saved in a candidate,             log entries between them would be pruned by leader. There-
+this entry acknowledgment may have been sent to the pre-           fore, fast catch up cannot handle this situation, and stream-
+vious leader and replied to the user, so we cannot simply          ing catch up should be used instead. Case 2 and Case 3 can
+abandon it otherwise user data might get lost. (More pre-          be fixed by fast catch up.
+cisely, if the total number of failed nodes plus nodes with           In the following cases, we can always assume that the
+this uncommitted entry (the highest term of these entries          leader’s checkpoint is newer than the follower’s, since if this
+with same index) exceeds the number of other nodes in the          condition is not met, the leader can make a checkpoint im-
+same quorum, then this entry might have committed by the           mediately which is newer than any other.
+
+
+
+                                                                1855
+                             cp         idx          Leader                            1024                                                           64
+
+
+
+
+                                                                                                                                    IOPS (thousand)
+                                                                                       512
+
+
+
+                                                                        Latency (us)
+                                                                                                                                                      32
+        case 1   cp    idx                                                             256
+
+                                                                                       128
+                                                                                                                                                      16
+        case 2        cp          idx               Follower
+                                                                                        64                              Raft                                                        Raft
+                                                                                                                ParallelRaft                                                ParallelRaft
+                                                                                        32                                                            8
+        case 3        cp                      idx                                             1     2       4     8    16      32                          1   2      4      8    16       32
+                                                                                                        IO Queue Depth                                             IO Queue Depth
+                                                                                       (a) The latency impact.                      (b) The throughput impact.
+   Figure 6: ParallelRaft Fast Catch Up Process.
+                                                                    Figure 7: Performance of Raft and ParallelRaft for
+                                                                    4KB random write request.
+
+   Log entries after the checkpoint can be divided into four
+classes: committed-and-applied, committed-but-unapplied,            tries) on all nodes in the same quorum will be consistent
+uncommitted, and holes.                                             with each other.
+   Fast Catch Up. Follower may have holes after its check-             With all these properties, the correctness of ParallelRaft
+point, which will be filled during fast catch up. First, The        is guaranteed.
+holes between follower’s checkpoint and leader’s checkpoint
+are filled with the help of look behind buffer again, through       5.6                           ParallelRaft Versus Raft
+which we shall discover LBAs of all missing modifications.             We did a simple test to show how ParallelRaft can improve
+These holes are filled directly by copying from leader’s data       the I/O concurrency. Figure 7 shows the average latency
+blocks, which contains data newer than follower’s check-            and throughput of Raft and ParallelRaft when I/O depth
+point. Second, the holes after leader’s checkpoint are filled       varies from 1 to 32 and single FIO job. Both algorithms
+by reading them from leader’s log blocks.                           are implemented using RDMA. The slight performance dif-
+   In Case 3, the follower may contain uncommitted log en-          ference at the beginning can be neglected because they are
+tries from some older terms. Like Raft, these entries are           different software packages implemented independently. As
+pruned, and will then be handled following the above steps.         the I/O depth increases, the performance gap between two
+   Streaming Catch Up. In streaming catch up, log his-              protocols becomes wider. When I/O depth grows to 32, the
+tories older than the checkpoint are deemed useless for full        latency of Raft is approximately 2.5X times of the latency
+data re-synchronization, and the content of data blocks and         of ParallelRaft, with less than half of the IOPS Parallel-
+log entries after the checkpoint are all must be used to re-        Raft achieves. It is noticeable that the IOPS of Raft drops
+build the state. When copying the chunks, a whole chunk is          considerably when I/O depth is larger than 8, whereas Par-
+split into small 128KB pieces and using lots of small tasks,        allelRaft maintains the overall throughout at a steady high
+each of which only syncs a single 128 KB piece. We do this          level. The results demonstrate the effectiveness of our pro-
+for establishing a more controllable re-synchronization. The        posed optimization mechanisms in ParallelRaft. The out-of-
+further design motivation is discussed in Section 7.3 .             order acknowledgement and commitment improve the I/O
+                                                                    parallelism, which enables PolarFS to maintain superior and
+                                                                    stable performance even under heavy workload.
+5.5   Correctness of ParallelRaft
+   Raft ensures the following properties for protocol cor-
+rectness: Election Safety, Leader Append-Only, Log Match-           6.                    FS LAYER IMPLEMENTATION
+ing, Leader Completeness, and State Machine Safety. It is             In PolarFS’s file system layer, the metadata management
+easy to prove that ParallefRaft has the property of Elec-           could be divided into two parts. The first one is to organize
+tion Safety, Leader Append-Only, and Log Matching,                  metadata to access and update files and directories within
+since ParallelRaft does not change them at all.                     a database node. The second one is to coordinate and syn-
+   ParallelRaft’s out-of-order commitment introduces the key        chronize metadata modification among database nodes.
+difference from standard Raft. A ParallelRaft log might lack
+some necessary entries. Therefore, the key scenario we need         6.1                           Metadata Organization
+to consider is how a new elected leader should deal with               There are three kinds of file system metadata: directory
+these missing entries. ParallelRaft add a merge stage for           entry, inode and block tag. A single directory entry keeps
+leader electing. In the merge stage, the leader will copy the       a name component of a file path and has a reference to an
+missing log entries, re-confirm whether these entries should        inode. A collection of directory entries are organized into
+be committed, and then commit them in the quorum if nec-            a directory tree. An inode describes either a regular file or
+essary. After the merge stage in Section 5.3, the Leader            a directory. For a regular file, the inode keeps a reference
+Completeness is guaranteed.                                         to a set of block tags, each describing the mapping of a file
+   In addition, as mentioned in Section 5.2, the out-of-order       block number to a volume block number; for a directory,
+commitment is acceptable in PolarFS for databases.                  the inode keeps a reference to a set of subdirectory entries
+   Then we will prove that the out-of-order apply will not vi-      in this parent directory.(The references mentioned above are
+olate the State Machine Safety property. Although Par-              actually metaobject identifiers as explained below).
+allelRaft allows nodes do out-of-order apply independently,            The three kinds of metadata are abstracted into one data
+thanks to the look behind buffer (Section 5.2), the conflict-       type called metaobject which has a field holding the specific
+ing logs can only be applied in a strict sequence, which            data for a directory entry, an inode or a block tag. This
+means that the state machine (data plus committed log en-           common data type is used to access metadata both on disk
+
+
+
+                                                                 1856
+                               POLARDB Cluster                         File System Metadata Cache
+                                                                                                                            they poll by checking the log anchor in the leader record
+               Node1               Node2        Node3                Directory Tree File Mapping Table
+                                                                                                                            page. If the log anchor changes, the read-only nodes know
+                                                                          root              FileBlk VolBlk
+           POLARDB                POLARDB    POLARDB
+                                                                                              0            348
+                                                                                                                            there are new transactions in the journal file and they will
+               libpfs              libpfs           libpfs     (6)                            1           1500
+                                                                                                                            retrive these new transactions to update its local metadata.
+                                                                                              2           0→201               We explain a transaction commit process with an exam-
+                                                                                              ...            ...
+               (1) (2)             (3) (5)           (6)
+                                                                                                                            ple, as illustrated in Figure 8. It has the following steps:
+                                   (4)
+                                                                              Database Volume                                 (1) Node 1 acquires paxos lock, which is initially free, af-
+                                                                     Chunks        Block Mapping Table
+ Paxos file
+                                                                                                                            ter assigning block 201 to file 316. (2) Node 1 starts record-
+                                                                                    VolBlk FileID FileBlk                   ing transactions to journal. The position of the latest writ-
+Journal file                                                                         200        489                16       ten entry is marked with pending tail. After all entries are
+                                                             (3)                     201      0→316 0→2
+                                             head
+                                                                                                                            stored, the pending tail becomes the valid tail of journal.
+                                                                                     202        478                37
+
+                                                                        ...
+                pending tail                                                          ...           ...            ...      (3) Node 1 updates the superblocks with the modified meta-
+                           tail                                                                                             data. At the same time, Node 2 tries to obtain the mutex
+                                                                                     superblock           file block
+                                                                                                                            which is already held by Node 1. Node 2 must fail and will
+                                                                                                                            retry later. (4) Node 2 becomes the legal owner of mutex
+         Figure 8: Overview of File System Layer.                                                                           after Node 1 releases the lock, but the new entries in jour-
+                                                                                                                            nal appended by Node 1 determine that the local metadata
+                                                                                                                            cache in Node 2 is stale. (5) Node 2 scans new entries and
+and in memory. Metaobjects are initialized on disk in con-                                                                  releases the lock. Then Node 2 rollbacks unrecorded trans-
+tinuous 4k size sectors when making a new file system, with                                                                 actions and updates local metadata. Finally Node 2 retries
+each metaobject assigned a unique identifier. In pfs mount,                                                                 the transactions. (6) Node 3 starts to synchronize metadata
+all metaobjects are loaded into memory and partitioned into                                                                 automatically and it only needs to load incremental entries
+chunks and type groups.                                                                                                     and replay them in local memory.
+   A metaobject is accessed in memory with a tuple (metaob-
+ject identifier, metaobject type). The upper bits of the iden-                                                              7.    DESIGN CHOICES AND LESSONS
+tifier is used to find the chunk to which the metaobject be-                                                                   Besides the system architecture, the I/O model and the
+longs, the type is to find the group in the chunk, and at last                                                              consensus protocol, there are still some interesting design
+the lower bits of the identifier is used as the index to access                                                             topics worth discussing. Some of them belong to PolarFS
+the metaobject in the group.                                                                                                itself, and others are aimed for database features.
+   To update one or more metaobjects, a transaction is pre-
+pared and each update is recorded as a transaction oper-                                                                    7.1   Centralized or Decentralized
+ation. The transaction operation holds the old value and                                                                       There are two design paradigms for distributed systems:
+new value of its modified object. Once all updates are                                                                      centralized and decentralized. Centralized systems, such as
+done the transaction is ready to be committed. The com-                                                                     GFS [11] and HDFS [5], contain a single master, which is
+mit process needs coordination and synchronization among                                                                    responsible for keeping metadata and the membership man-
+database nodes, as described in the following subsection. If                                                                agement, This kind of systems are relatively simple to im-
+the commit failed, the update is rollbacked with old value                                                                  plement, but the single master may become a bottleneck
+saved in the transaction.                                                                                                   of the whole system, in the sense of both availability and
+                                                                                                                            scalability. Decentralized systems like Dynamo [8] are in
+6.2       Coordination and Synchronization                                                                                  the opposite way. In this system, nodes are of peer-to-peer
+   To support synchronization of file system metadata, Po-                                                                  relationship, metadata are sharded and redundant among
+larFS records metadata modification as transactions into                                                                    all nodes. A decentralized system is supposed to be more
+a journal file.The journal file is polled by database nodes                                                                 reliable but also more complex to implement and reasoning.
+for new transactions. Once found, new transactions are re-                                                                     PolarFS makes a trade-off between centralized and decen-
+trieved and replayed by the nodes.                                                                                          tralized designs. On one hand, PolarCtrl is a centralized
+   Normally, there is only one instance to write the journal                                                                master which is responsible for administration tasks such as
+file and multiple instances to read it. In the case of network                                                              resource management, and accepting control plane requests
+partition or administration, there may be multiple instances                                                                like creating volume. On the other hand, ChunkServers are
+writing to the journal file. In these cases, we need a mech-                                                                talking with each other, running a consensus protocol to
+anism to coordinate writes to the journal file. PolarFS uses                                                                handle failure and recovery autonomously without PolarC-
+the disk paxos algorithm [10] for this purpose. Note that                                                                   trl involved.
+the purpose of the disk paxos algorithm used here is quite
+different from the ParallelRaft. The latter is to ensure data                                                               7.2   Snapshot from Bottom to Top
+consistency among the chunk replicas.                                                                                         Snapshot is a common need for databases. PolarFS sup-
+   The disk paxos algorithm runs on a file composed of 4K                                                                   ports snapshot feature, which simplifies upper POLARDB
+size pages which can be atomically read or written. These                                                                   snapshot design.
+pages are interpreted as one leader record plus data blocks                                                                   In PolarFS, the storage layer provides reliable data access
+for each database node. The data block pages are used by                                                                    service to upper layers, POLARDB and libpfs have their
+each database node to write the proposal of itself and to read                                                              own log mechanisms to ensure their transaction atomicity
+the proposals of others. The leader record page contains                                                                    and durability. PolarFS storage layer provides a snapshot
+information of current paxos winner and the log anchor for                                                                  of disk outage consistency, and POLARDB and libpfs re-
+the journal. The disk paxos algorithm is only run by a write                                                                build their own consistent data image from the underlying
+node. The read-only nodes do not run disk paxos. Instead                                                                    PolarFS snapshot.
+
+
+
+                                                                                                                         1857
+  The disk outage consistency here means that if the snap-          8.                    EVALUATION
+shot command is triggered at a time point T, then some                We have implemented PolarFS and have also released PO-
+time point T0 exists so that all the I/O operations before          LARDB as a public database service on Alibaba cloud. In
+T0 should be included in the current snapshot, and the I/O          this section, we evaluated and analyzed PolarFS and PO-
+operations after T must be excluded. However, the states of         LARDB performance and scalability. For PolarFS, we eval-
+I/O operations within the interval [T0 , T ], which is usually      uated it on a cluster by comparing it with Ext4 on local
+a very short time span, are undetermined. This behavior             NVMe and CephFS on Ceph [35], a widely used open source
+resembles what happens upon power off while a disk is still         distributed storage system. For POLARDB, we compared it
+being written.                                                      with our original MySQL cloud service RDS and POLARDB
+  When an unexpected disaster happened or an active au-             on local Ext4.
+diting is need, PolarCtrl assigns the newest data snapshot
+to the POLARDB instance, POLARDB and libpfs will use                8.1                     PolarFS Experimental Setup
+their logs stored to rebuild a consistent state.                       For file system performance, we focused on the end-to-end
+  PolarFS implements the disk outage consistency snapshot           performance of three systems (PolarFS, CephFS and Ext4),
+in a novel way, which does not block user I/O operations            including latency and throughput under different workloads
+during snapshot is being made. When user issues a snapshot          and access pattern.
+command, PolarCtrl notifies PolarSwitch to take a snapshot.            The experiment results of PolarFS and CephFS are col-
+From then on, PolarSwitch adds a snapshot tag, which indi-          lected on a cluster of 6 storage nodes and one client node.
+cates its host request happened after the snapshot request,         Nodes communicates with each other through a RDMA-
+to the following requests. On receiving the request with            enabled NIC.
+a snapshot tag, ChunkServer will make a snapshot before                Ceph version is 12.2.3, and we configure its storage engine
+handling this request. ChunkServer makes a snapshot by              as bluestore and communication massager type as async +
+copying block mapping meta information, which is fast, and          posix. Ceph’s storage engine can be configured to run with
+handles the future requests which will modify those blocks          RDMA verbs, but its file system only supports the TCP/IP
+in a Copy-on-Write way. After the request with snapshot             network stack, so we configure CephFS to run with TCP/IP.
+tag is finished, PolarSwitch stops adding snapshot tag to           For Ext4, we make a new fresh Ext4 on a SSD after discard-
+incoming requests.                                                  ing all its old data.
+                                                                       We use FIO [1] to generate various types of workloads
+                                                                    with different I/O request sizes and parallelism. FIO will
+                                                                    firstly create the files and extend them to the given length
+7.3    Outside Service vs. Inside Reliability                       (here is 10G) before its performance evaluation.
+   Reliability of an industrial system is extremely important,
+especially for the system like PolarFS, which is undertaking        8.2                     I/O Latency
+7X24 public cloud services. In such a system, there should
+                                                                                       4096                                                  4096
+be all sorts of reliability maintaining tasks to prevent loss of                       2048
+                                                                                                                                             2048
+service and related revenue. It is a big challenge for PolarFS                         1024
+
+
+
+                                                                        Latency (us)                                          Latency (us)
+                                                                                        512                                                  1024
+to run these tasks efficiently enough while providing smooth                            256
+                                                                                                                                              512
+service for heavy user workloads.                                                       128
+                                                                                         64                                                   256
+   For a practical example, the streaming catch up in Paral-                                                   CephFS                                                CephFS
+                                                                                         32
+lelRaft, when undergoing a heavy workload, the leader will                                                     PolarFS                        128                    PolarFS
+                                                                                         16                       Ext4                                                  Ext4
+keep generating an overwhelming amount of logs that the                                   8
+                                                                                           4k   16k      64k     256k    1M
+                                                                                                                                               64
+                                                                                                                                                 4k   16k      64k     256k    1M
+                                                                                                      Block Size                                            Block Size
+follower cannot catch up even after a long period of log
+                                                                                           (a) Random Write                                      (b) Random Read
+fetching. The time to copy the whole chunk can also be
+quite long and unpredictable due to I/O throttling. That                               4096                                                  4096
+                                                                                       2048                                                  2048
+can lead us to a trade-off: the shorter the recovery time is,                          1024                                                  1024
+
+
+
+                                                                        Latency (us)                                          Latency (us)
+the more resources it takes, and the more sacrifice to system                           512                                                   512
+                                                                                        256                                                   256
+performance; whereas if it takes a long time to recover, the                            128                                                   128
+system availability would be at risk.                                                    64                                                    64
+                                                                                         32                    CephFS                          32                    CephFS
+   Our solution is to horizontally split one chunk into small                            16
+                                                                                                               PolarFS
+                                                                                                                                               16
+                                                                                                                                                                     PolarFS
+                                                                                                                  Ext4                                                  Ext4
+logical pieces, say, pieces of 128 KB. The full data synchro-                             8
+                                                                                           4k   16k      64k     256k    1M
+                                                                                                                                                8
+                                                                                                                                                 4k   16k      64k     256k    1M
+nization for a chunk is also split into lots of small subtasks,                                       Block Size                                            Block Size
+
+each of which only resynchronizes a single 128 KB piece. The                              (c) Sequential Write                                 (d) Sequential Read
+runtime for these smaller subtasks is much shorter and more
+predictable. Besides, idle cycles can be inserted between           Figure 9: Average latency with different request
+sub-resync-tasks to control the amount of network/disk band-        sizes under different access patterns.
+width cost for streaming catch up.
+   Other time-consuming tasks, such as full data validation           As Figure 9 shows, the latency of PolarFS is about 48µs
+routines checking coherency between replicas, can also be           for 4k random write, which is quite close to the latency of
+implemented similarly. We have to consider using synchro-           Ext4 on local SSD (about 10µs) compared with the latency
+nization flow control to strike a balance between the quality       of CephFS (about 760µs). The average random write la-
+of external service and the system reliability of PolarFS. Due      tency of PolarFS is 1.6 to 4.7 times slower than local Ext4,
+to space limitations we will not further discuss the details        while that of CephFS is 6.5 to 75 times slower than local
+of this trade-off here.                                             Ext4, which means distributed PolarFS almost provides the
+
+
+
+                                                                 1858
+same performance like local Ext4. The average sequential                                512                                                                                  512
+                                                                                        256                                                                                  256
+
+
+
+
+                                                                      IOPS (thousand)                                                                      IOPS (thousand)
+write latency ratios of PolarFS and CephFS to Ext4 are                                  128                                                                                  128
+1.6-4.8 and 6.3-56. The average random read latency ratios                               64                                                                                   64
+                                                                                         32                                                                                   32
+of PolarFS and CephFS to Ext4 are 1.3-1.8 and 2-4. And                                   16                                                                                   16
+the average sequential read latency ratios of PolarFS and                                 8                                                                                    8
+                                                                                          4                                               Ext4                                 4                           Ext4
+                                                                                                                                       PolarFS                                                          PolarFS
+CephFS to Ext4 are 1.5-8.8 and 3.4-14.9.                                                  2                                            CephFS                                  2                        CephFS
+                                                                                          1                                                                                    1
+   Large request (1M) performance reduction of PolarFS /                                      1                      2   4      8   16 32      64   128                            1   2   4      8   16 32   64   128
+                                                                                                                             Jobs Number                                                       Jobs Number
+CephFS for Ext4 differs from small request (4k) because the                                        (a) Random Write                                                                (b) Random Read
+network and disk data transfer take up most of large request
+execution time.                                                                         512                                                                                  512
+   PolarFS performance is much better than that of CephFS,                              256                                                                                  256
+
+
+
+
+                                                                      IOPS (thousand)                                                                      IOPS (thousand)
+                                                                                        128                                                                                  128
+there are several reasons for this. First, PolarFS processes                             64                                                                                   64
+                                                                                         32                                                                                   32
+I/O with a finite state machine by one thread, as described                              16                                                                                   16
+in Section 4. This avoids thread context switch and reschedul-                            8                                                                                    8
+                                                                                          4                                               Ext4                                 4                           Ext4
+ing required by an I/O pipeline composed by multiple threads                              2
+                                                                                                                                       PolarFS
+                                                                                                                                       CephFS                                  2
+                                                                                                                                                                                                        PolarFS
+                                                                                                                                                                                                        CephFS
+as done by CephFS. Second, PolarFS optimizes memory al-                                   1
+                                                                                              1                      2   4      8   16 32      64   128
+                                                                                                                                                                               1
+                                                                                                                                                                                   1   2   4      8   16 32   64   128
+location and paging, memory pool is employed to allocate                                                                     Jobs Number                                                       Jobs Number
+                                                                                          (c) Sequential Write                                                                 (d) Sequential Read
+and free memory during an I/O life cycle, reducing object
+construction and destruction operations, huge page is also
+used to reduce TLB miss and paging, there is no counterpart       Figure 10: Throughput with 4K request sizes under
+in CephFS. Third, all meta data about data objects in Po-         different access patterns.
+larFS are kept in memory, contrasted with that only partial
+meta data are kept in a small cache for each PG(Placement         on local Ext4, and (3) Alibaba MySQL cloud service RDS
+Group) in CephFS, thereby PolarFS needs no extra I/O for          for reference. Tests (1) and (2) are under the same hardware
+meta data for most I/O operation, but CephFS sometimes            environment as the previous PolarFS hardware environment.
+has to do extra I/Os for meta data. Last but not least, user        We separately evaluated three databases by running Sys-
+space RDMA and SPDK in PolarFS have lower latency than            bench [21] under simulated read-only, write-only (update :
+kernel TCP/IP and block driver in CephFS.                         delete : insert = 2:1:1) and read/write-mixed (read : write
+                                                                  = 7:2) OLTP workloads. The dataset used in this exper-
+8.3   I/O Throughput                                              iment consists of 250 tables, and each table has 8,500,000
+   Figure 10 shows the overall I/O throughput of three file       records. The total size of the tested data is 500 GB.
+systems. For the random read/write, Ext4 on local SSD,              As shown in Figure 11, the throughput of POLARDB
+PolarFS and CephFS IOPS all scale with the client jobs            on PolarFS is very close to that on the local Ext4, while
+number; Ext4’s scalability bottleneck is the single local SSD     PolarFS provides additional 3-replica high availability. PO-
+IOPS, that of PolarFS is network bandwidth, while CephFS’s        LARDB on PolarFS achieved 653K read/sec, 160K write/sec
+bottleneck is its packet processing capacity. The random 4k       and 173K read-write/sec.
+write/read I/O throughput of Ext4 and PolarFS are 4.4/5.1,
+4/7.7 higher than CephFS.
+                                                                                                                    700000
+
+
+
+
+                                                                                          Read / Write per second
+   For the sequential read/write, almost all requests are han-                                                                              Aliyun RDS             PolarFS             Ext4
+                                                                                                                    600000
+dled by a single disk both for the local system and for the
+                                                                                                                    500000
+distributed systems. Ext4 and PolarFS all can scale well
+                                                                                                                    400000
+with the number of client jobs until they have reached their
+                                                                                                                    300000
+limit due to the I/O bottleneck, while CephFS’s bottleneck
+                                                                                                                    200000
+is its software, it can not saturate the disk I/O bandwidth.
+                                                                                                                    100000
+   Without extra network I/O, Ext4’s sequential read through-
+                                                                                                                         0
+put with 1 client is much higher than PolarFS and CephFS,                                                                         Write Only              Read Write                            Read Only
+but its sequential read throughput drops dramatically with                                                                                            Request Type
+client number increasing to 2, the throughput is about the
+same value as its random read throughput with 2 clients.          Figure 11: Performance comparison for Aliyun
+We repeated the evaluation for several times and the result       RDS, PolarDB on PolarFS and PolarDB on Ext4
+is reproducible. We guess it is caused by the characteristic      using read/write executed per second as metric.
+of our NVMe SSD. The NVMe SSD has a built-in DRAM
+buffer. When the firmware guesses the workload looks like           In addition to integrating with PolarFS, POLARDB also
+sequential read, it would prefetch subsequent data blocks         applied a bunch of database optimizations based on Aliyun
+into the DRAM buffer. We guess the prefetch mechanism             RDS. As a result, POLARDB achieved almost 2.79/4.72/1.53
+would work much better with non-interleaved I/O pattern.          times higher Read/Write/RW-Mixed throughput than RDS
+                                                                  as shown in the figure. Database-level optimization is be-
+8.4   Evaluating POLARDB                                          yond the scope of this paper.
+  To demonstrate the benefits of our ultra-low I/O latency
+PolarFS for databases, we carried out some preliminary tests      9.                          RELATED WORK
+on POLARDB, a share-storage cloud database specifically             Storage System. GFS [11] and its open source imple-
+developed with PolarFS. We compared the throughput of             mentation HDFS [5], provides the distributed system ser-
+three systems: (1) POLARDB on PolarFS, (2) POLARDB                vice, both GFS and HDFS adopt the master slave archi-
+
+
+
+                                                               1859
+tecture, the master maintains the system meta information,        ParallelRaft achieve this goal through a different way. The
+data chunk leader lease, and it is also in charge of the fail-    commit log is allow to have holes and the log entries can
+ure recovery. Unlike GFS and HDFS, PolarFS adopts a               be committed out of order except for the conflicting ones,
+hybrid architecture. The master node of PolarFS is mainly         which will be committed in a strict order.
+in charge of resource management, it generally does not add          RDMA Systems. Compared with the traditional TCP
+interference in the I/O path, which makes master upgrade          / UDP network protocol, RDMA reduces round trip la-
+and fault tolerance easier.                                       tency by a order of magnitude with less CPU utilization,
+   Ceph [35] is a widely deployed storage systems. It uses        a lot of new systems use RDMA to improve performance.
+CRUSH hash algorithm to locate data object which brings           FaRM [9] is a distributed shared memory based on RDMA,
+a simple design for both normal I/O execution and fault           users can use its program primitives to build their applica-
+tolerance. RAMCloud [29] is a low latency key value system        tion. DrTM [34] is a distributed in-memory database based
+which provides fast recovery by replicating data among the        on RDMA and hardware transaction memory, RDMA can
+cluster in a random way and harnessing the cluster resource       access data from remote side fast and can also cause the local
+to recover failure in parallel. The random data placement         transaction in hardware transaction memory abort, DrTM
+will make a machine hosting thousand of users’ data in cloud      combines RDMA and hardware transaction memory to im-
+environment, this means a single machine crash will impact        plement distributed transaction. Both FaRM and DrTM are
+thousand of users, which is unacceptable for cloud service        focused on in-memory transaction, however PolarFS uses
+providers. PolarFS control master provides a fine-grained         RDMA to build a distributed storage.
+trade-off between failure impacting and I/O performance              Pilaf [27] is a key value store based on RDMA and self-
+during allocating data chunks to real servers.                    verifying data structure, but unlike PolarFS, the key value
+   ReFlex [20] uses NVMe SSD to implement a remote disk,          interface is relatively simple and there is no distributed con-
+it proposes a QoS scheduler that can enforce tail latency and     sensus protocol in Pilaf.
+throughput service-level objectives, but unlike PolarFS, its         APUS [33] uses RDMA to build a scalable Paxos, while
+remote disk is single replica and has no reliability support.     PolarFS provides a Parallel raft which is friendly to high par-
+CORFU [3] organizes a cluster of flash devices as a single,       allelism I/O. PolarFS use RDMA to build a reliable block
+shared log that can be accessed concurrently by multiple          device, since RDMA consumes less CPU than traditional
+clients over the network. The shared log design simplifies        network protocol, PolarFS can process I/O in a run-to-
+snapshot and replication in distributed environment, but it       completion way which avoids context switch. Combining
+raises the engineering difficulty for the existing system to      RDMA and SPDK, storage node can finish I/O without
+use CORFU, otherwise PolarFS provides a block disk ab-            touching its payload during the whole I/O life cycle, all the
+straction and POSIX-like file system interfaces to users.         payload movement is done by the hardware.
+   Aurora [32] is Amazon’s cloud relational database service
+on the top of its ECS service. Aurora addresses the net-
+work performance constraint between the computation side
+and storage side by pushing database redo log processing
+                                                                  10.    CONCLUSION
+to the storage side. Aurora also modified MySQL’s innodb             PolarFS is a distributed file system which delivers extreme
+transaction manager to facilitate log replications, whereas       performance with high reliability. PolarFS adopts emerg-
+POLARDB makes heavy investment in PolarFS but with                ing hardware and state-of-the-art optimization techniques,
+POSIX-like API which ends up with little modifications to         such as OS-bypass and zero-copy, allowing it to have the
+the database engine itself. Aurora’s redo logic pushing down      latency comparable to a local file system on SSD. To meet
+design breaks the abstract between database and storage,          the high IOPS requirements of database applications, we de-
+which make each layer modification harder, while PolarFS          velop a new consensus protocol, ParallelRaft. ParallelRaft
+and POLARDB keep each layer’s abstraction, which makes            relaxes Raft’s strictly sequential order of write without sac-
+each layer adopt its newest technologies more easily.             rificing the consistency of storage semantics, which improves
+   Consensus Protocols. Paxos [22] is one of the most fa-         the performance of parallel writes of PolarFS. Under heavy
+mous consensus algorithm for distributed system. However,         loads, our approach can halve average latency and double
+it is hard to understand and correctly implement. The au-         system bandwidth. PolarFS implements POSIX-like inter-
+thor of Paxos only proved that Paxos can solve consensus          faces in user space, which enables POLARDB to achieve
+problem for one instance, and not show how to use ”Multi-         performance improvement with minor modifications.
+Paxos” to solve practical problems. Currently, most of the
+consensus algorithms, such as Zab [16] used by zookeeper,
+are regarded as the variety of the ”Multi-Paxos” algorithm.       11.    ACKNOWLEDGEMENTS
+Zab is used to provide the atomic broadcast primitive prop-
+                                                                     We thank the anonymous reviewers and our shepherd
+erty, but it is also hard to understand. Raft [28] is designed
+                                                                  Theodore Johnson for their valuable suggestions and opin-
+for understandability, which is also a variety of ”Multi-Paxos”
+                                                                  ions that helped improve the paper. We also express our
+algorithm. It introduces two main constraints, the first one
+                                                                  gratitude to JingXian Cai, Feng Yu, DongLai Xu, Zun-
+is that the commit log must be sequential, and the second
+                                                                  Bao Feng, Liang Yin, ChengZhong Yang, QingAn Fan, Xiao
+one is that the commit order must be serialized. These two
+                                                                  Lou, ZhenDong Huang, ZhuShi Cheng, Xi Chen, Ming Zhao,
+constraints make Raft easily understandable, but also in-
+                                                                  GuangQing Dong, Jian Chen, Jian Zhang, WeiXiang Zhai,
+troduce impact on concurrent I/O performance. Some sys-
+                                                                  ZongZhi Chen, Jun He, GaoSheng Xu, HongYang Shi, FeiFei
+tems use multi groups raft to improve I/O parallelism, which
+                                                                  Fan, Tao Ma, JingXuan Li, Gang Deng, Zheng Liu, ShiKun
+splits the keys into groups, but it cannot solve the prob-
+                                                                  Tian, HaiPing Zhao, Bing Lang, and Kai Ma who offered
+lem that a commit log include keys crossing many groups.
+                                                                  significant help for this work.
+
+
+
+                                                              1860
+12.   REFERENCES                                                      systems. In Dependable Systems & Networks (DSN),
+ [1] Fio: Flexible I/O tester.                                        2011 IEEE/IFIP 41st International Conference on,
+     https://github.com/axboe/fio.                                    pages 245–256. IEEE, 2011.
+ [2] Alibaba Group. Alisql.                                      [17] A. Kalia, M. Kaminsky, and D. G. Andersen. Using
+     https://github.com/alibaba/AliSQL.                               rdma efficiently for key-value services. In ACM
+ [3] M. Balakrishnan, D. Malkhi, V. Prabhakaran,                      SIGCOMM Computer Communication Review, 2014.
+     T. Wobber, M. Wei, and J. D. Davis. Corfu: A shared         [18] J. Kirsch and Y. Amir. Paxos for system builders: An
+     log design for flash clusters. In NSDI, pages 1–14,              overview. In Proceedings of the 2nd Workshop on
+     2012.                                                            Large-Scale Distributed Systems and Middleware,
+ [4] P. Barham, B. Dragovic, K. Fraser, S. Hand,                      page 3. ACM, 2008.
+     T. Harris, A. Ho, R. Neugebauer, I. Pratt, and              [19] A. Kivity, Y. Kamay, D. Laor, U. Lublin, and
+     A. Warfield. Xen and the art of virtualization. In               A. Liguori. kvm: the linux virtual machine monitor.
+     ACM SIGOPS operating systems review, volume 37,                  In Proceedings of the Linux symposium, volume 1,
+     pages 164–177. ACM, 2003.                                        pages 225–230, 2007.
+ [5] D. Borthakur et al. Hdfs architecture guide. Hadoop         [20] A. Klimovic, H. Litz, and C. Kozyrakis. Reflex:
+     Apache Project, 53, 2008.                                        Remote flash local flash. In Proceedings of the
+ [6] A. M. Caulfield, A. De, J. Coburn, T. I. Mollow, R. K.           Twenty-Second International Conference on
+     Gupta, and S. Swanson. Moneta: A high-performance                Architectural Support for Programming Languages and
+     storage array architecture for next-generation,                  Operating Systems, pages 345–359. ACM, 2017.
+     non-volatile memories. In 2010 43rd Annual                  [21] A. Kopytov. Sysbench: a system performance
+     IEEE/ACM International Symposium on                              benchmark. URL: http://sysbench. sourceforge. net,
+     Microarchitecture, pages 385–395, 2010.                          2004.
+ [7] T. D. Chandra, R. Griesemer, and J. Redstone. Paxos         [22] L. Lamport. The part-time parliament. ACM
+     made live: an engineering perspective. In Proceedings            Transactions on Computer Systems (TOCS),
+     of the twenty-sixth annual ACM symposium on                      16(2):133–169, 1998.
+     Principles of distributed computing, pages 398–407.         [23] L. Lamport et al. Paxos made simple. ACM Sigact
+     ACM, 2007.                                                       News, 32(4):18–25, 2001.
+ [8] G. DeCandia, D. Hastorun, M. Jampani,                       [24] S. Li, H. Lim, V. W. Lee, J. H. Ahn, A. Kalia,
+     G. Kakulapati, A. Lakshman, A. Pilchin,                          M. Kaminsky, D. G. Andersen, O. Seongil, S. Lee, and
+     S. Sivasubramanian, P. Vosshall, and W. Vogels.                  P. Dubey. Architecting to achieve a billion requests
+     Dynamo: amazon’s highly available key-value store.               per second throughput on a single key-value store
+     ACM SIGOPS operating systems review,                             server platform. In ACM SIGARCH Computer
+     41(6):205–220, 2007.                                             Architecture News, 2015.
+ [9] A. Dragojević, D. Narayanan, O. Hodson, and                [25] H. Lim, D. Han, D. G. Andersen, and M. Kaminsky.
+     M. Castro. Farm: Fast remote memory. In Proceedings              Mica: A holistic approach to fast in-memory key-value
+     of the 11th USENIX Conference on Networked                       storage. In Proc. USENIX NSDI, 2014.
+     Systems Design and Implementation, pages 401–414,           [26] D. Merkel. Docker: lightweight linux containers for
+     2014.                                                            consistent development and deployment. Linux
+[10] E. Gafni and L. Lamport. Disk paxos. Distributed                 Journal, 2014(239):2, 2014.
+     Computing, 16(1):1–20, 2003.                                [27] C. Mitchell, Y. Geng, and J. Li. Using one-sided rdma
+[11] S. Ghemawat, H. Gobioff, and S.-T. Leung. The                    reads to build a fast, cpu-efficient key-value store. In
+     google file system. In ACM SIGOPS operating systems              USENIX Annual Technical Conference, pages
+     review, volume 37, pages 29–43. ACM, 2003.                       103–114, 2013.
+[12] Intel. Intel storage performance development kit.           [28] D. Ongaro and J. K. Ousterhout. In search of an
+     http://www.spdk.io.                                              understandable consensus algorithm. In USENIX
+[13] Intel. Nvm express revision 1.1.                                 Annual Technical Conference, pages 305–319, 2014.
+     http://www.nvmexpress.org/wp-content/uploads/               [29] J. Ousterhout, P. Agrawal, D. Erickson, C. Kozyrakis,
+     NVM-Express-1_1.pdf.                                             J. Leverich, D. Mazières, S. Mitra, A. Narayanan,
+[14] J. Jose, H. Subramoni, K. Kandalla, M. Wasi-ur                   G. Parulkar, M. Rosenblum, et al. The case for
+     Rahman, H. Wang, S. Narravula, and D. K. Panda.                  ramclouds: scalable high-performance storage entirely
+     Scalable memcached design for infiniband clusters                in dram. ACM SIGOPS Operating Systems Review,
+     using hybrid transports. In Proceedings of the 2012              43(4):92–105, 2010.
+     12th IEEE/ACM International Symposium on Cluster,           [30] P. Stuedi, A. Trivedi, and B. Metzler. Wimpy nodes
+     Cloud and Grid Computing, pages 236–243, 2012.                   with 10gbe: Leveraging one-sided operations in
+[15] J. Jose, H. Subramoni, M. Luo, M. Zhang, J. Huang,               soft-rdma to boost memcached. In USENIX Annual
+     M. Wasi-ur Rahman, N. S. Islam, X. Ouyang,                       Technical Conference, pages 347–353, 2012.
+     H. Wang, S. Sur, et al. Memcached design on high            [31] S. Swanson and A. M. Caulfield. Refactor, reduce,
+     performance rdma capable interconnects. In Parallel              recycle: Restructuring the i/o stack for the future of
+     Processing (ICPP), 2011 International Conference on,             storage. IEEE Trans. Computers, 46(8):52–59, 2013.
+     pages 743–752, 2011.                                        [32] A. Verbitski, A. Gupta, D. Saha, M. Brahmadesam,
+[16] F. P. Junqueira, B. C. Reed, and M. Serafini. Zab:               K. Gupta, R. Mittal, S. Krishnamurthy, S. Maurice,
+     High-performance broadcast for primary-backup                    T. Kharatishvili, and X. Bao. Amazon aurora: Design
+
+
+
+                                                              1861
+     considerations for high throughput cloud-native                  distributed file system. In Proceedings of the 7th
+     relational databases. In Proceedings of the 2017 ACM             symposium on Operating systems design and
+     International Conference on Management of Data,                  implementation, pages 307–320. USENIX Association,
+     pages 1041–1052. ACM, 2017.                                      2006.
+[33] C. Wang, J. Jiang, X. Chen, N. Yi, and H. Cui. Apus:        [36] J. Yang, D. B. Minturn, and F. Hady. When poll is
+     Fast and scalable paxos on rdma. In Proceedings of the           better than interrupt. In FAST, volume 12, pages 3–3,
+     2017 Symposium on Cloud Computing, pages 94–107.                 2012.
+     ACM, 2017.                                                  [37] Y. J. Yu, D. I. Shin, W. Shin, N. Y. Song, J. W. Choi,
+[34] X. Wei, J. Shi, Y. Chen, R. Chen, and H. Chen. Fast              H. S. Kim, H. Eom, and H. Y. Yeom. Optimizing the
+     in-memory transaction processing using rdma and                  block i/o subsystem for fast storage devices. ACM
+     htm. In Proceedings of the 25th Symposium on                     Trans. Computer Systems, 32(2), 2014.
+     Operating Systems Principles, pages 87–104. ACM,            [38] J. Zheng, Q. Lin, J. Xu, C. Wei, C. Zeng, P. Yang, and
+     2015.                                                            Y. Zhang. Paxosstore: high-availability storage made
+[35] S. A. Weil, S. A. Brandt, E. L. Miller, D. D. Long,              practical in wechat. PVLDB, 10(12):1730–1741, 2017.
+     and C. Maltzahn. Ceph: A scalable, high-performance
+
+
+
+
+                                                              1862
+
