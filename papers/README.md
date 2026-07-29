@@ -10,7 +10,9 @@
 | ml-systems | 机器学习系统 | 1 |
 | llm | 大语言模型 | 3 |
 | ai-applications | AI 应用 | 2 |
-| math-foundations | 数学与算法基础 | 3 |
+| math-foundations | 数学与算法基础 | 9 |
+| └─ dengyu | 邓宇团队系列 | 4 |
+| └─ wanghong | 王红团队系列 | 2 |
 | information-retrieval | 信息检索 | 1 |
 | research-methodology | 科研方法论 | 1 |
 
@@ -35,6 +37,12 @@
 | llm | understanding-llms-training-inference | Understanding LLMs: A Comprehensive Overview from Training to Inference | 2024-01 | 2026-07-18 | 系统梳理大语言模型从训练到推理的关键技术和未来方向 |
 | ai-applications | healthcare-voice-ai-assistants-trust | Healthcare Voice AI Assistants: Factors Influencing Trust and Intention to Use | 2024-01 | 2026-07-18 | 什么东西决定我们信不信任"AI医生"？ |
 | ai-applications | spoken-sign-language-translation-3d-avatars | A Simple Baseline for Spoken Language to Sign Language Translation with 3D Avatars | 2024-01 | 2026-07-18 | 首个用3D虚拟角色将口语实时翻译成手语的系统 |
+| dengyu | math-foundations/dengyu/boltzmann-equation-hard-sphere-long-time | Long Time Derivation of the Boltzmann Equation from Hard Sphere Dynamics | 2024-08 | 2026-07-19 | 用数学严格证明了从弹来弹去的硬球微粒可在任意长时间导出玻尔兹曼方程 |
+| dengyu | math-foundations/dengyu/hilbert-sixth-problem-fluid-equations | Hilbert's Sixth Problem: Derivation of Fluid Equations via Boltzmann's Kinetic Theory | 2025-03 | 2026-07-19 | 从硬球粒子严格推导出流体力学方程，完成了希尔伯特第六问题的完整解答 |
+| dengyu | math-foundations/dengyu/wave-kinetic-equation-full-derivation | Full Derivation of the Wave Kinetic Equation | 2021-04 | 2026-07-19 | 从非线性薛定谔方程严格推导出波动力学方程，波湍流理论的核心猜想获证 |
+| dengyu | math-foundations/dengyu/propagation-chaos-wave-kinetic-theory | Propagation of Chaos and the Higher Order Statistics in the Wave Kinetic Theory | 2021-10 | 2026-07-19 | 证明波系统中初始独立的波动模式在演化中始终保持统计独立 |
+| wanghong | math-foundations/wanghong/kakeya-set-conjecture-three-dimensions | Volume Estimates for Unions of Convex Sets, and the Kakeya Set Conjecture in Three Dimensions | 2025-02 | 2026-07-19 | 证明三维 Kakeya 集必须具有满维数 3，解决了近百年未决的几何猜想 |
+| wanghong | math-foundations/wanghong/furstenberg-sets-estimate-plane | Furstenberg Sets Estimate in the Plane | 2023-08 | 2026-07-19 | 完全解决了二维 Furstenberg 集猜想，给出分形维数的最优下界 |
 | math-foundations | art-of-linear-algebra | The Art of Linear Algebra – Graphic Notes on "Linear Algebra for Everyone" | 2021-09 | 2026-07-18 | 用图画把矩阵乘法和五种分解画出来，看一眼就记住 |
 | math-foundations | skiplists-probabilistic-alternative-balanced-trees | Skip Lists: A Probabilistic Alternative to Balanced Trees | 1990 | 2026-07-18 | 用抛硬币代替复杂旋转操作的有序链表，实现简单但性能媲美平衡树 |
 | storage-systems | anna-kvs-any-scale | Anna: A KVS For Any Scale | 2018 | 2026-07-19 | 用格（Lattice）和消息传递实现跨任意规模的高性能键值存储 |
