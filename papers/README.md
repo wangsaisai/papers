@@ -8,7 +8,7 @@
 | database-systems | 数据库系统 | 5 |
 | distributed-systems | 分布式系统 | 10 |
 | ml-systems | 机器学习系统 | 1 |
-| llm | 大语言模型 | 3 |
+| llm | 大语言模型 | 4 |
 | ai-applications | AI 应用 | 2 |
 | math-foundations | 数学与算法基础 | 9 |
 | └─ dengyu | 邓宇团队系列 | 4 |
@@ -35,6 +35,7 @@
 | llm | exploring-llm-intelligent-agents | Exploring Large Language Model Based Intelligent Agents: Definitions, Methods, and Prospects | 2024-01 | 2026-07-18 | 综述了用大语言模型构建智能体的方法与前景 |
 | llm | llm-augmented-llms-composition | LLM Augmented LLMs: Expanding Capabilities Through Composition | 2024-01 | 2026-07-18 | 将多个专用小模型组合到大模型上实现新能力，无需重新训练 |
 | llm | understanding-llms-training-inference | Understanding LLMs: A Comprehensive Overview from Training to Inference | 2024-01 | 2026-07-18 | 系统梳理大语言模型从训练到推理的关键技术和未来方向 |
+| llm | longhorizon-harness | LongHorizon-Harness: Advancing Long-Horizon Agents for Real-World Tasks | 2026-08 | 2026-08-08 | 把长任务拆成"规划-执行-验收"小循环、只信外部验证过的事实，长时程任务成功率大幅提升 |
 | ai-applications | healthcare-voice-ai-assistants-trust | Healthcare Voice AI Assistants: Factors Influencing Trust and Intention to Use | 2024-01 | 2026-07-18 | 什么东西决定我们信不信任"AI医生"？ |
 | ai-applications | spoken-sign-language-translation-3d-avatars | A Simple Baseline for Spoken Language to Sign Language Translation with 3D Avatars | 2024-01 | 2026-07-18 | 首个用3D虚拟角色将口语实时翻译成手语的系统 |
 | dengyu | math-foundations/dengyu/boltzmann-equation-hard-sphere-long-time | Long Time Derivation of the Boltzmann Equation from Hard Sphere Dynamics | 2024-08 | 2026-07-19 | 用数学严格证明了从弹来弹去的硬球微粒可在任意长时间导出玻尔兹曼方程 |
