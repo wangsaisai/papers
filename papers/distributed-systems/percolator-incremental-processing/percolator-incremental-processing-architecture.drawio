@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Percolator-分布式事务与观察器架构" id="percolator-incremental-processing">
+    <mxGraphModel dx="1440" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1340" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="n01" value="集群运行时（每台机器运行三个二进制资格 + 共享服务）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="1360" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="n1a" value="Percolator 工作节点（Worker）&#10;观察器回调（约 10 个）· 事务客户端（Get/Set/迭代器）&#10;通知扫描线程（分布式随机扫描）&#10;预取 + 批量 RPC（读请求减少 10×）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="n01">
+          <mxGeometry x="30" y="70" width="400" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="n1b" value="Bigtable 平板服务器（Tabletserver）&#10;行事务（行内原子读-改-写）· 平板 = 连续键区间&#10;locality group：通知列单独存放、扫描高效&#10;条件变更：读-改-写合并为单个 RPC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="n01">
+          <mxGeometry x="470" y="70" width="420" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="n1c" value="GFS 块服务器（Chunkserver）&#10;底层持久化：SSTable 文件存储与复制&#10;（Bigtable 依赖 GFS 保护数据不丢）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="n01">
+          <mxGeometry x="890" y="70" width="440" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="n1d" value="时间戳预言机（Timestamp Oracle）&#10;严格递增时间戳（快照隔离所需）&#10;批量分配区间·内存应答·约 200 万 ts/s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="n01">
+          <mxGeometry x="30" y="225" width="420" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n1e" value="轻量级锁服务（建议性、无持久化）&#10;工作器扫描某行前取锁，防止并发运行同一观察器" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="n01">
+          <mxGeometry x="450" y="225" width="420" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n1f" value="Chubby 轻量锁服务（存活令牌）&#10;工作节点注册令牌（退出自动删除）&#10;+ 锁中墙上时间 → 判定对方已死 → 惰性清理锁" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="n01">
+          <mxGeometry x="890" y="225" width="440" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n1g" value="通知列与确认列（acknowledgments）：观察列更新时写入通知列（独立 locality group 免扫全表）· 观察器运行并提交后更新确认列&#10;抗聚集（platooning）：扫描线程发现与另一线程同行 → 随机“瞬移”到表的新位置继续扫描（公交成群现象的解法）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;" vertex="1" parent="n01">
+          <mxGeometry x="30" y="355" width="1300" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n02" value="事务协议（快照隔离 + 广域两阶段提交）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="600" width="660" height="500" as="geometry" />
+        </mxCell>
+        <mxCell id="n2a" value="启动：向时间戳预言机取 start TS → Get() 在快照上读取&#10;（读锁检测：快照范围内有锁则阻塞等待）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="n02">
+          <mxGeometry x="30" y="90" width="600" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n2b" value="预写（Prewrite）：对每个改动单元格检查冲突（他人写记录 / 任意锁）&#10;无冲突 → 写 锁 + 数据（锁定操作在 Bigtable 行事务中执行）&#10;指定主锁（primary）——所有锁引用它作为同步点" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="n02">
+          <mxGeometry x="30" y="180" width="600" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n2c" value="提交：取 commit TS → 从主锁开始逐格将锁替换为写记录（对读者可见）&#10;主锁提交后事务不可逆 · 提交期间批处理锁操作" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="n02">
+          <mxGeometry x="30" y="270" width="600" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n2d" value="冲突 → 中止 + 指数退避重试；客户端崩溃遗留的锁 → 惰性清理：&#10;查主锁区分 回滚 / 前滚（forward roll）· 无全局死锁检测器（可扩展性）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="n02">
+          <mxGeometry x="30" y="360" width="600" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n2e" value="每请求一线程模型（thread-per-request）+ 批量 RPC + 参数修改（bulk conditional mutations）&#10;提交通常 2-5s（大批量批处理换取吞吐；对索引延迟可接受）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="n02">
+          <mxGeometry x="30" y="450" width="600" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n03" value="观察器链 / 通知机制（增量计算组织方式）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="740" y="580" width="660" height="500" as="geometry" />
+        </mxCell>
+        <mxCell id="n3a" value="加载器：抓取文档 → 加载事务写入仓库（外部爬虫触发）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="n03">
+          <mxGeometry x="30" y="90" width="620" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="n3b" value="文档处理观察器：触发 → 新事务中解析 / 提取链接 / 特征" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="n03">
+          <mxGeometry x="30" y="170" width="620" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="n3c" value="聚类观察器：内容哈希聚类（去重，维护缓存索引表）&#10;再写表 → 触发下游“导出”观察器（发布到服务系统）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="n03">
+          <mxGeometry x="30" y="250" width="620" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="n3d" value="消息折叠：多次写同一被观察列 → 最多触发一次观察器（分摊应答）&#10;弱通知：热点列的列非事务性通知（只写通知列）→ 降低冲突（最多一个观察器提交的保证不适用）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="n03">
+          <mxGeometry x="30" y="330" width="620" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="n3e" value="观察器在独立新事务中运行（触发写与处理非原子，不维护不变量）· 观察器约 10 个（原 100 个 MapReduce 的简化）· 程序员需避免无限循环" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="n03">
+          <mxGeometry x="30" y="430" width="620" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n04" value="关键评估：延迟 30 分钟 → 2 秒（≈1000×）· 文档平均年龄 -50% · 抓取率 1%/h 时 2s vs MR 约 30 分钟（40%/h 才会饱和）&#10;资源：同一抓取率约 2× 资源，但文档集可扩大 3×· 事务开销：随机写仅为 Bigtable 的 23%（≈4×），随机读约 94%&#10;扩展性：11 核 → 15,000 核线性（11,200 tps）· TPC-E：每事务 CPU 约 DBMS 30× · 杀 33% 平板服务器后性能恢复&#10;输出生产运行：自 2010-04 支持 Google 网络搜索索引；架构权衡：批量 RPC / 惰性锁清理 / 无全局死锁检测 / 随机扫描抗聚集" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1100" width="1360" height="220" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e01" value="事务 RPC（Get/Set 行事务，条件变更批量）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n02" target="n1b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e02" value="start / commit 时间戳" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="n1d" target="n02">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e03" value="写通知列 → 分布式扫描（锁定通知线程）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n03" target="n1b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e04" value="扫描前取锁（防重复处理一行）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n1e" target="n03">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e05" value="存活令牌 / 墙上时间 → 惰性锁清理判据" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=1;exitY=0.6;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n1f" target="n02">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

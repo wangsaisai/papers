@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="FrozenHot-Architecture" id="frozenhot-cache-rethinking-cache-management">
+    <mxGraphModel dx="1440" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="工作负载（Workload）&#10;Twitter 7 踪迹 / MSR 12 踪迹 / Zipfian 0.99&#10;—— 少数热门对象占绝大多数访问（Zipf 短时稳定）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="400" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="访问请求（get / set）&#10;命中返回 · 未命中走存储" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="560" y="30" width="280" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="FC-hash：只读无锁哈希索引&#10;放下层磁盘缓存热点，查询不需要锁" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="30" width="380" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="5" value="缓存数据平面（被拆分的链表）" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="160" width="1360" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="= 冻结缓存（Frozen Cache, FC）&#10;静态区：不移动、不晋升、不加锁&#10;一次哈希查找 + 数据读取即完成命中" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" vertex="1" parent="5">
+          <mxGeometry x="120" y="70" width="500" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="= 动态缓存（Dynamic Cache, DC）&#10;常规链表管理：LRU / LFU&#10;命中需加锁 + 晋升到链头；&#10;驱逐走正常路径" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;" vertex="1" parent="5">
+          <mxGeometry x="820" y="70" width="500" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="对象在链表上的位置：标记左侧天然是“冻结区”，右侧是“动态区”（学习阶段由访问自然驱动）" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fillColor=none;" vertex="1" parent="5">
+          <mxGeometry x="370" y="295" width="700" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="FC 命中：53%~93% 命中由 FC 服务 · 吞吐最高 +551%（72线程）&#10;DC 照常：命中率几乎不受影响（多数踪迹 &lt;1% 下降）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="5">
+          <mxGeometry x="120" y="360" width="1200" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="11" value="生命周期（Lifecycle）" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="660" width="1360" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="① 学习（Learning）&#10;插 marker 到链表头，访问驱动它&#10;自然向尾部移动；统计不同位置&#10;下 FC 命中率与全局命中率" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="11">
+          <mxGeometry x="60" y="60" width="300" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="② 构建（Construction）&#10;后台构造只读无锁 FC-hash，&#10;在最优位置拆分链表&#10;（不打断正常访问）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="11">
+          <mxGeometry x="420" y="60" width="300" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="③ 冻结（Frozen）&#10;FC 保持静态，服务占主导时长&#10;（远长于前两阶段）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="11">
+          <mxGeometry x="780" y="60" width="300" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="自适应重建触发器&#10;· 性能监控：延迟超过基线阈值&#10;· 周期性刷新：超过生命周期限制（20× 构建时间）&#10;· 回退基线失败：连续无法超越 → 指数退避" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="11">
+          <mxGeometry x="1080" y="60" width="290" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="平均访问延迟公式 L = L_FC·H_FC + L_DC·H_DC + L_miss·(1 − H_FC − H_DC)&#10;目标：找使 L 最小的 FC_ratio（最热数据冻结不管理 → 命中变得只有哈希+读）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="11">
+          <mxGeometry x="60" y="2" width="1310" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="18" value="查 FC-hash" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="19" value="命中 → 读 FC 数据（无锁）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;exitY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="4" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="20" value="未命中 FC → DC（加锁 + 晋升）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="3" target="8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="给定 FC_ratio 位置" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;exitY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="16" target="12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="拆分链表 / 建 FC-hash" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="13" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="触发重建（回到学习）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="15" target="12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

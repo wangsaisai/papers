@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Shannon-Communication-Architecture" id="mathematical-theory-communication">
+    <mxGraphModel dx="1440" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1240" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="sh1" value="通信系统模型 Communication System Model（五部分）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1400" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="sh11" value="信源 Source&#10;产生消息 / 符号序列&#10;（离散：字符序列；&#10;连续：时间函数 f(t)）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="sh1">
+          <mxGeometry x="25" y="40" width="220" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="sh12" value="发送器 Transmitter&#10;消息 → 信号&#10;（编码 / 调制 / 量化）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="sh1">
+          <mxGeometry x="290" y="40" width="220" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="sh13" value="信道 Channel（含噪声）&#10;带宽 W · 信噪比 S/N&#10;（一对导线 / 频段 / 光束）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="sh1">
+          <mxGeometry x="555" y="40" width="240" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="sh14" value="接收器 Receiver&#10;信号 → 消息&#10;（译码 / 解调）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="sh1">
+          <mxGeometry x="840" y="40" width="220" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="sh15" value="信宿 Destination&#10;接收消息的人或物&#10;（复现：准确或近似）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="sh1">
+          <mxGeometry x="1105" y="40" width="220" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sh2" value="信息度量 Information Measures（概率论工具）" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="250" width="1400" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="sh21" value="熵 Entropy（核心新概念）&#10;H(X) = −Σ p(x) log₂ p(x) 比特/符号&#10;平均不确定度 = 表示所需最少比特数" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="sh2">
+          <mxGeometry x="25" y="40" width="310" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="sh22" value="互信息 Mutual Information&#10;I(X;Y) = H(X) − H(X|Y)&#10;信道实际传输的信息速率" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="sh2">
+          <mxGeometry x="375" y="40" width="310" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="sh23" value="信道容量 Channel Capacity&#10;C = max_{p(x)} I(X;Y)&#10;可靠传输的最大速率（比特/信道使用）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="sh2">
+          <mxGeometry x="725" y="40" width="310" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="sh24" value="AWGN 闭式（高斯信道）&#10;C = W log2 (1 + S/N) 比特/秒&#10;带宽 × 功率 × 速率的三元折中&#10;—— 无线通信第一性原理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="sh2">
+          <mxGeometry x="1075" y="40" width="310" height="115" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sh3" value="信源编码定理 Source Coding Theorem（定理 1 · 无损压缩的终极边界）" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="460" width="690" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="sh31" value="内容：熵为 H 的离散无记忆信源 → D 元唯一可译码&#10;平均码长 L ≥ H / log D，且存在编码使 L 任意逼近下界&#10;—— 一切压缩算法的理论基准" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="sh3">
+          <mxGeometry x="25" y="40" width="620" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="sh32" value="可达构造&#10;哈夫曼编码（最优前缀码）&#10;香农–费诺编码" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="sh3">
+          <mxGeometry x="25" y="145" width="290" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="sh33" value="意义&#10;ZIP / JPEG / MP3 / H.264 的&#10;理论极限（延后压缩的根据）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="sh3">
+          <mxGeometry x="355" y="145" width="290" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="sh34" value="扩展：率失真理论（有损压缩边界）R = W1 log2(Q/N)&#10;（近似复现场景下的信源编码定理）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="sh3">
+          <mxGeometry x="25" y="245" width="620" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sh4" value="信道编码定理 Channel Coding Theorem（定理 2 · 纠错的极限）" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="730" y="460" width="690" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="sh41" value="内容：信道容量为 C，码长 n → ∞&#10;任意速率 R &lt; C：存在编码使译码错误概率任意小&#10;R &gt; C：错误概率无法降为零" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;fontStyle=1;" vertex="1" parent="sh4">
+          <mxGeometry x="25" y="40" width="620" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="sh42" value="性质&#10;存在性而非构造性定理&#10;依赖码长 n → ∞（无限延迟）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="sh4">
+          <mxGeometry x="25" y="145" width="290" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="sh43" value="意义&#10;噪声不是终极障碍&#10;只要速率不超容量，就可任意可靠" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="sh4">
+          <mxGeometry x="355" y="145" width="290" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="sh44" value="逼近香农极限的纠错码：卷积 → Turbo → LDPC &#10;→ Polar（首个被严格证明达到极限的实用码）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="sh4">
+          <mxGeometry x="25" y="245" width="620" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="sh5" value="扩展与边界 Extensions &amp; Boundaries" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="820" width="1400" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="sh51" value="采样定理 Sampling Theorem&#10;带限（最高频率 W）信号可由每秒 2W 个等间隔采样完全重建&#10;连接模拟 ↔ 数字（ADC/DAC、CD）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="sh5">
+          <mxGeometry x="25" y="40" width="430" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="sh52" value="分离原理 Separation Theorem&#10;信源编码（压缩）与信道编码（纠错）可分别优化、互不影响&#10;—— 极大简化通信系统设计" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="sh5">
+          <mxGeometry x="490" y="40" width="430" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="sh53" value="刻意回避的边界&#10;不含语义（消息意义与工程无关）· 点对点模型· 假设已知统计特性· 无窃听者 / 网络层&#10;→ 网络信息论、安全容量等后续方向" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="sh5">
+          <mxGeometry x="955" y="40" width="420" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sh6" value="图例 Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=13;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1050" width="760" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="sh6a1" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="sh6">
+          <mxGeometry x="10" y="35" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="sh6a1t" value="信源 / 信宿 与 熵 · 信息的度量" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="sh6">
+          <mxGeometry x="50" y="33" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="sh6a2" value="" style="rounded=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="sh6">
+          <mxGeometry x="10" y="59" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="sh6a2t" value="发送/接收（编码操作）与 信道编码定理" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="sh6">
+          <mxGeometry x="50" y="57" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="sh6a3" value="" style="rounded=0;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="sh6">
+          <mxGeometry x="10" y="83" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="sh6a3t" value="信道 · 被传输与被干扰的环境" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="sh6">
+          <mxGeometry x="50" y="81" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="sh6a4" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="sh6">
+          <mxGeometry x="10" y="107" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="sh6a4t" value="信息度量 · 互信息 / 容量" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="sh6">
+          <mxGeometry x="50" y="105" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="sh6a5" value="" style="rounded=0;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="sh6">
+          <mxGeometry x="10" y="131" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="sh6a5t" value="扩展（采样 / 率失真 / 分离）与边界" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="sh6">
+          <mxGeometry x="50" y="129" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="se1" value="消息 message" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sh11" target="sh12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se2" value="信号 signal（功率 / 带宽受限）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sh12" target="sh13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se3" value="信号 + 噪声" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sh13" target="sh14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se4" value="估计消息" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sh14" target="sh15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se5" value="I(X;Y) = H(X) − H(X|Y)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sh21" target="sh22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se6" value="max_{p(x)}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sh22" target="sh23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se7" value="高斯信道特例" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sh23" target="sh24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se8" value="熵 = 无损压缩下界" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="sh21" target="sh3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se9" value="容量界定可达速率" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="sh23" target="sh4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se10" value="率失真（有损压缩）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;dashed=1;strokeColor=#82b366;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="sh34" target="sh51">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="se11" value="互信息" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;dashed=1;strokeColor=#9673a6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="sh22" target="sh13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

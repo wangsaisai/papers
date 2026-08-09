@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="HVA-Trust-Model" id="healthcare-voice-ai-assistants-trust">
+    <mxGraphModel dx="1440" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="研究方法（Methodology）" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1400" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="问卷设计&#xa;13 个因素条目 · 5 点李克特量表&#xa;两次试点（各 30 人）后定稿" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="2">
+          <mxGeometry x="30" y="45" width="420" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="数据收集&#xa;Prolific 招募 300 名有效参与者（英/美）· 注意力检查 + 直线作答过滤（355→300）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="2">
+          <mxGeometry x="500" y="45" width="420" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="统计分析&#xa;PLS-SEM（SmartPLS · 测量模型 + 结构模型 · Bootstrap 5000 子样本）&#xa;事后开放性问题 → 主题分析（两人独立编码）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="2">
+          <mxGeometry x="970" y="45" width="400" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="10" value="假设研究模型（H1-H12 → 对 HVA 的信任 → H13 → 使用意愿）· R²=0.841 / R²=0.542 · SRMR=0.053" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="190" width="1400" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="功能因素（Functional）" style="swimlane;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="40" y="50" width="300" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="H1 拟人化 ✓  β=0.076" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="11">
+          <mxGeometry x="20" y="45" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="H2 努力期望 ✓  β=-0.064" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="11">
+          <mxGeometry x="20" y="99" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="H3 感知有用性 ✓  β=0.277（影响最大）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="11">
+          <mxGeometry x="20" y="153" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="H4 感知内容可信度 ✓  β=0.159" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="11">
+          <mxGeometry x="20" y="207" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="H5 感知相对服务质量 ✓  β=0.107" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="11">
+          <mxGeometry x="20" y="261" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="17" value="H2 为负向；H3-H5 为正向" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;fillColor=none;" vertex="1" parent="11">
+          <mxGeometry x="20" y="312" width="260" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="20" value="个人因素（Personal）" style="swimlane;startSize=26;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="410" y="50" width="300" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="H6 熟悉度 ✗ 不显著" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="20">
+          <mxGeometry x="20" y="45" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="H7 技术依恋 ✗ 不显著" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="20">
+          <mxGeometry x="20" y="99" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="H8 社会影响 ✗ 不显著" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="20">
+          <mxGeometry x="20" y="153" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="24" value="H9 技术立场 ✓  β=0.111" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="20">
+          <mxGeometry x="20" y="207" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="25" value="通用语音助手中重要的&#xa;社交/情感因素在医疗场景不显著" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fillColor=none;" vertex="1" parent="20">
+          <mxGeometry x="20" y="265" width="260" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="30" value="风险因素（Risk）" style="swimlane;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="780" y="50" width="300" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="31" value="H10 安全风险 ✓  β=-0.138" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="30">
+          <mxGeometry x="20" y="45" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="32" value="H11 隐私风险 ✓  β=-0.173（影响第二）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="30">
+          <mxGeometry x="20" y="99" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="33" value="H12 感知替代风险 ✗ 不显著" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="30">
+          <mxGeometry x="20" y="153" width="260" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="34" value="安全与隐私风险均负向影响信任&#xa;（医疗数据比一般数据更敏感）" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fillColor=none;" vertex="1" parent="30">
+          <mxGeometry x="20" y="215" width="260" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="40" value="对 HVA 的信任&#xa;（Trust）&#xa;R² = 0.841" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;" vertex="1" parent="10">
+          <mxGeometry x="1140" y="120" width="230" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="41" value="使用意愿&#xa;（Intention to Use）&#xa;R² = 0.542" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;fontStyle=1;" vertex="1" parent="10">
+          <mxGeometry x="1140" y="270" width="230" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="50" value="关键发现与实践启示" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="660" width="1400" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="51" value="感知有用性影响最大&#xa;（先确保回答准确，&#xa;而非更拟人/更趣）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="50">
+          <mxGeometry x="30" y="45" width="250" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="52" value="隐私保护是信任门槛&#xa;（健康数据敏感 · 安全风险高）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="50">
+          <mxGeometry x="310" y="45" width="250" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="53" value="女性比男性更信任 HVA&#xa;（β=0.107 · 年龄/设备品牌不显著）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="50">
+          <mxGeometry x="590" y="45" width="250" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="54" value="开发组织影响信任&#xa;（NHS 最高 · Amazon 最低）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="50">
+          <mxGeometry x="870" y="45" width="240" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="55" value="用户倾向“辅助而非替代”&#xa;（22.3% 认为 HVA 应做医生助手）&#xa;设计人机协作模式" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="50">
+          <mxGeometry x="1140" y="45" width="240" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="60" value="H1 0.076" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;exitX=1;exitY=0.2;entryX=0;entryY=0.3;" edge="1" parent="10" source="12" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="61" value="H2 -0.064" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;exitX=1;exitY=0.3;entryX=0;entryY=0.4;" edge="1" parent="10" source="13" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="62" value="H3 0.277" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;exitX=1;exitY=0.4;entryX=0;entryY=0.5;" edge="1" parent="10" source="14" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="63" value="H4 0.159" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.6;" edge="1" parent="10" source="15" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="64" value="H5 0.107" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;exitX=1;exitY=0.6;entryX=0;entryY=0.7;" edge="1" parent="10" source="16" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="65" value="H6 不显著" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;dashed=1;strokeColor=#999999;exitX=1;exitY=0.2;entryX=0;entryY=0.3;" edge="1" parent="10" source="21" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="66" value="H7 不显著" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;dashed=1;strokeColor=#999999;exitX=1;exitY=0.3;entryX=0;entryY=0.4;" edge="1" parent="10" source="22" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="67" value="H8 不显著" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;dashed=1;strokeColor=#999999;exitX=1;exitY=0.4;entryX=0;entryY=0.5;" edge="1" parent="10" source="23" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="68" value="H9 0.111 ✓" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;exitX=1;exitY=0.5;entryX=0;entryY=0.6;" edge="1" parent="10" source="24" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="69" value="H10 -0.138" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;exitX=1;exitY=0.2;entryX=0;entryY=0.3;" edge="1" parent="10" source="31" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="70" value="H11 -0.173" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;exitX=1;exitY=0.3;entryX=0;entryY=0.4;" edge="1" parent="10" source="32" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="71" value="H12 不显著" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=10;dashed=1;strokeColor=#999999;exitX=1;exitY=0.4;entryX=0;entryY=0.5;" edge="1" parent="10" source="33" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="72" value="H13 β=0.737（p&lt;0.001）信任 → 使用意愿" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="10" source="40" target="41">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

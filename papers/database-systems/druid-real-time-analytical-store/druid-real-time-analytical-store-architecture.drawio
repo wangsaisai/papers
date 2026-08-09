@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Druid-Architecture" id="druid-real-time-analytical-store">
+    <mxGraphModel dx="1440" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="客户端层" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1400" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="数据可视化 / Dashboard 应用&#10;任意维度组合的即席聚合与过滤查询&#10;（POST JSON 查询 · 期望亚秒级响应）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;align=left;spacingLeft=10;" vertex="1" parent="2">
+          <mxGeometry x="60" y="70" width="560" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="事件流生产者&#10;（维基百科编辑 / 广告点击等带时间戳事件）&#10;期间 Kafka 消息总线作为缓冲与复制来源&#10;（offset 记录消费位置 · 故障时续读）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;align=left;spacingLeft=10;" vertex="1" parent="2">
+          <mxGeometry x="780" y="70" width="560" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="5" value="Druid 集群层（无共享 · 节点角色分离）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="240" width="1400" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="Broker 代理节点&#10;查询路由：转发到实时 / 历史节点&#10;合并部分结果 · LRU 缓存（本地堆 / Memcached）&#10;实时数据从不缓存；缓存兼作一层持久性" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;align=left;spacingLeft=8;" vertex="1" parent="5">
+          <mxGeometry x="60" y="270" width="620" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="实时节点 Real-time Node&#10;内存索引缓冲（事件立即可查）&#10;→ 周期性持久化为列式磁盘索引&#10;→ 合并为不可变段（segment）&#10;→ 移交深层存储；只关注小时级窗口" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="5">
+          <mxGeometry x="760" y="270" width="620" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="历史节点 Historical Node&#10;从深层存储下载段并在内存映射下服务查询&#10;只处理不可变数据 · 支持并发扫描聚合&#10;热 / 冷分层（hot tier / cold tier）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;align=left;verticalAlign=top;spacingLeft=8;" vertex="1" parent="5">
+          <mxGeometry x="60" y="480" width="620" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="协调节点 Coordinator Node&#10;段加载 / 丢弃 / 复制者 / 负载均衡决策&#10;对规则表匹配：何时保留、建几份副本&#10;领导者选举（单节点运行 · 其余冗余）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;align=left;verticalAlign=top;spacingLeft=8;" vertex="1" parent="5">
+          <mxGeometry x="760" y="480" width="620" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="10" value="协调与元数据服务（外部依赖 · 故障只影响管理不影响数据）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="960" width="1400" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="Zookeeper&#10;节点在线状态 · 段的发布与位置 · 加载 / 卸载指令&#10;（ZK 崩溃：查询仍可用，仅元数据更新受影响）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="10">
+          <mxGeometry x="60" y="75" width="600" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="MySQL（协调者元数据）&#10;段列表（应服务哪些段）· 规则表（按数据源 / 时间段）&#10;（MySQL 宕机：停止分配 / 丢弃，数据仍可查）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="10">
+          <mxGeometry x="760" y="90" width="600" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="13" value="存储层" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1160" width="1400" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="深层存储 Deep Storage（S3 / HDFS）&#10;不可变段的持久备份 · 复制与恢复的基准" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="13">
+          <mxGeometry x="60" y="90" width="600" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="段 Segment —— 基本存储单元（500 万–1000 万行）&#10;按数据源+时间间隔分区，版本化并发控制（MVCC）&#10;列式存储 · 字典编码 + LZF 压缩 · Concise 位图过滤索引&#10;（内存映射引擎：热点段留在内存、冷段换出）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="13">
+          <mxGeometry x="760" y="90" width="600" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="20" value="实时请求路径：事件毫秒级可达查询" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="4" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="交互：实时节点向消息总线提交 offset" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="4" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="上传合并后的不可变段" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7" target="14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="段加载 / 卸载及复制指令" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="9" target="8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="24" value="下载段并服务" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="8" target="14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="25" value="经 ZK 发布在线状态与服务数据" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.35;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="26" value="在线状态 + 段发布" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.7;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="8" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="27" value="Zookeeper 协调" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="5" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="28" value="查询请求" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="29" value="结果合并返回" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="30" value="查询转发 + 部分结果" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="6" target="8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="31" value="实时查询转发" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

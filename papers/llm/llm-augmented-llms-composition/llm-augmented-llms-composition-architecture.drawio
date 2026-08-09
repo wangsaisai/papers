@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="CALM-Composition" id="llm-augmented-llms-composition">
+    <mxGraphModel dx="1440" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="输入 x_t（token 序列）&#xa;自回归解码：每步输出追加到输入 x_{t+1} = x_t ⊕ y_t，两模型全部表示随之刷新" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="560" y="30" width="320" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="3" value="增强模型 m_A（Augmenting）· 权重冻结" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="160" width="380" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="组合层 L_A（每隔 N_A/n 层均匀选取，如每 4 层）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="3">
+          <mxGeometry x="30" y="70" width="320" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="中间层表示 H_Ai（维度 D_A）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="3">
+          <mxGeometry x="30" y="150" width="320" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="领域专长：&#xa;键值映射记忆 / 低资源语言 / 代码语法&#xa;（在 PaLM2-XXS 上领域数据预训练所得）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="3">
+          <mxGeometry x="30" y="235" width="320" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="10" value="锚定模型 m_B（Anchor）· 权重冻结（PaLM2-XS / PaLM2-S）" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="160" width="380" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="组合层 L_B（均匀间隔选 n 层）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="30" y="70" width="320" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="中间层表示 H_Bj（维度 D_B）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="30" y="150" width="320" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="通用能力：&#xa;数值算术 / 逻辑推理 / 世界知识 / 语言生成" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="30" y="235" width="320" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="14" value="组合模块 Θ_C — 唯一可训练部分（新增参数约 m_B 的 1.5%，训练成本 2-12%）" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="470" y="160" width="500" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="① 投影 f_proj：将 m_A 表示从 R^D_A 对齐到 m_B 的维度 R^D_B" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="14">
+          <mxGeometry x="40" y="55" width="420" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="② 交叉注意力 f_cross（多头，类编码器-解码器）&#xa;Q = H_Bj（锚定查询）· K / V = f_proj(H_Ai)（增强键值）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="14">
+          <mxGeometry x="40" y="125" width="420" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="17" value="③ 残差连接：H_{A⊕Bj} = H_Bj + f_cross(f_proj(H_Ai), H_Bj) → m_B 下一层" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="14">
+          <mxGeometry x="40" y="210" width="420" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="18" value="④ 组合表示经 m_B 剩余层，自回归解码输出 token y_t" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="14">
+          <mxGeometry x="40" y="285" width="420" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="19" value="组合训练数据 D_C（少量“组合技能”样本）&#xa;键值算术仅覆盖 20% 的键 · NTL 语料 5% · 代码语料 7%&#xa;只训练 Θ_C，m_A 与 m_B 均保持冻结" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="180" y="550" width="480" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="20" value="组合模型 m_{A⊕B}（新能力）&#xa;键值算术 84.3%（两基础模型均为 0%）· 低资源翻译 chrF1 46.1（192 语言中 175 种超过 m_B）&#xa;GSM-8K 25.0/31.8 · 代码补全 22.5 / 文转码 32.2 · 避免灾难性遗忘" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="760" y="550" width="480" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="30" value="前向传播" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.2;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="2" target="3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="31" value="前向传播" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.8;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="2" target="10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="32" value="H_Ai" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0.2;entryY=0;" edge="1" parent="1" source="5" target="14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="33" value="H_Bj" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0;exitY=0.5;entryX=0.8;entryY=0;" edge="1" parent="1" source="12" target="14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="34" value="f_proj(H_Ai) 作为 K/V" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="15" target="16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="35" value="残差相加" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="16" target="17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="36" value="继续前向" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="17" target="18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="37" value="输出 token y_t" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;entryX=0.7;entryY=0;" edge="1" parent="1" source="18" target="20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="38" value="训练 Θ_C（不更新 m_A / m_B 权重）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="19" target="14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="39" value="追加：x_{t+1} = x_t ⊕ y_t" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="20" target="2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

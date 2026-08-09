@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Blazes: Coordination Analysis for Distributed Programs" id="blazes-coordination-analysis">
+    <mxGraphModel dx="1440" dy="1420" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1420" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="n1" value="分布式程序&#xa;（逻辑数据流图，黑盒组件 + 流）&#xa;· Storm 词频统计拓扑&#xa;（Splitter→Count→Commit）&#xa;· Bloom 广告追踪网络&#xa;（AdServer→Report→Cache）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="360" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n2" value="容错机制（交付语义）&#xa;· 重放（Storm：按批次重放）&#xa;· 复制副本（Report 服务器）&#xa;非确定消息顺序 → 一致性异常" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="440" y="30" width="300" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n3" value="灰盒：程序注解（C.O.W.R.）&#xa;· 组件路径：合流 Confluent /&#xa;顺序敏感 Order-sensitive × 写/路径&#xa;（CR·CW·OR·OW，含 gate 分区下标）&#xa;· 流注解：Seal_key · Rep" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="780" y="30" width="300" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n4" value="白盒（Bloom 集成）&#xa;静态分析自动推导组件属性：&#xa;· 单调性 / 非单调算子识别&#xa;· 状态性（事件流 vs 存储表）&#xa;· group by / 反连接列作下标" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="30" width="280" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c1" value="Blazes 分析管道（§5.1 Analysis）—— 沿所有数据流路径传递局部属性 → 端到端流标签" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="220" width="1360" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="n5" value="① 路径枚举 + 环简化&#xa;源到汇的所有路径&#xa;环归约为单节点&#xa;（取环内最高严重性标签）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="c1">
+          <mxGeometry x="60" y="90" width="250" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="n6" value="② 推理（归约规则 图9）&#xa;输入流标签 × 组件注解&#xa;→ 中间标签：Taint / NDRead_gate&#xa;密封兼容性：injective FD 测试" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="c1">
+          <mxGeometry x="390" y="250" width="280" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="n7" value="③ 调和（图10）&#xa;应用 Rep? 规则追加标签&#xa;输出接口合并为最高严重性标签" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="c1">
+          <mxGeometry x="700" y="250" width="260" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="n8" value="④ 流标签（按严重性 S）&#xa;Async ≤ Run 跨运行&#xa;≤ Inst 跨实例 ≤ Diverge 复制发散&#xa;默认 Async（内容确定性、顺序不定）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="c1">
+          <mxGeometry x="990" y="250" width="300" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="n9" value="判定（§5.B 协调选择）&#xa;标签＝Async 且无协调需求 &#xa;⇒ 无需协调&#xa;（合流组件：确定性输出）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;verticalAlign=middle;" vertex="1" parent="c1">
+          <mxGeometry x="60" y="410" width="430" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="n10" value="出现 Run / Inst / Diverge&#xa;⇒ 需要协调修复（交右侧）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;verticalAlign=middle;" vertex="1" parent="c1">
+          <mxGeometry x="620" y="410" width="430" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c2" value="协调综合（§5.2 Coordination Selection）—— 自动生成应用特定的协调代码" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="620" width="1360" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="n11" value="密封 Sealing（首选 · 局部异步同步）&#xa;条件：输入流在 key 上标点（Seal_key）&#xa;＋ compatible 测试：&#xa;  ∃attr ⊆ 分区，seal 单射函数式决定 attr&#xa;机制：消费者与各生产者确认分区终止&#xa;+ 局部一致性投票（单生产者免投票）&#xa;到期分区即可安全处理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;textAlign=left;spacingLeft=10;" vertex="1" parent="c2">
+          <mxGeometry x="70" y="100" width="640" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="n12" value="排序 Ordering（兜底 · 全局）&#xa;对消息/事件施加全局总序：&#xa;Bloom → Zookeeper 全局有序服务&#xa;Storm → 事务性拓扑（batch 提交总序）&#xa;代价：吞吐与扩展性受限" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;verticalAlign=top;align=left;spacingLeft=10;spacingTop=8;" vertex="1" parent="c2">
+          <mxGeometry x="740" y="100" width="500" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n13" value="输出：注入协调代码后的程序（一致且高效）&#xa;· Storm 词频统计：密封 vs 事务性 —— 5 节点吞吐 ×1.8 · 20 节点 ×3&#xa;· Bloom 广告追踪：密封（独立/非独立）≈ 无协调基线性能，且结果一致&#xa;（全排序正确但 5→10 广告服务器时处理时间增加 3 倍）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1030" width="1360" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" value="程序（灰盒）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n1" target="c1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="容错语义入调和规则（Rep）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n2" target="n7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="注解文件" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n3" target="c1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="自动抽取注解" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n4" target="c1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="标签/属性向前传播" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n5" target="n6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n6" target="n7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n7" target="n8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="合流 ⇒ 免协调" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.4;exitY=1;exitDx=0;exitDy=0;entryX=0.3;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n8" target="n9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="非合流 ⇒ 协调" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.7;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n8" target="n10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="优先选择" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n10" target="n11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" value="密封不适用时" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n10" target="n12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" value="代码注入" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c2" target="n13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" value="图例 Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=13;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="200" y="1210" width="780" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="35" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1t" value="程序 / 注解（输入）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="33" width="700" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2" value="" style="rounded=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="59" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2t" value="分析 / 协调策略（推理·密封·排序）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="57" width="700" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3" value="" style="rounded=0;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="83" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3t" value="流标签（输出）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="81" width="700" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4" value="" style="rounded=0;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="107" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4t" value="需要协调的判定" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="105" width="700" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg5" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="131" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg5t" value="结果：确定性 &amp; 性能提升" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="129" width="700" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

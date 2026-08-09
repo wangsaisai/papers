@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="PolarFS-Architecture" id="polarfs-low-latency">
+    <mxGraphModel dx="1440" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="980" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="控制面（Control Plane）&#10;PolarCtrl（≥3 台高可用微服务）&#10;· 成员/存活跟踪 · 卷与块区分配 · 元数据权威库（MySQL）&#10;· 块区副本迁移 · CRC 校验 · 指标监控" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="30" width="400" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="计算节点（数据库实例）" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="900" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="POLARDB 数据库进程&#10;（pfs pread / pfs pwrite…）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="3">
+          <mxGeometry x="40" y="60" width="260" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="libpfs（用户态文件系统库）&#10;类 POSIX API 链接进数据库进程；&#10;挂载时加载目录树/文件映射/块映射表；&#10;文件偏移 → 块 I/O 切分" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="3">
+          <mxGeometry x="330" y="60" width="260" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="共享内存环形缓冲区（轮询收发）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="3">
+          <mxGeometry x="700" y="40" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="PolarSwitch 守护进程&#10;本地缓存块区位置（与 PolarCtrl 同步）·&#10;路由基本请求到块区 leader · 拆分子请求&#10;超时指数退避 + 检测选举切换" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="3">
+          <mxGeometry x="560" y="110" width="300" height="95" as="geometry" />
+        </mxCell>
+
+        <mxCell id="8" value="用户态网络：RDMA（免内核协议栈，微秒级延迟）" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="300" y="300" width="1140" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="9" value="存储节点（Storage Node）" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="380" width="1360" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="ChunkServer 1（共识组长 Leader）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=13;verticalAlign=top;align=center;paddingTop=8;" vertex="1" parent="9">
+          <mxGeometry x="80" y="70" width="560" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="I/O 循环线程（轮询 + 事件驱动状态机）&#10;专用核心 · 无共享数据结构 · 无锁" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="20" y="55" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="ParallelRaft 状态机&#10;乱序日志复制 + 后顾缓冲区&#10;冲突条目才串行（超市多收银台类比）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="290" y="55" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="WAL 预写日志盒（3D XPoint 高速缓冲 → NVMe）&#10;提交 = 多数派持久后方响应" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="20" y="160" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="IoScheduler：读写仲裁，&#10;保证读拿到最新已提交数据" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="290" y="160" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="块区 Chunk（10GB）+ 块（64KB）&#10;块映射表/空闲位图本地缓存；精简配置" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="20" y="265" width="520" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="ChunkServer 2 / 3（Follower 副本，工作于不同机架）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="9">
+          <mxGeometry x="760" y="70" width="260" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="17" value="ChunkServer × N&#10;（每进程独占一块 NVMe + 专用核）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="9">
+          <mxGeometry x="1080" y="70" width="260" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="18" value="SPDK 用户态驱动（驱动 NVMe，绕过内核块设备层/中断）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" vertex="1" parent="9">
+          <mxGeometry x="200" y="300" width="400" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="19" value="NVMe SSD 数据盘（块区数据）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="9">
+          <mxGeometry x="640" y="300" width="180" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="20" value="写路径（图 4）：pfs pwrite → 环形缓冲 → PolarSwitch 路由 → RDMA 到 leader → 日志入 3D XPoint + RDMA 复制到 followers → 多数派确认 → SPDK 应用数据块 → 响应；读路径：leader 直读（IoScheduler 仲裁）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="870" width="1360" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="21" value="块区归属/迁移 · 元数据同步" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="元数据库（块区位置/状态）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="PFS API 调用" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="24" value="入队块 I/O 至环形缓冲" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="25" value="轮询取出并路由" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="26" value="RDMA 转发（到块区 leader）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7" target="8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="27" value="复制（ParallelRaft 乱序复制）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="12" target="16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="28" value="SPDK 读/写 NVMe" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="18" target="19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

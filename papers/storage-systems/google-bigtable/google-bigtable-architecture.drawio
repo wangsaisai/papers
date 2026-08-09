@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Bigtable-Architecture" id="google-bigtable">
+    <mxGraphModel dx="1440" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="960" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="客户端库（Client Library）&#10;三层寻址：Chubby 文件 → Root Tablet → METADATA → 数据 Tablet（最多 3 次网络往返）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="520" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="应用程序（Web 索引 / Analytics / Earth…）&#10;稀疏多维有序 Map：(row, column, time) → value" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="180" width="360" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="Master（单一主控）&#10;· 不参与数据路径（负载轻）&#10;· Tablet 分配 / 分裂 / 迁移&#10;· 垃圾回收 · 负载均衡&#10;· 经 Chubby 心跳感知 TabletServer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="30" width="400" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="Chubby（分布式锁服务）&#10;命名空间根文件 · 选举 · Master 失效检测&#10;（挂锁即全体不可用 —— 单点隐患，实测影响 0.0047%）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="200" width="400" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="6" value="三层寻址（Addressing）" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="320" width="620" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="Chubby 文件（根表格）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="6">
+          <mxGeometry x="40" y="55" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="Root Tablet（第 0 层）&#10;保存 METADATA 表位置" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="6">
+          <mxGeometry x="40" y="145" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="METADATA Tablet（第 1 层，分片×N）&#10;每行 = 一个用户 Tablet：&#10;位置 + SSTable 索引 + Bloom 过滤器" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="6">
+          <mxGeometry x="50" y="240" width="530" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="用户 Tablet（数据）&#10;每个 100~200MB，过大自动分裂" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="6">
+          <mxGeometry x="160" y="145" width="420" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="11" value="Tablet 服务器（Tablet Server × N）" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="700" y="320" width="700" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="Tablet 状态（每台数百~数千 Tablet）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=13;verticalAlign=top;align=center;paddingTop=8;" vertex="1" parent="11">
+          <mxGeometry x="30" y="50" width="460" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="Memtable（内存，写入先到）&#10;+ 提交日志（Commit Log，追加至 GFS）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="12">
+          <mxGeometry x="15" y="50" width="260" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="SSTable 列表 ×N（不可变有序文件）&#10;Bloom 过滤器：跳过不含目标数据的文件&#10;读 = 合并 Memtable + 各 SSTable 视图" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="12">
+          <mxGeometry x="300" y="50" width="160" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="后台压缩：&#10;Minor（Memtable 冻结落盘）&#10;Merging（合并 SSTable）· Major（清删除/回收空间）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="11">
+          <mxGeometry x="30" y="245" width="460" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="表与压缩均不可行期可继续服务：&#10;（SSTable 全在 GFS，遇故障空机恢复极快）" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fillColor=none;" vertex="1" parent="11">
+          <mxGeometry x="30" y="312" width="460" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="17" value="GFS（底层文件系统）&#10;提交日志 + SSTable 持久化存储 · 三副本复制" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="420" y="720" width="640" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="18" value="数据模型：稀疏有序多维 Map；单行事务（不支持跨行/跨表事务）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="720" width="300" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="19" value="请求（读/写）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3" target="2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="20" value="缓存 METADATA 寻址，" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="Master → Chubby 选举与心跳" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.8;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="分配 Tablet / 心跳监控" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="4" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="数据/日志读写" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.3;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="12" target="17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="24" value="压缩往返 GFS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.7;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="15" target="17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

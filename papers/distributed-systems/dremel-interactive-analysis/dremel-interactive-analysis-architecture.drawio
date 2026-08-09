@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Dremel: Interactive Analysis of Web-Scale Datasets" id="dremel-interactive-analysis">
+    <mxGraphModel dx="1440" dy="1820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1820" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="n1" value="输入：嵌套记录数据&#10;（Protocol Buffers 强类型模式）&#10;required / optional / repeated 字段&#10;稀疏：模式数千字段、记录中常用数百" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="420" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n2" value="拆分 DissectRecord（§4.2）&#10;字段写入器 Field Writers 树&#10;递归计算重复级别 r / 定义级别 d&#10;子写入器惰性继承父级别" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="520" y="30" width="420" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n3" value="列式条带 Column Stripes（§4.1）&#10;每字段一列：压缩值 + 重复级别 r&#10;+ 定义级别 d（无损重建嵌套结构）&#10;NULL 由 d 隐含 · 级别按需存储" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="30" width="400" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n4" value="存储层：GFS 文件 / Bigtable（原位数据）· 表片 tablets 三路复制 · 块异步预读（≈95% 命中）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="1360" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n5" value="记录组装 Record Assembly（§4.3）&#10;FSM：字段读取器的状态转移以重复级别为标记&#10;只重建所选字段子集（供面向记录工具）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="330" width="480" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n6" value="MR / Sawzall 等面向记录的系统&#10;消费列式存储中的重建记录&#10;（MR-on-columns：87TB → 0.5TB 读取）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="560" y="330" width="480" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n7" value="交互式查询（SQL 风格 · 第 5 节）&#10;SELECT / WHERE / GROUP BY / 记录内聚合&#10;（WITHIN）、子查询、top-k、用户函数" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="500" width="420" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n8" value="查询调度器（第 6 节）&#10;多用户优先级 · 槽位调度（≈24k 槽）&#10;表片处理直方图 → 掉队者重调度· 最小扫描百分比参数（98% 可加速）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="900" y="500" width="300" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c1" value="多级服务树 Serving Tree（第 6 节 · 借鉴 Web 搜索）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="660" width="1360" height="740" as="geometry" />
+        </mxCell>
+        <mxCell id="r2" value="根服务器（1 个）&#10;读表元数据 · 列出全部表片&#10;查询改写为子查询分区 R¹₁…R¹ₙ&#10;最终聚合后返回用户（秒级）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;" vertex="1" parent="c1">
+          <mxGeometry x="80" y="20" width="560" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="r3" value="中间层（例如 1:100:1:2900）&#10;继续分区与重写 · 并行汇总部分结果" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;" vertex="1" parent="c1">
+          <mxGeometry x="700" y="20" width="400" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="r4" value="叶服务器群（≈2900 节点 · 每台 8 线程 → ≈24k 槽位）&#10;并行扫描列条带表片 · 仅读所需列（列裁剪）&#10;本地部分聚合 · 副本不可达时切换另一副本" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;" vertex="1" parent="c1">
+          <mxGeometry x="150" y="430" width="980" height="220" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" value="按记录序列化" style="edgeStyle=orthogonalEdgeStyle;edge=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n1" target="n2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="拆分为列条带" style="edgeStyle=orthogonalEdgeStyle;edge=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n2" target="n3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="写入表片（复制 ×3）" style="edgeStyle=orthogonalEdgeStyle;edge=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n3" target="n4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="按字段子集组装（FSM）" style="edgeStyle=orthogonalEdgeStyle;edge=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n3" target="n5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="互操作" style="edgeStyle=orthogonalEdgeStyle;edge=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.3;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n5" target="n6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="查询下发" style="edgeStyle=orthogonalEdgeStyle;edge=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.3;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n7" target="r2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="子查询分区" style="edgeStyle=orthogonalEdgeStyle;edge=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="r3" target="r2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="表片扫描任务下发" style="edgeStyle=orthogonalEdgeStyle;edge=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0.52;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="r3" target="r4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="仅读所需列（T1 查询：0.5TB / 87TB）" style="edgeStyle=orthogonalEdgeStyle;edge=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;strokeColor=#82b366;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.45;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n4" target="r4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="调度：直方图 → 掉队者重调度" style="edgeStyle=orthogonalEdgeStyle;edge=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;strokeColor=#9673a6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.7;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n8" target="r4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" value="部分结果上行（每层并行聚合）" style="edgeStyle=orthogonalEdgeStyle;edge=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;strokeColor=#d79b00;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.3;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="r4" target="r3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" value="上行汇总（聚合）" style="edgeStyle=orthogonalEdgeStyle;edge=1;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;strokeColor=#d79b00;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="r3" target="r2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n9" value="实测结论（第 7 节 实验）&#xa;· 本地磁盘：少量字段时列式比记录式快 ≈10 倍&#xa;· MR-on-records：小时级（读 87TB）→ MR-on-columns：分钟级（读 0.5TB）→ Dremel：秒级&#xa;· 服务树越深，高基数聚合越快（Q3：4 层比 2 层快约 1 倍）；万亿行表 T4：1000→4000 节点近线性加速，CPU 总量恒定 ≈30 万秒&#xa;· 掉队者：99% 表片 &lt;5s，少量异常表片把查询从 &lt;1 分钟拖到数分钟（调度器重调度可部分缓解）&#xa;· 生产月负载：大多数查询 &lt;10s 完成 · 全系统 &lt;10 万行 C++/Java/Python" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1440" width="1360" height="190" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend" value="图例 Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=13;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1660" width="960" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="35" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1t" value="查询 / 输入 / 语言（输入端）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="33" width="400" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2" value="" style="rounded=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="56" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2t" value="处理 / 执行（拆分 · 组装 · 服务树）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="54" width="400" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="82" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3t" value="列式数据 / 结果（数据与状态）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="80" width="400" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4" value="" style="rounded=0;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="108" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4t" value="调度 / 评估（验证与产出）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="106" width="400" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg5" value="" style="rounded=0;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="134" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg5t" value="存储环境（GFS / 本地盘）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="132" width="400" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

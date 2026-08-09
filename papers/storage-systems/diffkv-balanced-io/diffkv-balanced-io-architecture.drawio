@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="DiffKV-Architecture" id="diffkv-balanced-io">
+    <mxGraphModel dx="1440" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="写入路径（Write Path）" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="1360" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="KV 客户端&#10;put（键值对）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="2">
+          <mxGeometry x="60" y="55" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="WAL 预写日志&#10;（崩溃一致性）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="2">
+          <mxGeometry x="310" y="55" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="MemTable（可写 + 冻结）&#10;内存中的临时排序表" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="2">
+          <mxGeometry x="560" y="55" width="210" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="差异化值管理（按值大小分流）&#10;大值 &gt;8KB → 入 vLogs；&#10;中值 128B~8KB → 入 vTree；&#10;小值 &lt;128B → 留在 LSM-tree 内联" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="2">
+          <mxGeometry x="820" y="45" width="330" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="值语义：&#10;键严格排序负责范围定位；&#10;值“局部有序、全局部分有序”" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="2">
+          <mxGeometry x="1200" y="55" width="170" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="8" value="差异化存储（Differentiated Storage）" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="1360" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="LSM-tree（键：完全有序）&#10;SSTable 层 L0…Ln&#10;· 键 + 值位置（指针）&#10;· 小值（&lt;128B）直接内联" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" vertex="1" parent="8">
+          <mxGeometry x="60" y="70" width="380" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="vTree（中值：局部有序）&#10;多层 vL0…vLn · 每层多个排序组&#10;排序组 = 键范围完全有序的 vTable 集合&#10;vTable 固定 8MB（数据区 + 元数据区，无 Bloom 过滤器）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="8">
+          <mxGeometry x="580" y="70" width="420" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="vLogs（大值：不排序日志）&#10;循环追加写入 · 未排序 vTable&#10;热 vLog（用户写头）&#10;冷 vLog（GC 尾）&#10;大值一次大 I/O 读完" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="8">
+          <mxGeometry x="1060" y="70" width="310" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="扫描（Scan）：&#10;键有序范围扫描 + 沿排序组顺序读值 —— 组内顺序、组间合并&#10;点读（Point Read）：键 → 值位置 → vTree / vLogs / 内联" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="8">
+          <mxGeometry x="60" y="250" width="1310" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="13" value="协调机制：压缩触发合并（Compaction-Triggered Merge）&#10;LSM 压缩键 L_i → L_{i+1} 时，同步把压缩相关值 vL_i → vL_{i+1}，生成新 vTable 追加写入&#10;→ 免去“查值有效性/更新值位置”的额外开销（隐藏在压缩本身）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=13;verticalAlign=top;align=center;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="590" width="1360" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="延迟合并（Lazy Merge）：&#10;把 vL0…vLn-2 聚合为单层与多层 LSM 关联，低层不急着整理（底层对扫描影响小）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="13">
+          <mxGeometry x="30" y="50" width="410" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="扫描优化合并（Scan-optimized Merge）：&#10;标记键范围重叠超阈值（max_sorted_run）的 vTable 组，下次合并优先整理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="13">
+          <mxGeometry x="480" y="50" width="410" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="垃圾回收（GC）：&#10;无效值比例超阈值（gc_threshold）才回收；&#10;有效值重写到冷 vLog，延迟到下次合并执行" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="13">
+          <mxGeometry x="930" y="50" width="400" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="17" value="写入（WAL 已确认 → 双写键与值分流）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="18" value="追加写入" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="19" value="不可变 MemTable 刷新 → 分流器；大值在入 MemTable 前先直刷 vLogs（省 WAL）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="20" value="键 + 值位置 / 小值" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.3;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="6" target="9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="中值 → vTree" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="6" target="10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="大值 → vLogs（写 MemTable 前先落盘，不入 WAL）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.9;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="6" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="压缩时顺带合并（协调）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;strokeColor=#9673a6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="9" target="13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="24" value="排序组读写（组内顺序读）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;strokeColor=#9673a6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.6;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="10" target="13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="25" value="GC / 写头管理" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;strokeColor=#b85450;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.85;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="11" target="13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

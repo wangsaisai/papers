@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Google-Search-Engine" id="anatomy-web-search-engine">
+    <mxGraphModel dx="1440" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1540" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="用户浏览器 — 查询请求（HTTP）&#10;目标：前几十条结果高度相关（高精确率）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="760" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="3" value="爬取与归档（离线）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="160" width="1400" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="URLserver&#10;把待爬取的 URL 列表&#10;分发给爬取器" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;spacingLeft=6;" vertex="1" parent="3">
+          <mxGeometry x="50" y="220" width="290" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="分布式爬取器 ×3（Python）&#10;每台 ≈300 并发连接 · DNS 缓存&#10;异步 IO + 多队列 · 峰值 100+ 页/秒&#10;（9 天爬取 2600 万页）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;spacingLeft=6;" vertex="1" parent="3">
+          <mxGeometry x="400" y="240" width="290" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="storeserver&#10;网页压缩（zlib · ≈3:1）&#10;按 docID 并存&#10;到数据库仓库" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;spacingLeft=6;" vertex="1" parent="3">
+          <mxGeometry x="750" y="240" width="290" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="仓库 Repository（数据）&#10;完整 HTML · 由爬取页 147.9GB 压缩至 53.5GB&#10;按 docId / 长度 / URL 前缀记录" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=left;spacingLeft=6;" vertex="1" parent="3">
+          <mxGeometry x="1100" y="240" width="290" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="10" value="索引与链接分析（离线）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="560" width="1400" height="560" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="索引器 Indexer&#10;读取仓库 → 解压解析（flex 词法分析器）&#10;文档 → 词位 hits（位置 / 字体大小 / 大小写）&#10;写入 64 个正向桶 + 解析链接存锚文件 anchors" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;spacingLeft=6;" vertex="1" parent="10">
+          <mxGeometry x="50" y="110" width="430" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="URLresolver&#10;读取锚文件：相对 URL → 绝对 URL → docID&#10;锚文本关联到目标文档（支持未爬取页面）&#10;产出链接库（docID 对）· 用于 PageRank" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;spacingLeft=6;" vertex="1" parent="10">
+          <mxGeometry x="530" y="110" width="380" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="排序器 Sorter + DumpLexicon&#10;正向桶按 wordID 重排 → 倒排索引&#10;倒排桶分两套：短桶（标题/锚点奖励）与完整桶&#10;词库 Lexicon（1400 万词 · 可整体驻留 256MB 内存）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;spacingLeft=6;" vertex="1" parent="10">
+          <mxGeometry x="970" y="60" width="390" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="PageRank 计算（离线 · 数小时完成 2600 万页）&#10;随机冲浪模型：PR(A) = (1-d) + d·Σ PR(Ti)/C(Ti)&#10;阻尼因子 d=0.85 · 权重经链接递归传播&#10;被高质量页面引用 → 高分；可抗链接作弊" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=left;spacingLeft=6;" vertex="1" parent="10">
+          <mxGeometry x="50" y="380" width="860" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="20" value="查询处理（在线）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1160" width="1400" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="解析查询 &#10;词 → wordID" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=center;" vertex="1" parent="20">
+          <mxGeometry x="50" y="105" width="240" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="查短倒排桶&#10;（标题 / 锚点之道）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=center;" vertex="1" parent="20">
+          <mxGeometry x="340" y="105" width="240" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="不足时查完整倒排桶&#10;（限 40000 个匹配文档控制响应）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=center;" vertex="1" parent="20">
+          <mxGeometry x="620" y="240" width="240" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="24" value="排名：IR 得分（类型权重 × 计数权重）+ 邻近度（10 档）+ PageRank&#10;受信任用户反馈调参" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=center;" vertex="1" parent="20">
+          <mxGeometry x="900" y="105" width="240" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="25" value="返回前 K 条结果（按排名）&#10;二次查询缓存提升至 0.06–1.8 秒" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=center;" vertex="1" parent="20">
+          <mxGeometry x="1180" y="105" width="240" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="40" value="发送 URL 列表" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="41" value="抓取网页" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="42" value="压缩入库" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="43" value="原始网页供解析" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.1;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="44" value="锚文件 / 域名解析" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="11" target="12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="45" value="链接库（docID 对）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.4;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="12" target="14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="46" value="正向桶 → 倒排" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="11" target="13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="47" value="查询时：词库 + 倒排索引 + PageRank 分值" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="13" target="20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="48" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="14" target="20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="49" value="页面渲染 / 返回结果" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="20" target="2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="50" value="查询词请求" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="51" value="① → ② 桶壁查找" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="21" target="22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="52" value="短桶不足 → 完整桶" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="22" target="23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="53" value="匹配文档 → 排名" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="22" target="24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="54" value="排名结果 → 输出" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="24" target="25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="55" value="完整桶命中 → 排名" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="23" target="24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

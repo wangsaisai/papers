@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="What-Goes-Around-Timeline" id="what-goes-around-2024">
+    <mxGraphModel dx="1440" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="核心论点：「吸收 - 趋同」规律&#10;SQL 不是靠消灭对手赢得市场，而是把对手最好的想法吸收进自己的扩展类型系统；&#10;拒绝 RM 的系统要么消亡、要么把自己改造成 SQL（乐高基础板比喻：新积木最终都插在同一块底板上）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="1360" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="3" value="1960–2000 第一轮：九大数据建模运动（2005 论文回顾）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="160" width="1360" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="层次模型&#10;IMS（60s末–70s）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="3">
+          <mxGeometry x="60" y="95" width="130" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="网状模型&#10;CODASYL（70s）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="3">
+          <mxGeometry x="210" y="95" width="130" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="关系模型 RM&#10;+ SQL（70s–80s初）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;" vertex="1" parent="3">
+          <mxGeometry x="360" y="95" width="130" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="实体-关系 ER（70s）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="3">
+          <mxGeometry x="510" y="95" width="130" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="扩展关系模型（80s）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="3">
+          <mxGeometry x="660" y="95" width="130" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="语义模型（70s末–80s）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="3">
+          <mxGeometry x="810" y="95" width="130" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="面向对象 ODBMS&#10;（80s末–90s初）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="3">
+          <mxGeometry x="960" y="95" width="130" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="对象-关系&#10;（90s初）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="3">
+          <mxGeometry x="1110" y="95" width="130" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="半结构化 XML（90s末–2000s）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="3">
+          <mxGeometry x="1260" y="95" width="130" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="时间轴箭头置于中部" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#666666;strokeColor=none;fontSize=10;fontColor=#ffffff;" vertex="1" parent="3">
+          <mxGeometry x="60" y="180" width="1260" height="6" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="结论：关系模型 + SQL 主导全局（扩展类型系统吸收一切），其余全部退场——多数仅因「数据粘性」仍在运行" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="3">
+          <mxGeometry x="520" y="205" width="700" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="20" value="2005–2024 第二轮：八个数据模型 / 查询语言挑战者（裁定）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="480" width="1360" height="390" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="① MapReduce / Hadoop（红：已死）&#10;Google 2014 年弃用 · 市场崩溃&#10;遗产：HDFS 与开源文件格式" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="20">
+          <mxGeometry x="60" y="80" width="310" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="② 键值存储（黄：趋同）&#10;RDBMS 可轻松模拟 KV；DynamoDB/Aerospike 等自行成熟&#10;嵌入式 KV 成为新 DBMS 的存储管理器" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="20">
+          <mxGeometry x="400" y="80" width="310" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="③ 文档 NoSQL（黄：趋同）&#10;几乎全部加 SQL + ACID&#10;MongoDB 2021 年为 Atlas 加 SQL 是收官标志" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="20">
+          <mxGeometry x="740" y="80" width="310" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="24" value="④ 列族 / 宽列（灰：细分市场）&#10;BigTable 无 join 与二级索引&#10;Cassandra/HBase 换 CQL、Phoenix 类 SQL 接口" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="20">
+          <mxGeometry x="1080" y="80" width="310" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="25" value="⑤ 文本搜索引擎（灰：细分·多存储）&#10;Elasticsearch / Solr 等专用系统&#10;RDBMS 也内置全文索引，多存储中间件统一访问" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="20">
+          <mxGeometry x="60" y="205" width="310" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="26" value="⑥ 数组数据库（灰：细分·科学）&#10;Rasdaman / kdb+ 只服务基因组等垂直行业&#10;SQL/MDA（2023）开始把它们吸收进 SQL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="20">
+          <mxGeometry x="400" y="205" width="310" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="27" value="⑦ 向量数据库（黄：最快趋同）&#10;本质是“文档库 + ANN 索引”&#10;ChatGPT 后不到 1 年，RDBMS 全部加上向量搜索" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="20">
+          <mxGeometry x="740" y="205" width="310" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="28" value="⑧ 图数据库（黄：趋同中）&#10;两张表（Node/Edge）即可模拟图&#10;SQL:2023 的 SQL/PGQ 缩小代差（DuckDB 实现快 10×）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="20">
+          <mxGeometry x="1080" y="205" width="310" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="29" value="总体判断（2.9 节）：非 SQL / 非关系系统 → 要么已死（MapReduce），要么趋同于 SQL（NoSQL、向量、图），要么窄分细分市场（列族、文本、数组）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;align=center;" vertex="1" parent="20">
+          <mxGeometry x="60" y="330" width="1280" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="40" value="2005–2024 六大系统架构变革评价（第 3 节）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="910" width="1360" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="41" value="列式系统（绿：真变革）&#10;向量化 + 更高效压缩&#10;占领 OLAP 数据仓库市场" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="40">
+          <mxGeometry x="60" y="75" width="200" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="42" value="云数据库（绿：真变革）&#10;对象存储 + 无服务器计算&#10;共享磁盘架构东山再起" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="40">
+          <mxGeometry x="280" y="75" width="200" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="43" value="数据湖 / 湖仓一体（黄：趋势）&#10;开源格式 Parquet/ORC 等&#10;对象存储驱动的 OLAP 范式" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="40">
+          <mxGeometry x="500" y="75" width="200" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="44" value="NewSQL（黄：有影响有限）&#10;内存 DBMS + 分布式 SQL&#10;采用率未爆发；NoSQL 也补上了事务" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="40">
+          <mxGeometry x="720" y="75" width="200" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="45" value="硬件加速器（灰：仅云可行）&#10;FPGA/GPU 只会用于云巨头的定制硬件&#10;独立厂商难以获利" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="40">
+          <mxGeometry x="940" y="75" width="200" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="46" value="区块链数据库（红：错向）&#10;慢约 5 个数量级&#10;合法公司不会为其付性能代价" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="40">
+          <mxGeometry x="1160" y="75" width="200" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="60" value="结论与展望" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1220" width="1360" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="61" value="未来：循环继续&#10;新一代挑战者照样会来，&#10;SQL / RM 仍会吸收优点存活&#10;（作者预计 2044 年还要再写续篇）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="60">
+          <mxGeometry x="60" y="70" width="310" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="62" value="组件复用才是正路&#10;别再造第 N 个完整 DBMS；&#10;推动类「POSIX 的 DBMS 内部标准」&#10;（Calcite / DataFusion / Velox / 文件格式）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="60">
+          <mxGeometry x="390" y="70" width="310" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="63" value="AI/ML 时代&#10;NL→SQL 很热闹但不会取代 SQL&#10;（自然语言有歧义、不可解释）&#10;ML 辅助优化（优化器/调优）是真实方向" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="60">
+          <mxGeometry x="720" y="70" width="310" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="64" value="留给下一代的关键提示：&#10;· 谨慎看待强营销的劣质产品&#10;· 凡巨形厂商开源的 DBMS 多为不成熟&#10;· 开发者应该直接查询，ORM 隐藏的数据模型要留意" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;align=left;spacingLeft=6;" vertex="1" parent="60">
+          <mxGeometry x="1050" y="70" width="310" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="70" value="第一轮（1960–2000）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="14" target="20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="71" value="第二轮（2005–2024）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="20" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="72" value="架构变革是主要进展所在（多在 RM 系统内部）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="40" target="60">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

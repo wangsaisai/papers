@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="LLM-Training-Inference" id="understanding-llms-training-inference">
+    <mxGraphModel dx="1440" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="① 数据准备与预处理（原材料）&#xa;收集：CommonCrawl（2500 亿+网页，GPT-3 占 82%）· 书籍 · Wikipedia · Reddit · 代码&#xa;质量过滤（去毒/去偏：启发式 + 分类器）· 去重（防背诵/防测试污染）· 隐私擦除" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="420" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="② 模型架构（Transformer）&#xa;仅解码器：因果 GPT 系 / 前缀 PaLM·GLM · 编码器-解码器：T5/BART&#xa;自注意力 / 多头注意力 / 前馈网络&#xa;位置编码：绝对 / 相对 / RoPE / ALiBi" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="510" y="40" width="420" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="③ 预训练（Pre-training）&#xa;语言建模：预测下一个词（自监督）&#xa;并行训练：数据并行 / 模型并行（Megatron-LM）/ ZeRO / 流水线并行&#xa;混合精度 FP16+FP32 · 卸载 GPU→CPU · 重叠 · 检查点/重计算" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="980" y="40" width="420" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="④ 微调与对齐（Fine-tuning / Alignment）&#xa;监督微调 SFT（指令调优）&#xa;对齐 RLHF：人类反馈 → 奖励模型 → PPO（有用 / 诚实 / 无害）&#xa;参数高效：LoRA / 前缀调优 / P-Tuning（&lt;1% 参数）&#xa;安全微调：安全示范 / 安全 RLHF / 上下文蒸馏" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="980" y="330" width="420" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="⑤ 评估（Evaluation）&#xa;静态基准：MMLU / GSM8K / HumanEval / CMMLU / XTREME&#xa;开放域问答：SQuAD / NaturalQuestions（F1 / EM）&#xa;安全评估：潜在偏见 · 红队测试" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="510" y="330" width="420" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="⑥ 推理与部署（Inference）&#xa;模型压缩：知识蒸馏 / 剪枝（结构化 30-40%）/ 量化 / 低秩分解 DRONE&#xa;内存调度：GPU↔CPU 参数卸载（BMInf）&#xa;并行化：数据 / 张量 / 流水线并行&#xa;结构优化：FlashAttention / PagedAttention（分块 → SRAM）&#xa;推理框架：TensorRT-LLM / vLLM / DeepSpeed 等 12 个" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="330" width="420" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="应用与使用（Utilization）&#xa;提示学习：零样本 / 少样本 ICL / 思维链 CoT（替代“预训练+微调”范式）&#10;领域应用：问答 / 摘要 / 代码 / 医疗 / 神经科学（中间层表示）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="620" width="700" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="未来方向（Future）&#xa;模型规模持续扩大 · 多模态扩展（成本增加）&#xa;低成本压缩部署 · 领域特化 · RNN 新架构（RWKV）竞争&#10;开源 vs 闭源 · 安全对齐与成本困境" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="780" y="640" width="620" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="20" value="数据" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="2" target="3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="搭建模型" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="预训练产出基础模型" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="微调后模型" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="24" value="部署" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="5" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="25" value="评测" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0;exitY=0.5;entryX=0.8;entryY=0;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="26" value="模型应用" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="7" target="8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="27" value="演进" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="8" target="9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

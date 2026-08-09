@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="SkipList-Architecture" id="skiplists-probabilistic-alternative-balanced-trees">
+    <mxGraphModel dx="1440" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="990" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="sl1" value="多层链表结构 Multi-Level Linked List（每层 = 跳过中间节点的“快速通道”）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1030" height="480" as="geometry" />
+        </mxCell>
+        <mxCell id="slh" value="头节点 Head&#10;（含 1..MaxLevel&#10;前向指针）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;verticalAlign=middle;align=center;" vertex="1" parent="sl1">
+          <mxGeometry x="30" y="45" width="90" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="slt3" value="L3 · 最高层（快速通道）" style="text;html=1;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fillColor=none;" vertex="1" parent="sl1">
+          <mxGeometry x="140" y="25" width="220" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="slt2" value="L2" style="text;html=1;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fillColor=none;" vertex="1" parent="sl1">
+          <mxGeometry x="140" y="150" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="slt1" value="L1（全量有序链表）" style="text;html=1;align=center;verticalAlign=middle;fontSize=12;fontStyle=1;fillColor=none;" vertex="1" parent="sl1">
+          <mxGeometry x="140" y="275" width="180" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="sl30a" value="30" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;" vertex="1" parent="sl1">
+          <mxGeometry x="250" y="45" width="90" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="sln3" value="NIL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="sl1">
+          <mxGeometry x="480" y="45" width="80" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="sl20" value="20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;" vertex="1" parent="sl1">
+          <mxGeometry x="170" y="170" width="90" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="sl30b" value="30" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;" vertex="1" parent="sl1">
+          <mxGeometry x="330" y="170" width="90" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="sln2" value="NIL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="sl1">
+          <mxGeometry x="480" y="170" width="80" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="sl10" value="10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;" vertex="1" parent="sl1">
+          <mxGeometry x="120" y="295" width="90" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="sl20b" value="20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;" vertex="1" parent="sl1">
+          <mxGeometry x="230" y="295" width="90" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="sl30c" value="30" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;" vertex="1" parent="sl1">
+          <mxGeometry x="340" y="295" width="90" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="sl40" value="40" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" vertex="1" parent="sl1">
+          <mxGeometry x="450" y="295" width="90" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="sln1" value="NIL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="sl1">
+          <mxGeometry x="560" y="295" width="80" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="slnote" value="结构规则：k 级节点拥有 k 个前向指针，同属第 1..k 层链表（如 30 横跨 L1·L2·L3）；&#10;每层链表跳过 2^{i−1} 个中间节点 → 查找步数从 O(n) 降到 O(log n)；链表以 NIL 哨兵终止" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fillColor=none;fontStyle=2;" vertex="1" parent="sl1">
+          <mxGeometry x="130" y="390" width="880" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sl2" value="抛硬币建层级 · 核心操作 Random Levels &amp; Operations" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="20" width="350" height="480" as="geometry" />
+        </mxCell>
+        <mxCell id="slcoin" value="抛硬币建层级（晋升规则）&#10;新节点级别 = 连续晋升级数&#10;P(级别 ≥ k+1 | ≥ k) = p&#10;p = 1/2（方差小）或 p = 1/4（更省空间）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" vertex="1" parent="sl2">
+          <mxGeometry x="25" y="40" width="300" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="slsearch" value="查找 Search —— 从最高层下探&#10;在当前层横向右移，指针将越过目标&#10;时下移一层；到第 1 层定位目标或失败" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="sl2">
+          <mxGeometry x="25" y="150" width="300" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="slinsert" value="插入 Insert&#10;搜索同时记录 update 向量（各级前驱）&#10;抛硬币生成级别 → 逐层拼接新节点&#10;必要时提升列表最大级别" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="sl2">
+          <mxGeometry x="25" y="260" width="300" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="sldelete" value="删除 Delete&#10;搜索定位目标 → 各层重新链接&#10;前驱 → 后继；删除最大元素后&#10;降低列表最大级别" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="sl2">
+          <mxGeometry x="25" y="370" width="300" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="sl3" value="理论保证 Theoretical Guarantees（概率平衡哲学）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="520" width="700" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="slg1" value="期望成本 Expected Cost&#10;期望搜索成本 ≤ L(n)/p + 1/(1−p) = O(log n)，L(n) = log_{1/p} n&#10;比较次数 = 搜索路径长度 + 1（反向爬升分析：C(k) = k/p）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="sl3">
+          <mxGeometry x="25" y="40" width="650" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="slg2" value="高概率保证（非最坏情形）&#10;p = 1/2, n = 4096：搜索超期望 3 倍&#10;概率 &lt; 1/200,000,000&#10;n &gt; 250 时超 3 倍概率 &lt; 10^{-6}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="sl3">
+          <mxGeometry x="25" y="130" width="310" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="slg3" value="参数设计&#10;MaxLevel = L(N)（N 为元素数上界）&#10;p = 1/2, 2^16 元素 → MaxLevel = 16&#10;平均指针数 1/(1−p)：p = 1/4 时 ≈ 1.33&#10;级别生成平均需 (log₂ 1/p)/(1−p) 个随机位" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="sl3">
+          <mxGeometry x="365" y="130" width="310" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sl4" value="实测对比与影响 Benchmarks &amp; Impact" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="740" y="520" width="680" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="slk1" value="实测（Sun-3/60 · 2^16 个整数）&#10;插入 0.065ms：比非递归 AVL 快 1.55×，比 2-3 树快 3.2×&#10;删除快 1.46× / 3.65× · 搜索速度与 AVL 相当" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="sl4">
+          <mxGeometry x="25" y="40" width="630" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="slk2" value="应用 Applications&#10;Redis 有序集合 zset&#10;LevelDB / RocksDB MemTable" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="sl4">
+          <mxGeometry x="25" y="135" width="300" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="slk3" value="局限 Limitations&#10;概率保证而非最坏情形保证&#10;键比较更多 · 需要高质量随机数&#10;64 位指针的空间开销较高" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="sl4">
+          <mxGeometry x="355" y="135" width="300" height="95" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sl6" value="图例 Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=13;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="20" y="810" width="760" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="sl6a" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="sl6">
+          <mxGeometry x="10" y="35" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="sl6at" value="节点 / 数据结构 · 多层链表" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="sl6">
+          <mxGeometry x="50" y="33" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="sl6b" value="" style="rounded=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="sl6">
+          <mxGeometry x="10" y="59" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="sl6bt" value="查找 / 插入 / 删除操作" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="sl6">
+          <mxGeometry x="50" y="57" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="sl6c" value="" style="rounded=0;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="sl6">
+          <mxGeometry x="10" y="83" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="sl6ct" value="抛硬币晋升规则 / 参数 p 与实测" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="sl6">
+          <mxGeometry x="50" y="81" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="sl6d" value="" style="rounded=0;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="sl6">
+          <mxGeometry x="10" y="107" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="sl6dt" value="NIL 哨兵 / 环境与局限" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="sl6">
+          <mxGeometry x="50" y="105" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="slE1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="slh" target="sl30a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="slE2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sl30a" target="sln3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="slE3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.35;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="slh" target="sl20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="slE4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sl20" target="sl30b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="slE5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sl30b" target="sln2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="slE6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="slh" target="sl10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="slE7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sl10" target="sl20b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="slE8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sl20b" target="sl30c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="slE9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sl30c" target="sl40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="slE10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="sl40" target="sln1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="slE11" value="节点 30 · 3 级" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;strokeColor=#9673a6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="sl30a" target="sl30b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="slE12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;strokeColor=#9673a6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="sl30b" target="sl30c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="slE13" value="节点 20 · 2 级" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;strokeColor=#9673a6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="sl20" target="sl20b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="slE14" value="级别输入" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="slcoin" target="slinsert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="slE15" value="搜索定位" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;dashed=1;strokeColor=#d79b00;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="slsearch" target="slinsert">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

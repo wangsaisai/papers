@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Spanner-Architecture" id="spanner-globally-distributed-database">
+    <mxGraphModel dx="1440" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1420" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="客户端层：应用客户端（F1 Google Ads 等）&#10;SQL 查询 · 读写事务 · 只读事务 · 快照读&#10;经 Location Proxy 定位 spanserver · 读取自动故障切换" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="840" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="3" value="控制平面" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="170" width="1360" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="Universe Master&#10;状态控制台（调试 / 浏览全部 zone）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="3">
+          <mxGeometry x="90" y="55" width="380" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="Placement Driver&#10;跨 zone 自动搬移数据（分钟级）&#10;满足复制约束或平衡负载" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="3">
+          <mxGeometry x="520" y="55" width="380" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="ZoneMaster + Location Proxy&#10;前者把数据分配给 spanserver&#10;后者供客户端定位 spanserver" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="3">
+          <mxGeometry x="950" y="55" width="380" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="7" value="Zone 区域（管理 / 物理隔离单位 · 可跨数据中心）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="350" width="1360" height="470" as="geometry" />
+        </mxCell>
+
+        <mxCell id="8" value="Spanserver（每 zone 100–1000 台）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="7">
+          <mxGeometry x="90" y="70" width="700" height="350" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="Tablet（100–1000 个 / spanserver）&#10;(key, timestamp) → value 键值映射 · 多版本&#10;B 树文件 + 预写日志，均置于 Colossus 之上" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="8">
+          <mxGeometry x="40" y="100" width="620" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="Paxos 状态机（每 tablet 一个 · 复制单元）&#10;领导者租约（默认 10s）· 流水化提升吞吐· 写有序提交&#10;副本集合 = Paxos 组" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="8">
+          <mxGeometry x="40" y="190" width="620" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="锁表 Lock Table（仅领导者副本）&#10;键范围 → 锁状态 · 两阶段锁（2PL）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="8">
+          <mxGeometry x="40" y="290" width="290" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="事务管理器（仅领导者副本）&#10;跨 Paxos 组 2PC：参与者 / 协调者领导者&#10;单组事务可绕过" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="8">
+          <mxGeometry x="370" y="290" width="290" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="13" value="目录与数据放置" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="7">
+          <mxGeometry x="850" y="70" width="520" height="350" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="数据模型：universe → 数据库 →&#10;模式化半关系表（主键+列，INTERLEAVE 交错成层次）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="13">
+          <mxGeometry x="40" y="90" width="440" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="目录 = 共享键前缀的连续键桶&#10;放置 / 迁移的最小单位（过大时切分为片段）&#10;Movedir 后台移动目录或片段" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="13">
+          <mxGeometry x="40" y="180" width="440" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="放置约束（管理员定义命名选项）：&#10;副本数量与类型 × 地理分布·应用给&#10;目录打标（如：欧洲 3 副本，北美 5 副本）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="13">
+          <mxGeometry x="40" y="285" width="440" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="20" value="TrueTime —— 暴露时钟不确定性的时间 API" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="830" width="1360" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="时间主机 Time Master（每区一批）&#10;GPS 主机（专用天线 · 物理分散）&#10;+ 原子钟 Armageddon 机·防漂移&#10;定期互相对比 · 剔除说谎者" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="20">
+          <mxGeometry x="90" y="110" width="420" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="时间从属守护进程 timeslave（每台机器）&#10;轮询多个主机 · Marzullo 算法变体剔说谎者&#10;通告缓慢增长的不确定性 ϵ（多数 &lt;4ms，1–7ms 锯齿）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="20">
+          <mxGeometry x="590" y="110" width="490" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="TrueTime API&#10;TT.now() → [earliest, latest]&#10;TT.after(t) · TT.before(t)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;align=left;spacingLeft=10;" vertex="1" parent="20">
+          <mxGeometry x="1140" y="110" width="220" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="30" value="并发控制（依托 TrueTime）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1170" width="1360" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="31" value="读写事务（悲观）&#10;协调者领导者分配 s ≥ TT.now().latest&#10;提交等待：等到 TT.after(s)（≈2·ϵ）&#10;→ 外部一致性（线性一致性）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="30">
+          <mxGeometry x="90" y="70" width="300" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="32" value="只读事务（无锁）&#10;预先声明不含写 · 选时间戳 s_read&#10;在任意足够新的副本上无锁快照读&#10;不阻塞并发写 · 写入也不阻塞它" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="30">
+          <mxGeometry x="440" y="70" width="290" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="33" value="快照读（过去时间戳 / 界）&#10;t ≤ 安全时间 t_safe = min(Paxos, 事务管理器)&#10;在任意足够新的副本上执行 · 无锁" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="30">
+          <mxGeometry x="790" y="70" width="270" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="34" value="原子模式变更&#10;显式分配未来时间戳（准备期登记）· 无阻塞&#10;隐式依赖的读写按其时间戳决定等待与否" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="30">
+          <mxGeometry x="1100" y="70" width="270" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="40" value="客户端读写事务 / SQL" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="41" value="每台机器向主机轮询时间（30s 粒度）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;strokeColor=#9673a6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="8" target="20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="42" value="提交等待 → 时间戳排序" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="20" target="30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="43" value="Zone 内 spanserver 数据分配" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="44" value="跨 Paxos 组复制文本（2PC：协调者 + 参与者）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="12" target="30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="45" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

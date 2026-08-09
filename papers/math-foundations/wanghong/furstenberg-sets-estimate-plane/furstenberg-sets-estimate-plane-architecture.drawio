@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Furstenberg-Proof-Architecture" id="furstenberg-sets-estimate-plane">
+    <mxGraphModel dx="1440" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1540" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="fs1" value="设定 · Problem Setup（(s,t)-Furstenberg 集猜想，Furstenberg 1969）" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1400" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="fs11" value="定义 (s,t)-Furstenberg 集&#10;E ⊂ ℝ²，存在直线族 L：dim_H L ≥ t，&#10;对每条 ℓ ∈ L 有 dim_H (E ∩ ℓ) ≥ s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="fs1">
+          <mxGeometry x="25" y="40" width="380" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="fs12" value="猜想目标 Furstenberg Conjecture&#10;dim_H E ≥ min{s+t, (3s+t)/2, s+1}&#10;主情形 s &lt; t &lt; 2−s 长期开放&#10;（Wolff 网格构造显示该界尖锐）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="fs1">
+          <mxGeometry x="430" y="40" width="420" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="fs13" value="历史进展（缺口在哪里）&#10;Bourgain 2003: s=t · Héra 等 2018: (s,2s)&#10;Lutz-Stull 2021: t ≤ s（界 s+t）&#10;此前一般下界仅 max(t/2+s, s+min(s,t))" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="fs1">
+          <mxGeometry x="875" y="40" width="500" height="95" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fs2" value="证明框架 Proof Structure：离散化 → 分支函数分类 → 两条引理链 → 尺度归纳" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="210" width="1400" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="fs21" value="① 离散化 Discretization&#10;δ-管族 T 近似直线 ℓ（覆盖数 |T|_δ）&#10;(δ, s, δ^{-η})-nice 配置 (P, T)&#10;维数问题 → 管族体积估计问题" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="fs2">
+          <mxGeometry x="30" y="40" width="400" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="fs22" value="② 分类 Classification（分支函数）&#10;按各尺度分支行为分成两类：&#10;· 几乎 AD-正则（各尺度均匀分布）&#10;· 半良好间隔（某些尺度稀疏分布）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="fs2">
+          <mxGeometry x="460" y="40" width="420" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="fs23" value="③ 关键引理 Key Lemmas&#10;Roth 反推论证 · QP 覆盖引理&#10;和积估计（加性组合）&#10;尺度归纳引理（ε-改进迭代）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="fs2">
+          <mxGeometry x="910" y="40" width="470" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fs3" value="分支 A · 几乎 AD-正则集（Orponen–Shmerkin 路线）" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" vertex="1" parent="fs2">
+          <mxGeometry x="30" y="180" width="660" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="fs31" value="Bourgain 离散和积定理 [1]&#10;+ Bourgain 投影定理 [2]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="fs3">
+          <mxGeometry x="40" y="35" width="300" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="fs32" value="Furstenberg 估计 ε-改进 [30]&#10;（Orponen–Shmerkin，多尺度起点）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="fs3">
+          <mxGeometry x="40" y="110" width="300" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="fs33" value="尖锐径向投影定理 [32]&#10;→ ABC-和积定理 [31]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="fs3">
+          <mxGeometry x="40" y="185" width="300" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="fs34" value="几乎 AD-正则的&#10;尖锐例外集估计 [31]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="fs3">
+          <mxGeometry x="40" y="260" width="300" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="fs35" value="几乎 AD-正则集：&#10;尖锐 Furstenberg 估计 [31]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="fs3">
+          <mxGeometry x="40" y="335" width="300" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fs4" value="分支 B · 半良好间隔集（本文核心，推广 [17]）" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=13;" vertex="1" parent="fs2">
+          <mxGeometry x="710" y="180" width="660" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="fs41" value="良好间隔集：&#10;尖锐 Furstenberg 估计 [17]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="fs4">
+          <mxGeometry x="40" y="35" width="300" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="fs42" value="本文推广 → 半良好间隔集&#10;（分支函数分类的稀疏情形）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="fs4">
+          <mxGeometry x="40" y="110" width="300" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="fs43" value="关键引理：Roth 反推 + QP 覆盖&#10;（证明 δ-管族体积充分大的下界）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;fontStyle=1;" vertex="1" parent="fs4">
+          <mxGeometry x="40" y="185" width="300" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="fs44" value="半良好间隔集：&#10;尖锐 Furstenberg 估计（本文）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;fontStyle=1;" vertex="1" parent="fs4">
+          <mxGeometry x="40" y="260" width="300" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fs5" value="④ 尺度归纳 Scale Induction（源自 [30]）&#10;把分支 A（均匀）+ 分支 B（稀疏）逐尺度拼接为 |T|_δ ≳ ε · δ^{-(s+t)/2 + ε} M" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="fs2">
+          <mxGeometry x="330" y="645" width="780" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fs6" value="主定理 Theorem 1.1（离散版：定理 4.1）&#10;任意 (s,t)-Furstenberg 集 F ⊂ ℝ²：dim_H F ≥ min{s+t, (3s+t)/2, s+1}&#10;下界与 Wolff 构造的上界匹配 → 最优，二维 Furstenberg 集猜想完全解决" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="940" width="1000" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fs7" value="推论与应用 Corollaries（主定理的直接副产品）" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1100" width="1400" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="fs71" value="推论 1 · Oberlin 正交投影例外集猜想（定理 1.2）&#10;任意 Borel 集 K ⊂ ℝ²，0 ≤ u ≤ min{dim_H K, 1}：&#10;dim_H {θ ∈ S¹ : dim_H π_θ(K) &lt; u} ≤ max{2u − dim_H K, 0}&#10;（调和分析限制问题的新视角）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="fs7">
+          <mxGeometry x="25" y="38" width="560" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="fs72" value="推论 2 · 离散和积估计（定理 1.5）&#10;Elekes 界限的类比（指数 7/6 → 5/4，推广 Máthé-O'Regan 与 [31]）&#10;对 (δ, s, δ^{-ε})-集 A：&#10;max{|A+A|_δ, |A·A|_δ} ≥ δ^{-(5/4)s + η}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="fs7">
+          <mxGeometry x="615" y="38" width="560" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="fs73" value="关联与开放&#10;· Kakeya 猜想&#10;· Fourier 限制（Wang–Wu）&#10;· n ≥ 3 高维仍开放" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="fs7">
+          <mxGeometry x="1205" y="38" width="190" height="170" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fs8" value="图例 Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=13;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1360" width="760" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="fs8a" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="fs8">
+          <mxGeometry x="10" y="35" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="fs8at" value="设定 / 主定理 · 猜想与结论" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="fs8">
+          <mxGeometry x="50" y="33" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="fs8b" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="fs8">
+          <mxGeometry x="10" y="59" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="fs8bt" value="分支 A 引理链 · AD-正则（均匀）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="fs8">
+          <mxGeometry x="50" y="57" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="fs8c" value="" style="rounded=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="fs8">
+          <mxGeometry x="10" y="83" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="fs8ct" value="分支 B 引理链 · 半良好间隔（稀疏）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="fs8">
+          <mxGeometry x="50" y="81" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="fs8d" value="" style="rounded=0;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="fs8">
+          <mxGeometry x="10" y="107" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="fs8dt" value="关键引理 / 尺度归纳 · 工具层" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="fs8">
+          <mxGeometry x="50" y="105" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="fs8e" value="" style="rounded=0;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="fs8">
+          <mxGeometry x="10" y="131" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="fs8et" value="推论 · 投影猜想 / 离散和积" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="fs8">
+          <mxGeometry x="50" y="129" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="fe1" value="离散化假设" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs1" target="fs21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe2" value="分支函数分类" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs21" target="fs22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe3" value="几乎 AD-正则" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs22" target="fs3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe4" value="半良好间隔（稀疏）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs22" target="fs4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe5" value="Roth 反推 · QP 覆盖" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;dashed=1;strokeColor=#d6b656;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs23" target="fs43">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs31" target="fs32">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs32" target="fs33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs33" target="fs34">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs34" target="fs35">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs41" target="fs42">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs42" target="fs43">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs43" target="fs44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe13" value="分支 A 输出" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.3;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs35" target="fs5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="195" y="655" />
+              <mxPoint x="525" y="655" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fe14" value="分支 B 输出" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.7;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs44" target="fs5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe15" value="主定理" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs5" target="fs6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe16" value="推论 1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs6" target="fs71">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe17" value="推论 2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.65;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs6" target="fs72">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fe18" value="关联" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;dashed=1;strokeColor=#666666;exitX=0.95;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="fs6" target="fs73">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

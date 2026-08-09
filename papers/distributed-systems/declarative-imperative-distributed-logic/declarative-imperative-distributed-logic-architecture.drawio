@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="The Declarative Imperative - 声明式命令式" id="declarative-imperative-distributed-logic">
+    <mxGraphModel dx="1440" dy="1640" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1640" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="n1" value="问题：编程危机（第 1 节）&#xa;摩尔定律转变成并行度而非单核频率；&#xa;云计算将大规模集群商品化&#xa;⇒ 并行受限、分布式编程极难&#xa;Jim Gray：需求将编程工作量降低几个数量级" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="640" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n2" value="方案：声明式 Datalog 语言&#xa;“画蓝图而非指挥搬砖”：&#xa;声明数据应当什么样，系统自动推导怎么做&#xa;数据库语言（关系代数）天然可并行化&#xa;→ 作为下一代并行/分布式编程语言根基" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="760" y="30" width="640" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n3" value="七年级经验（第 3 节）：用 Datalog 变体（NDlog/Overlog/SNLog）实现完整系统&#xa;· 分布式爬虫（Web/Gnutella） · 网络路由协议（互联网与无线） · DHT（Chord）&#xa;· 分布式贝叶斯置信传播（联结树） · Paxos / 两阶段提交 &#xa;· 传感器网络协议 · 网络缓存/代理 · 文件系统、作业调度器&#xa;结果：代码量比命令式少几个数量级（典型 10–100×） · 性能有竞争力 · 演化更快" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="230" width="1360" height="170" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c4" value="Dedalus 语言（第 2 节）&#10;时间（而不是空间）作为分布式系统的组织原则&#10;每个关系带时间戳属性；三类规则：&#10;· 演绎规则：同一时间步内推理&#10;· 归纳规则（@next）：原子状态转移（时间步 N+1 可见）&#10;· 异步规则（@async · choice）：消息投递/故障/时钟的不可预测延迟" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="500" width="640" height="210" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n5" value="网络数据独立性（§3.2）&#10;位置指定符 @ 声明全局关系&#10;通信由连接规范自动触发&#10;（路由/多播 = 一条规则）&#10;注意：全局数据库抽象是“谎言”（故障时语义不成立），Dedalus 中禁止分布式连接体规则" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="760" y="500" width="640" height="210" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n6" value="流水线半朴素 PSN 评估（§3.4.1）&#10;单调程序：新事实到达即传播推导&#10;无需任何节点间同步 → “令人尴尬地并行”&#10;比 MapReduce 的全局 barrier 更优（物理重分区 ≠ 不可用 Reduce）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="800" width="640" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n7" value="非单调边界 = 协调点（§3.4.3）&#10;否定/聚合（计数、空性判定）&#10;⇒ 需要全局屏障 barrier（分层同步）&#10;“计数需要等待；等待需要计数”&#10;协调协议本身就是聚合（2PC 一致 / Paxos 多数）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="760" y="800" width="440" height="230" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n8" value="CALM 猜想（第 4 节）&#10;一个程序存在最终一致、无需协调的执行策略&#10;⟺ 该程序可由（单调）Datalog 表达&#10;单调 → 免协调；非单调 → 必须有协调&#10;（后续被证明为 CALM 定理；“NoSQL is Datalog”）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1080" width="900" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n9" value="Bloom 语言（BOOM 项目）&#10;将猜想落地为语言：&#10;· 单调性检查自动完成&#10;· 密封下标：聚合 / 反连接列&#10;· 语法糖与封装（回应 Datalog 语法的指责）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="1080" width="400" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" value="混淆" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n1" target="n2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="实践验证（7 年系统）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="n2" target="n3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="迭代设计：Overlog → Dedalus（时间扩展）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n3" target="c4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="单调子程序可开心并行" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="c4" target="n6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="时间戳与异步规则（通信建模）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="c4" target="n5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="单调 ⇒ 免协调" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.4;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n6" target="n8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="非单调 ⇒ 必须协调" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.68;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n7" target="n8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="渐进为工程语言" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n8" target="n9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="状态时序需求" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n5" target="n7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n10" value="作者自述局限（第 3.5 节）&#xa;· 全局数据库的“谎言”必须在协议中显式建模（Dedalus 禁止分布式连接体规则）&#xa;· 语法丑陋、缺少模块化/封装（在 Bloom 中修正）&#xa;· 跨越集群的分布式 join 需 2PC / Paxos 才能“变真”（显著拖慢系统）&#xa;· 调度器核心循环能否比肩最佳线程/事件实现尚未证实" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=1.5;dashed=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1320" width="1360" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend" value="图例 Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=13;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1500" width="960" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="35" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1t" value="理论 / 语言（方案与输出）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="33" width="280" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2" value="" style="rounded=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="59" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2t" value="机制（Dedalus 规则 / PSN 语义、局限）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="57" width="280" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="83" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3t" value="经验 / 实现结论" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="81" width="280" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4" value="" style="rounded=0;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="107" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4t" value="猜想 / 定理（CALM）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="105" width="280" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg5" value="" style="rounded=0;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="131" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg5t" value="危机 / 局限 / 非单调边界" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="129" width="280" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

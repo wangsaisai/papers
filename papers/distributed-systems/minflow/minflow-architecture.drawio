@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="MinFlow-多级Shuffle统一优化" id="minflow">
+    <mxGraphModel dx="1440" dy="1230" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1230" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="n01" value="分析作业（BSP DAG：Mapper 阶段 → Reducer 阶段）&#10;含全连接 shuffle：N 函数 → N² 条连接 → 2N² 次 S3 PUT/GET&#10;（例：500 函数 ≈ 50 万次请求，触发 S3 请求速率限流）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="30" width="420" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n02" value="MinFlow 云端控制平面（Cloud Control Plane）——三个组件联合优化：拓扑 × 调度 × 配置" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="140" width="1400" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="n03" value="拓扑优化器（Topology Optimizer）&#10;逐步收敛法生成等价多级拓扑：&#10;组逐步合并并保持各级全连接（通用 k 级 · 支持 mapper ≠ reducer）&#10;动态规划（MinSum）对每个 L 选出&#10;边数最少的候选拓扑" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="n02">
+          <mxGeometry x="30" y="60" width="400" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="n04" value="② 函数调度器（Function Scheduler）&#10;交错分区：拓扑 DAG 划分成完全二部图（CBG）子图为单位&#10;偶数 clevel → 工作器内本地内存（Tmpfs）&#10;奇数 clevel → 远程 S3（交错交替，≥50% 流量本地化、无拖尾）&#10;控制二部图宽度实现负载均衡（NP-难 → 启发式）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="n02">
+          <mxGeometry x="460" y="60" width="430" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="n05" value="③ 配置建模器（Configuration Modeler）&#10;公式(5)：每 clevel 时间 = 2×max(函数端带宽, 存储端速率瓶颈)&#10;参数：函数带宽、S3 请求速率、集群节点数、内存带宽&#10;运行时食数据量 D_i 用输入-输出采样拟合曲线预测&#10;选取总传输时间最短的全局最优配置" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="n02">
+          <mxGeometry x="920" y="60" width="450" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n06" value="多级拓扑概念示意 — 3L-Shuffle（#mapper = #reducer = 8，组数 8 → 4 → 2 → 1）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="360" width="1400" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="n6a" value="flevel 0&#10;8 组（每个 Mapper）&#10;全连接原始级" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="n06">
+          <mxGeometry x="50" y="70" width="270" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n6b" value="flevel 1&#10;4 组（组大小 2）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="n06">
+          <mxGeometry x="390" y="70" width="300" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n6c" value="flevel 2&#10;2 组（组大小 4）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="n06">
+          <mxGeometry x="730" y="70" width="300" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n6d" value="flevel 3&#10;1 组（全连接回 Reducer）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="n06">
+          <mxGeometry x="1070" y="70" width="290" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n6e" value="理论性质：任其 clevel 可分解为互不相交、宽度相等的完全二部图（CBG，定理1）；移除全部奇数级边后 DAG 分解为 CBG（推论1）→ CBG 函数同置一机即用内存传递" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="n06">
+          <mxGeometry x="50" y="215" width="1260" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n07" value="执行部署：无服务器平台（发放配置后由协调器运行）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="730" width="1400" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="n7a" value="协调器（Coordinators）&#10;分布式函数协调&#10;（多协调器防调度瓶颈）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="n07">
+          <mxGeometry x="40" y="70" width="300" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n7b" value="FaaS 函数工作器（10×EC2 m6i.24xlarge）&#10;回收内存搭 Tmpfs 本地文件系统&#10;→ 同机同组（CBG）函数走本地内存（本地化 ≥50% 流量）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="n07">
+          <mxGeometry x="380" y="70" width="540" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n7c" value="远程对象存储（S3）&#10;奇数级 clevel 的 PUT/GET&#10;受请求速率限流（写 3.5k / 读 5.5k req/s）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="n07">
+          <mxGeometry x="960" y="70" width="400" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n08" value="效果（600 函数 / 200GB / TeraSort）：MinFlow shuffle 16s vs 全走 S3（BL）约 180s（快 10.8×）、工作器内存（FF）约 154s、LBD 约 50s（快 3×）· 存储成本仅为 BL 的 1%（省 98.84%）&#10;消融：仅拓扑 -44%（慢于 LBD）→ +函数调度器超过 LBD 19% → 完整三件套最优；与穷举理论最优（MF-OPT）差距 &lt;1%；系统开销（拓扑+调度子进程）&lt;1s&#10;适用限制：并行度 N 为素数时难构造多级拓扑（微调 N ±3）；基于 BSP/平稳参数假设" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="985" width="1400" height="210" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e01" value="工作流规范（通信操作符）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n01" target="n02">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e02" value="每级最少边候选集（L=1..p）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n03" target="n04">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e03" value="每个拓扑的调度（CBG 分区）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n04" target="n05">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e04" value="最优配置（拓扑 + 放置）下发" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.15;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n05" target="n07">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e05" value="clevel 0（偶数）· 本地内存 Tmpfs" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n6a" target="n6b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e06" value="clevel 1（奇数级）· 远程 S3 PUT/GET" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n6b" target="n6c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e07" value="clevel 2（偶数级）· 本地内存 Tmpfs" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n6c" target="n6d">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e08" value="按最优配置启停函数（交错分配介质）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n7a" target="n7b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e09" value="奇数级数据（PUT/GET，请求受限流）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n7b" target="n7c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

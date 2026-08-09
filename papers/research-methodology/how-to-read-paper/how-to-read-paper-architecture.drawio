@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Three-Pass-Approach" id="how-to-read-paper">
+    <mxGraphModel dx="1440" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="研究论文（Paper）&#xa;标题 · 摘要 · 引言 · 章节标题 · 数学 · 结论 · 参考文献" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="20" width="360" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="3" value="第一遍：鸟瞰全局（5-10 分钟）· 快速浏览判断是否值得继续" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="150" width="1400" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="阅读步骤：&#xa;① 读标题 / 摘要 / 引言&#xa;② 读章节与子章节标题（忽略正文）&#xa;③ 浏览数学内容（判断理论依据）&#xa;④ 读结论&#xa;⑤ 扫视参考文献（勾选已读文献）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;spacingLeft=12;" vertex="1" parent="3">
+          <mxGeometry x="30" y="45" width="660" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="回答五个 C：&#xa;类别 Category · 背景 Context · 正确性 Correctness&#xa;贡献 Contributions · 清晰度 Clarity" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="3">
+          <mxGeometry x="730" y="45" width="630" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="决策：不感兴趣 / 背景不足 / 假设不成立 → 就此停止（省时省纸）&#xa;不在研究领域但将来可能相关：第一遍即可" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="3">
+          <mxGeometry x="730" y="120" width="630" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="10" value="第二遍：掌握内容（≤ 1 小时）&#xa;更仔细地读，跳过证明细节" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="410" width="1400" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="阅读动作：&#xa;① 仔细阅读，跳过证明细节&#xa;② 页边空白做注释 / 记录不懂的术语&#xa;③ 重点查看图表与插图：坐标轴标对了吗？有误差棒吗？&#xa;④ 标记想进一步阅读的参考文献" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=left;verticalAlign=middle;spacingLeft=12;" vertex="1" parent="10">
+          <mxGeometry x="30" y="45" width="660" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="产出：掌握论文内容&#xa;能向他人总结论文的主旨及其支持证据" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="730" y="45" width="630" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="仍不理解时可选：&#xa;(a) 搁置弃读 · (b) 读背景材料后再回 · (c) 坚持进入第三遍" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="730" y="120" width="630" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="20" value="第三遍：深度理解（1 小时以上）在脑中虚拟重做论文" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="680" width="1400" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="阅读动作：&#xa;① 虚拟重做：以作者相同假设重新实现论文&#xa;② 识别并质疑每一个陈述与假设&#xa;③ 思考“如果我来写，我会怎么表达？”&#xa;④ 记录对未来工作的想法" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=left;verticalAlign=middle;spacingLeft=12;" vertex="1" parent="20">
+          <mxGeometry x="30" y="45" width="660" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="产出：凭记忆重建论文完整结构&#xa;指出优点与缺点 · 隐含假设 · 引用缺失 · 实验/分析中的潜在问题" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="20">
+          <mxGeometry x="730" y="45" width="630" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="用途：审稿人完全理解论文 · 鉴别创新点与隐藏缺陷" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="20">
+          <mxGeometry x="730" y="120" width="630" height="75" as="geometry" />
+        </mxCell>
+
+        <mxCell id="30" value="文献调研（Literature Survey）— 三遍法的综合应用" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="950" width="1400" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="31" value="① 学术搜索（Google Scholar / CiteSeer）&#xa;关键词找 3-5 篇近期高引论文 → 做第一遍阅读 → 读其相关工作" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="30">
+          <mxGeometry x="30" y="45" width="420" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="32" value="找到综述论文？→ 完成 ✓&#xa;否则：在参考文献中找共同引用 / 反复出现的作者 → 关键论文与关键研究人员" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="30">
+          <mxGeometry x="490" y="45" width="420" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="33" value="访问关键研究人员网站 → 确定顶级会议 → 翻会议论文集&#10;浏览近期高质量相关工作 → 收集的论文做两遍阅读，反复迭代补漏" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="30">
+          <mxGeometry x="940" y="45" width="420" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="34" value="价值：把模糊的“读论文”技能拆解为可重复、可量化的三步流程 · 弹性控制深度（按需求读到第几遍）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;fillColor=none;" vertex="1" parent="30">
+          <mxGeometry x="40" y="145" width="1320" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="40" value="第一遍" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="2" target="3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="41" value="值得继续 → 第二遍（否则到此为止）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="3" target="10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="42" value="仍未理解 / 需要深挖 → 第三遍" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="10" target="20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="43" value="调研中按需复用三遍法（第一遍过滤 → 第二遍精读）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="20" target="30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

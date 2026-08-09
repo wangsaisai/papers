@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Heracles-反馈控制混部架构" id="heracles-resource-efficiency">
+    <mxGraphModel dx="1440" dy="1140" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1140" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="n01" value="LC 延迟敏感服务（Latency-critical）&#10;——目标：绝不违反 SLO——" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="480" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="n1a" value="websearch 搜索&#10;99 分位 &lt; 几十 ms&#10;索引驻留内存，计算密集" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="n01">
+          <mxGeometry x="30" y="60" width="420" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="n1b" value="ml_cluster 文本聚类&#10;95 分位 &lt; 几十 ms · 内存带宽敏感（60%）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="n01">
+          <mxGeometry x="30" y="125" width="420" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="n1c" value="memkeyval 键值存储&#10;99 分位 &lt; 数百 μs · 网络带宽敏感" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="n01">
+          <mxGeometry x="30" y="190" width="420" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n02" value="BE 尽力而为批处理任务（Best-effort）——吸收闲置资源" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="560" y="40" width="840" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="n2a" value="brain（深度学习）&#10;计算密集 · LLC 敏感 · 高 DRAM 带宽" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="n02">
+          <mxGeometry x="30" y="60" width="380" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n2b" value="streetview 街景拼接&#10;对 DRAM 子系统要求很高" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="n02">
+          <mxGeometry x="445" y="60" width="380" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="n2c" value="合成压力源：stream-LLC · stream-DRAM · cpu_pwr · iperf&#10;（分别打压缓存 / 内存带宽 / 功耗 / 出向带宽）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="n02">
+          <mxGeometry x="30" y="155" width="795" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n04" value="Heracles 顶层控制器（每台服务器一个实例，15 秒轮询）&#10;读数：LC 尾部延迟 + 负载 → 计算延迟余量 slack = (SLO − 延迟)/SLO&#10;决策：slack&lt;0 → 停 BE + 冷却 5 分钟；load&gt;85% → 停 BE（滞回 80% 恢复）&#10;slack&lt;10% → 不允许 BE 增长；slack&lt;5% → 收回 BE 核心&#10;洞见：只要任何共享资源不饱和，干扰就可控 → 多维问题分解为独立子问题" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;align=left;verticalAlign=middle;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="320" width="1360" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n05" value="核心与内存子控制器（Core / Memory）&#10;核心数 + LLC 分区二维统一调控&#10;梯度下降（性能为凸函数）：交替 GROW_LLC ↔ GROW_CORES&#10;DRAM 带宽 ≥ 90% 峰值 → 削减 BE 核心数&#10;约 30s 收敛 · 周期 2s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="500" width="430" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="n05b" value="功耗子控制器（Power）&#10;RAPL 监控每插槽功耗 + 每核 DVFS&#10;功耗 &gt; 90%×TDP 且 LC 频率低于保证值 → 降低 BE 核心频率&#10;（功耗预算让给 LC；两条件必须同时满足）&#10;周期 2s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="495" y="500" width="430" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="n05c" value="网络子控制器（Network）&#10;监控 LC 出向带宽 LCBandwidth&#10;BE 限速 = LinkRate − LC − max(5%Link, 10%LC)&#10;（LC 预留 10% 余量应对突发）&#10;HTB qdisc 强制 · 周期 1s" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="950" y="500" width="430" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n06" value="四种隔离机制（Isolation Mechanisms）——防任何共享资源饱和" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="690" width="1360" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="n6a" value="核心隔离（cgroups cpuset）&#10;LC/BE 绑定不相交物理核&#10;禁止共享核与超线程" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="n06">
+          <mxGeometry x="30" y="55" width="250" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="n6b" value="缓存隔离（Intel CAT）&#10;LLC 按路分区&#10;LC 一个分区、BE 一个分区&#10;分区大小毫秒级动态调整" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="n06">
+          <mxGeometry x="300" y="55" width="250" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="n6c" value="DRAM 带宽（软监控）&#10;无硬件隔离 → 周期读性能计数器&#10;逼近 90% 峰值 → 减 BE 核数&#10;依赖 LC 离线带宽模型" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="n06">
+          <mxGeometry x="570" y="55" width="250" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="n6d" value="功耗隔离（RAPL + 每核 DVFS）&#10;每核 DVFS 100MHz 步长&#10;保障 LC 中心最低频率&#10;让出功耗预算给 LC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="n06">
+          <mxGeometry x="840" y="55" width="250" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="n6e" value="网络隔离（Linux HTB qdisc）&#10;限制 BE 出向带宽（ceil 突发值）&#10;LC 出向预留 + 余量&#10;出向重点·入向不在范围" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="n06">
+          <mxGeometry x="1110" y="55" width="220" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n07" value="服务器共享资源：CPU 核心·末级缓存 LLC·DRAM 带宽·CPU 功耗（TDP/Turbo）·出向网络带宽" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="890" width="1360" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n08" value="评估结果：所有混部组合、所有 LC 负载零 SLO 违规 · 平均利用率（EMU）90%（20% 负载时 60-90%）· 与 streetview 混部 EMU 超 100%（资源互补）&#10;吞吐量/TCO：高利用率 +15%，低利用率 +306% · 能效 2.3-3.4 倍 · 生产 websearch 集群 12h 跟踪零违规（EMU 均值 90%、最低 80%）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="980" width="760" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="n09" value="局限与约束：依赖 LC 离线模型估算 DRAM 带宽（芯片无每核计数器）· 仅一个 LC + 多 BE 混部 · 只处理网络出向 · 15s 轮询对 μs 级 SLO（memkeyval）偏慢&#10;设计要点：不依赖优先级的 OS 调度（CFS 混部会触发 SLO 违规）；宁可保守（减核）也不让资源饱和" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1120" width="1360" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e01" value="尾部延迟 / 负载指标（15s 轮询）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n01" target="n04">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e02" value="干扰（共享资源竞争）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;strokeColor=#b85450;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n02" target="n01">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e03" value="余量驱动的资源增长/收缩指令" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n04" target="n05">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e04" value="功耗余量指令" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.6;exitDx=0;exitDy=0;entryX=0.3;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n04" target="n05b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e05" value="BE 收益判定" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.8;exitDx=0;exitDy=0;entryX=0.7;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n04" target="n05c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e06" value="子控制输出：cpuset / CAT 分区 / 核数 / DVFS 频率 / HTB 限速" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n05" target="n06">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e07" value="隔离策略落地（毫秒-数百毫秒级生效，BE 任务迁移几十毫秒）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n06" target="n07">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e08" value="保障 LC：预留核心/缓存/功耗/带宽" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.4;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="n07" target="n01">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e09" value="分配 BE 余量（防饱和不越界）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.9;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="n07" target="n02">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

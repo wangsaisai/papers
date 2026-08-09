@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Volume Estimates for Unions of Convex Sets, and the Kakeya Set Conjecture in Three Dimensions" id="kakeya-set-conjecture-three-dimensions">
+    <mxGraphModel dx="1440" dy="1240" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1240" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="t0" value="凸集并集的体积估计与三维 Kakeya 集猜想（Volume Estimates for Unions of Convex Sets）&#10;定理 1.1 证明结构图：δ-管非聚集 → 多尺度/凸集分解 → 体积估计 → 维数 3" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=middle;align=center;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1400" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n01" value="问题｜Kakeya 集预言（目标 Theorem 1.1）&#10;K ⊂ R³：含每个方向的单位线段&#10;猜想：dim_Minkowski = dim_Hausdorff = 3&#10;历史：R² 由 Davies（1971）解决；&#10;R³：Wolff 5/2+ε（2000）→ Katz-Zahl 5/2+1/10^13&#10;（本文将其终结）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="420" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="n02" value="陈述｜定理 1.2（体积估计）&#10;设 T 为 R³ 中 δ-管族（单位球内），满足非聚集假设：&#10;每个 a×b×2 棱柱 ≤ 100ab·δ^(-2) 根管（Wolff 公理变体）&#10;Y(T) ⊆ T：|Y(T)| ≥ λ|T| ⟹&#10;|∪Y(T)| ≥ δ^ε·λ^K·Σ|T|（K > 1，ε 任意）&#10;（K = 3 时即 Kakeya 极大函数猜想，仍开放）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="500" y="110" width="420" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="n03" value="非聚集公理家族【定义 1.3–1.5】&#10;凸集公理：凸 V 内管数 ≤ K_V·|V|/δ²&#10;强凸集公理：额外要求与给定 T 平行&#10;Frostman 板公理：δ-板 P（a×b×2）内 ≤ K_P·|P|/δ²&#10;本质不同管：每个 δ-板内管数有界（用于技术处理）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="980" y="110" width="420" height="170" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n04" value="工具 A｜多尺度分析（Multi-scale）&#10;δ = 2^(-n)，逐尺度 2^(-k)（k = 0..n）分析管分布&#10;归纳地从大尺度到小尺度传播体积下界&#10;（较先前：粘性 stickiness 设定退化——新变体）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="330" width="420" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="n05" value="工具 B｜凸集分解（Guth 颗粒分解）&#10;将空间分解为并发凸集（granules）&#10;每颗粒承载一定量的管；凸集公理在不同尺度&#10;上控制管数与体积之比的传播" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="500" y="330" width="420" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="n06" value="工具 C｜命题链（Prop. 1.6–1.8）&#10;断言 D ⟺ 断言 E（管体积界等价体积估计）&#10;凸集公理独自推出体积界（Prop. 1.7）&#10;Wolff 刷子论证（Prop. 1.8）同样恒定界&#10;（这些桥梁将公理转化为下界）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="980" y="330" width="420" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n07" value="关键引理｜归纳体积估计（多尺度 + 凸集）&#10;沿尺度链（2^(-k) → 2^(-(k+1))）进行归纳&#10;若并集体积很小 ⇒ 某凸集内核太多管 ⇒ 违非聚集公理&#10;（反证法 + 递归分解 + 刷子论证）&#10;最终给出 |∪T| ≥ δ^ε·|T|·δ² 的全局界" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="520" width="420" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="n08" value="组装｜定理 1.2（体积估计）&#10;测集 Y(T) ⊆ T（|Y(T)| ≥ λ|T|）的非聚集 δ-管族&#10;⟹ |∪_T Y(T)| ≥ δ^ε · λ^K · Σ_T |T|&#10;（管并集几乎最大体积；λ、K 由公理参数界定）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="440" y="620" width="560" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="n09" value="推论推导｜从体积到 Kakeya（引理：Wolff / Katz-Tao）&#10;对 Kakeya 集 K 构造 δ-管族 T_δ（每管 ⊆ K、方向 δ-分离）&#10;|T_δ| ≈ δ^(-2)，每管 |T| ≈ δ²&#10;应用 Thm 1.2（取 λ = 1）⟹ |K|_δ ≥ δ^ε·Σ|T| ≈ δ^(-3+ε)&#10;（其中 |K|_δ 为 δ-覆盖数）⟹ Minkowski/Hausdorff 维数 = 3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="440" y="780" width="560" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n10" value="定理 1.1｜（绿色·主结论）&#10;R³ 中每个 Kakeya 集都同时有&#10;Minkowski 维数 3 与 Hausdorff 维数 3&#10;⟹ 终结调和分析/几何测度论&#10;近百年核心开放猜想（三维）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="990" width="440" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="n11" value="深意｜技术延伸与再应用&#10;管翻倍问题、Keleti 线段扩张猜想（相关开放）&#10;Kakeya 极大函数猜想（K = 3）仍未解决&#10;高维 n ≥ 4 仍公开；其技术可再发展" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="960" y="990" width="440" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e01" value="目标对象钩连" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n01" target="n02">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e02" value="非聚集条件（Wolff 公理变体）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n03" target="n02">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e03" value="处理非粘性排列（变体）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n03" target="n04">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e04" value="给出每一尺度上的凸颗粒" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n04" target="n05">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e05" value="断言 D/E + 刷子（引理）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n05" target="n06">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e06" value="多尺度链供应给归纳" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n04" target="n07">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e07" value="归纳+反证 → 定理 1.2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n07" target="n08">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e08" value="体积界「提升」为维数下界" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n08" target="n11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e09" value="构管族 + 覆盖数 ⟹ 定理 1.1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n08" target="n10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="归纳延续（尺度链传播）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n06" target="n07">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

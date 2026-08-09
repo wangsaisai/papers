@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="TensorFlow-Architecture" id="tensorflow-large-scale-machine-learning">
+    <mxGraphModel dx="1440" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="950" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="① 编程模型：带状态的数据流图（Stateful Dataflow Graph）" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1400" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="前端：Python / C++ 构建计算图" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="2">
+          <mxGeometry x="30" y="45" width="240" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="图结构：节点 = 操作 Operation · 边 = 张量 Tensor · 控制依赖" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="2">
+          <mxGeometry x="310" y="45" width="300" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="变量 Variable：跨执行持久的可变张量（模型参数）· Assign/AssignAdd" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="2">
+          <mxGeometry x="650" y="45" width="330" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="内核 Kernel：操作在特定设备上的实现 ·注册机制可扩展（CPU/GPU 等）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="2">
+          <mxGeometry x="1020" y="45" width="350" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="10" value="② 执行引擎：Client → Master → Worker → Device（本地与分布式共享同一实现）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="210" width="1400" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="客户端 Client（Session 接口）&#xa;Extend：向图中添加节点 / 边&#xa;Run：给定输出集合求传递闭包 · feed 注入 · 可执行任意子图" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="40" y="50" width="280" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="主节点 Master&#xa;放置算法：成本模型 + 模拟执行 + 贪婪启发式&#xa;图分区（每设备一子图）· 每次执行向每个工作进程发一次 Run 请求 · 定期健康检查" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="380" y="50" width="280" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="工作进程 Worker（每进程一个或多个设备）&#xa;按依赖计数执行：每个节点计数归零入就绪队列 ·&#xa;调度内核执行 · 跨设备 Send/Receive 同步" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="720" y="50" width="280" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="设备 Devices&#xa;CPU / GPU · 管理内存分配与内核执行&#xa;设备名如 /job:worker/task:17/device:gpu:3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="1060" y="50" width="280" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="跨设备通信（Cross-Device Communication）&#xa;跨设备边被移除并替换为 Send / Receive 节点对（规范化：同一张量只传输一次）· 分布式用 TCP / RDMA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="380" y="210" width="630" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="分布式扩展（Distributed Execution）&#xa;故障检测：Send/Receive 出错 + 主节点健康检查&#xa;图执行中止重启 · 状态一致检查点（Save / Restore 节点到持久存储）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="1060" y="210" width="280" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="17" value="扩展特性（Extensions）&#xa;自动梯度计算（链式法则生成梯度子图）· 控制流（Switch/Merge/Enter/Leave/NextIteration · 标签与帧）&#xa;队列（Enqueue/Dequeue 异步预取）· 部分执行（feed/fetch 子图）· 容器（跨会话共享状态）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="40" y="210" width="280" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="20" value="③ 优化（Optimizations）&#xa;公共子表达式消除 · 异步非阻塞内核 · ASAP/ALAP 调度降低峰值内存 ·&#xa;优化库封装（BLAS/cuBLAS/cuDNN/Eigen）· 有损压缩（FP32→FP16 传输）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="650" width="440" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="④ 并行训练范式（Programming Idioms）&#xa;数据并行：多模型副本同步 / 异步更新参数&#xa;模型并行：模型不同部分分布多设备（seq2seq LSTM）&#xa;流水线并行：同一设备内并发行并发步骤填充空闲" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="520" y="650" width="440" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="⑤ 配套工具（Tools）&#xa;TensorBoard：计算图可视化（节点折叠分层）· 汇总统计（标量/直方图/图像）&#xa;EEG：微秒级性能追踪（ftrace + CUPTI）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="650" width="400" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="⑥ 成果与经验：Inception 模型 1360 万参数 · 36,000 个操作 · 单次推理 20 亿乘加 —— 训练速度比 DistBelief 提升 6 倍 · 数十个内部客户从手机端到千亿参数集群迁移" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="840" width="1360" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="30" value="构建图 / 会话" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="2" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="31" value="Run 请求" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="11" target="12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="32" value="子图 + Run" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="12" target="13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="33" value="内核执行" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="13" target="14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="34" value="跨设备边 → Send/Receive 对" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="14" target="15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="35" value="远程传输 / 检查点恢复" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="15" target="16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="36" value="结果" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="10" target="23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

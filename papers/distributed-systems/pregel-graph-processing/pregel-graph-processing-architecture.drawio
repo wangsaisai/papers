@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Pregel-大规模图处理架构" id="pregel-graph-processing">
+    <mxGraphModel dx="1440" dy="1380" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1380" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="n01" value="计算模型（BSP：大同步并行，千仞顶点为中心）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="1360" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="n1a" value="输入有向图 Input&#10;Reader 加载任意格式记录&#10;顶点按 hash(ID) mod N 分区" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="n01">
+          <mxGeometry x="50" y="80" width="290" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="n1b" value="超步 Superstep S&#10;活跃顶点并行执行 Compute()：&#10;读上一超步消息 → 改自身值 / 出边&#10;→ 发新消息（下一超步到达）&#10;→ 投票停止（VoteToHalt）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="n01">
+          <mxGeometry x="370" y="60" width="330" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="n1c" value="全局同步栅栏 Barrier&#10;所有工作器完成才进入下一超步&#10;同步性消除死锁与数据竞争" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="n01">
+          <mxGeometry x="740" y="60" width="310" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="n1d" value="终止判定&#10;无活跃顶点 且 无在途消息&#10;→ 输出（VertexWriter 任意格式）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="n01">
+          <mxGeometry x="1090" y="60" width="310" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="n1e" value="顶点状态机：活跃 ⇄ 非活跃（投票停止去活 / 收到消息重新激活）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="n01">
+          <mxGeometry x="30" y="245" width="620" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="n1f" value="组合器（Combiner）：用户提供可交换 + 可结合操作&#10;发送端合并同目的地多条消息 → 网络流量大幅减少（SSSP 4×以上）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="n01">
+          <mxGeometry x="670" y="245" width="660" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n02" value="系统架构：主节点协调 + 工作节点分区计算（Google 集群，GFS/Bigtable 持久）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="440" width="1360" height="560" as="geometry" />
+        </mxCell>
+        <mxCell id="n2m" value="主节点 Master（不持有图数据）&#10;工作注册 · 分区分配 · 超步集合&#10;屏障同步 · ping 故障检测&#10;统计 / HTTP 监控（进度、活跃数、聚合器值）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="n02">
+          <mxGeometry x="120" y="90" width="440" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="n2a" value="聚合器（Aggregator）&#10;各工作器局部归约 → 树状归约 → Master 广播全局值&#10;min/max/sum（含 sticky 跨超步）· 收敛检测 / Δ-stepping 优先级桶" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="n02">
+          <mxGeometry x="120" y="300" width="440" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="n2f" value="容错：检查点 + 受限恢复&#10;每超步开存图状态到 GFS；ping 探测失败工作器 → 重分配分区&#10;从最近检查点重放错过的超步&#10;受限恢复：预录传出消息 → 只重建丢失分区（需确定性算法）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;align=left;verticalAlign=middle;spacingLeft=8;" vertex="1" parent="n02">
+          <mxGeometry x="120" y="440" width="440" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n2w" value="工作节点 ×N（Worker）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="n02">
+          <mxGeometry x="620" y="90" width="700" height="450" as="geometry" />
+        </mxCell>
+        <mxCell id="w1" value="图分区（Partitions）&#10;顶点 + 全部出边常驻内存&#10;分区数由用户指定（多分区并行）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="n2w">
+          <mxGeometry x="40" y="80" width="280" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="w2" value="消息双缓冲&#10;当前超步 / 下一超步两组队列&#10;本地直投 · 远程缓冲异步批量发送&#10;（到达 → 置为下一超步活跃）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="n2w">
+          <mxGeometry x="380" y="80" width="300" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="w3" value="Compute() 执行：每分区一线程并行遍历活跃顶点 → 传递当前值 / 入队消息 / 出边迭代器&#10;输入加载：记录亲和归属 → 属本地立即更新，否则消息转发归属节点；拓扑变更请求按部分排序（删先加后）→ Compute 前生效" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;" vertex="1" parent="n2w">
+          <mxGeometry x="40" y="200" width="640" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="w4" value="超步循环：调用 Compute（组合器在发送与接收两端应用）→ 与其它工作器交换消息 → 向 Master 回复 / 继续&#10;直到全部超步完成汇入 Master 决定（每步 0 活性且无在途消息才结束计算）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;" vertex="1" parent="n2w">
+          <mxGeometry x="40" y="330" width="640" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n03" value="算法的运行示例 — 传播最大值（paper 图 2：顶点值 3,6,2,1）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1035" width="1360" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="n3a" value="超步 0&#10;所有活跃顶点把自己的值发往全部邻居&#10;（3、6、2、1 各自向邻暨广播）&#10;每个顶点随后投票停止" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="n03">
+          <mxGeometry x="30" y="90" width="400" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n3b" value="超步 1&#10;收到消息者重新激活：&#10;比较 max 值 → 顶点 1、3、4 更新为 6&#10;并把 6 继续传给邻居" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="n03">
+          <mxGeometry x="470" y="90" width="400" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n3c" value="超步 2（终止）&#10;顶点值已全部为 6，无人需要更新 → 全部投票停止&#10;无活跃顶点且无在途消息 → 算法结束" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="n03">
+          <mxGeometry x="920" y="90" width="410" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n3d" value="性能：10 亿顶点二叉 = 800 节点 17.3s（50 节点 174s）· 规模至 500 亿顶点仍线性（702s）· 对数正态真实 Web 图（10 亿顶点、1270 亿条边）约 10 分钟&#10;结构化对比 Parallel BGL：相当性能但规模覆盖更广 · 同步 BSP 无死锁/竞态、便于推理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=10;" vertex="1" parent="n03">
+          <mxGeometry x="490" y="200" width="840" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e01" value="输入 / 初始化所有顶点活跃" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n1a" target="n1b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e02" value="超步完成 → 全局障碍" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n1b" target="n1c">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e03" value="投票停止判定" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n1c" target="n1d">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e04" value="未终止 → 进入下一超步（循环）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n1d" target="n1b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e05" value="启动执行 / 屏障同步 / 下发分区分配" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="n2m" target="n2w">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e06" value="完成报告（活跃数等）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" edge="1" parent="1" source="n2m" target="n2w">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e07" value="树状归约 / 广播全局值" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n2a" target="n2m">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e08" value="故障恢复重分配分区" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;strokeColor=#b85450;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n2f" target="n2w">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="dtau-Scaling-Architecture" id="time-scaling-theory">
+    <mxGraphModel dx="1440" dy="2270" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="2270" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="A Time Scaling Theory for Multi-Layer Electronic Systems&#10;多层电子系统的时间缩放理论 —「τ 缩放」理论框架图" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=16;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="420" y="10" width="600" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="A0" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#999999;dashed=1;verticalAlign=top;align=center;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="20" y="100" width="1400" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="tA" value="A · 时代背景：几何缩放的终结 (The End of the Geometric Era)" style="text;html=1;align=center;verticalAlign=middle;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="106" width="600" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" value="摩尔几何缩放时代 (1965–2007)&#10;晶体管密度约每 2 年翻番 (Moore 1965)&#10;电压/尺寸等比缩放维持恒定电场 (Dennard 1974)&#10;空间缩放 = 压缩时间的手段" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;spacingLeft=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="140" width="300" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="7nm 之后回报趋平&#10;· 2005 年 Dennard 缩放先行失效 (暗硅时代)&#10;· EUV 折旧主导晶圆成本&#10;· 每晶体管成本不再下降、甚至上涨&#10;· 领先芯片设计预算突破 $10 亿/颗" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="380" y="140" width="320" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="额外约束 (华为/受限组织)&#10;获取最先进光刻工具受限&#10;等待下一个工艺节点不再可行&#10;→ 必须改写优化目标本身" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="740" y="140" width="260" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" value="核心问题已改变&#10;不再是「晶体管还能缩小多少？」&#10;而是「该缩放什么、以什么为目标？」" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="140" width="340" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="ea4b" value="答案：时间本身" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#6c8ebf;" edge="1" parent="1" source="a4" target="b0">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="B0" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fbfdff;strokeColor=#6c8ebf;dashed=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="20" y="300" width="1400" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="tB" value="B · 核心思想：τ 时间缩放 — 跨全栈的统一时间常数 (τ Scaling)" style="text;html=1;align=center;verticalAlign=middle;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="306" width="680" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="b0" value="「把时间 (τ) 而非面积，作为进步的主要度量」&#10;更小的晶体管之所以提速 − 因为开关更快；更密的互连 − 走线更短；更强的集成 − 边界更少 → 每一代的本质都是「时间的缩短」。&#10;空间缩放只是压缩时间的工具之一，而非唯一途径 · 时间轴: 皮秒 → 秒 · 空间轴: 纳米 → 千米 (约 12 个数量级)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="60" y="340" width="1320" height="66" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b1" value="晶体管层 τ&lt;sub&gt;tr&lt;/sub&gt; · 皮秒 (ps)&#10;本征开关延迟 + 局部互连寄生R/C&#10;手段：迁移率增强 / 应变工程&#10;高κ金属栅极 / GAA 架构" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="430" width="300" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="b2" value="电路层 τ&lt;sub&gt;ckt&lt;/sub&gt; · 纳秒 (ns)&#10;信号路径 RC 传播延迟&#10;手段：低电阻导体 / 低k电介质&#10;垂直集成缩短导线 ← 逻辑折叠" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="400" y="430" width="300" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="b3" value="芯片层 τ&lt;sub&gt;chip&lt;/sub&gt; · 微秒 (µs)&#10;计算 + 内存访问延迟&#10;手段：架构选择 / 流水线深度&#10;内存层次结构 / 片上互连 (NoC)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="740" y="430" width="300" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="b4" value="系统层 τ&lt;sub&gt;sys&lt;/sub&gt; · 秒 (s)&#10;端到端消息 / 同步时间&#10;手段：互连拓扑 / 协议栈 / 互连架构&#10;数据搬运主导 AI 集群能耗 (&gt;80%)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="430" width="300" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="eb1" value="下层时间 +" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="b1" target="b2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eb2" value="+组织/通信开销" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="b2" target="b3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eb3" value="层层累加 →" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="b3" target="b4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s1" value="① 定义各层特征时间 τ&#10;晶体管(ps) / 电路(ns) / 芯片(µs) / 系统(s)&#10;覆盖约 12 个时间数量级" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="70" y="620" width="300" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" value="② 分层分解模型&#10;τ_sys = f(τ_tr, τ_ckt, τ_chip, τ_sys)&#10;每层 τ = 下层 τ + 本层组织/通信开销" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="410" y="620" width="300" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" value="③ 代际递归规则：τ(n+1) = τ(n) / α&#10;缩放因子 α 与应用相关：&#10;移动 ≈1.3×/年 · 自动驾驶 ≈1.5×/年 · AI ≈10×/年" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="750" y="620" width="300" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="s4" value="④ 跨层协同执行 + 时间-代价权衡&#10;垂直互连非免费：每层须满足&#10;Δ(τ 减少) &gt; Δ(τ 开销)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="1090" y="620" width="280" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="es1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s1" target="s2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="es2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s2" target="s3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="es3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s3" target="s4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b7" value="同一度量 = 同一门语言：频率 / 延迟 / 带宽 / 吞吐量 均由 τ 支配 — 构成「工艺工程师 ↔ 电路设计师 ↔ 系统架构师」共同的全栈优化目标" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="60" y="880" width="1320" height="56" as="geometry" />
+        </mxCell>
+
+        <mxCell id="C0" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8f2;strokeColor=#d79b00;dashed=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1020" width="1400" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="tC" value="C · 工程实例：LogicFolding / Unified Bus / Hi-ONE / 3D Folding (三层协同)" style="text;html=1;align=center;verticalAlign=middle;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1026" width="800" height="26" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c1" value="LogicFolding 逻辑折叠 · 电路/芯片层&#10;竖直堆叠有源层 + 超级细混合键合 (间距 &lt;2µm, Kirin 2026 = 1.5µm)&#10;关键路径门分布在两层 → 走线大幅缩小&#10;&#10;导线长 −30% · 时钟缓冲器 −50% · 时钟偏差 −25%&#10;SRAM 工作频率 +40% · NoC 数据路径面积 −33%&#10;固定工艺节点上的拓扑重组 — 不靠新光刻" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1060" width="440" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="c2" value="Unified Bus 统一总线 · 系统层&#10;单一协议层取代 PCIe/NVLink/Ethernet&#10;/InfiniBand 多层转换栈&#10;内存语义 · 免转换对等传输&#10;硬件管理缓存一致性 替代软件栈消息传递&#10;&#10;实测：远程访问延迟&#10;~数 10 µs → ~100 ns (≈ 500×)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="540" y="1060" width="400" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="c3" value="Hi-ONE 近封装光互连 · 系统/光层&#10;光引擎 8 Tb/s/模块 · 匹配每芯片 UB 带宽&#10;SerDes 距离 ~100cm → ~5cm&#10;互连距离 &lt;1m → 100m (千兆瓦级数据中心)&#10;线性模拟方案 + 协议容忍误码&#10;= 跨层「时间–功耗」权衡的实践" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="980" y="1060" width="400" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="c4" value="扇出困境 (Fan-out Dilemma) → 3D Folding 不可避免&#10;2.5D：计算容量按面积 N² 增长 · 带宽/I/O/供电按周边 N 增长 → 差距不断拉大 (拓扑缺陷无法用晶体管级改进弥补)&#10;3D：把供电(背面供电) / 内存(混合键合) / 光 I/O(Hi-ONE) 从边缘迁到表面 → 恢复为 N² 等比缩放" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="540" y="1230" width="840" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="ec1" value="量产实测 → 数据" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#82b366;" edge="1" parent="1" source="c1" target="d1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="D0" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f7fbf3;strokeColor=#82b366;dashed=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1460" width="1400" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="tD" value="D · 验证与结论：381 款芯片量产 · Kirin 2026 实测 · 方法论意义" style="text;html=1;align=center;verticalAlign=middle;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1466" width="800" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="d1" value="验证点① — 移动 SoC (Kirin 2026 · 量产实测)&#10;· 晶体管密度: 155 → 238 MTr/mm² (+55%，单步)&#10;  (过去需约 3 年几何缩放才能达成)&#10;· SoC 性能核能效 +41% · CPU 频率 +13% (3.1 GHz)&#10;· 硅后时钟偏差调整独立贡献 &gt;5% 性能&#10;· 代表性核心: 时钟缓冲 −50% · 导线 −30%" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1500" width="440" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="d2" value="验证点② — AI 系统 (Unified Bus + Hi-ONE + 3D)&#10;· 远程访问延迟 ~数10µs → ~100 ns≈500× 降低&#10;· Hi-ONE 8 Tb/s 光互连 · 面板距离 &lt;1m → 100m&#10;· System-as-One-Chip：多机架集群如一台统一机器&#10;· 2020.05–2026.05 共 381 款芯片量产 (移动 AI 车/工业)&#10;→ 多机架规模的系统级验证" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="540" y="1500" width="410" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="d3" value="方法论结论&#10;· 自 Dennard 缩放以来第一个全栈统一目标的缩放原则&#10;· 打破「必须缩小晶体管才能进步」的范式&#10;· 「下一美元跟随 τ，而非节点」→ 封装 / 内存带宽 / 互连设计获得前所未有的战略权重" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cfead7;strokeColor=#82b366;fontSize=12;fontStyle=1;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="990" y="1500" width="395" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="d4" value="未来 6–10 年路线图 …&#10;· 2035 硬件集成度 &gt;100× · 密度 400+ MTr/mm² (2031)&#10;· CPU 频率 → 4 GHz+ (2029) · Kirin 能效 3–5 年内翻番&#10;· AI: 2030 引入 AI 侧折叠 (Ascend) → 主线&#10;· 封装 3–4 层 active die · TSV 落点下移至 M6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="980" y="1660" width="395" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="ed1" value="实证 → 提炼" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;fontStyle=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#82b366;" edge="1" parent="1" source="d3" target="d4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="E0" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#faf7fc;strokeColor=#9673a6;dashed=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1900" width="1400" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="tE" value="E · 开放挑战：时间–能量权衡与工程落地" style="text;html=1;align=center;verticalAlign=middle;fontSize=15;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1906" width="700" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="EDA 工具链缺失&#10;现行 EDA 面向面积/时序 3 轴独立优化&#10;需把多层堆叠 die 当…单一连续设计实体：&#10;单元级逻辑划分 · 三维协同布局 · 时序收敛" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1940" width="240" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="晶圆间工艺变异&#10;Vth / 驱动电流 / RC 层间变异大于层内&#10;→ 需要智能冗余 / 自适应补偿&#10;与 τ 感知的 signoff 流程" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="330" y="1940" width="240" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="垂直互连开销&#10;混合键合 / TSV 皆有 R、C 与 KOZ 代价&#10;→ 每层须满足：&#10;  Δ(τ 减少) &gt; Δ(τ 开销)&#10;  不划算的场景就放弃" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="600" y="1940" width="240" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="能量：τ 是时间定律，不是焦耳定律&#10;快 10× 功耗 10× 会压垮电网&#10;→ 需要一个能量伴侣：光互连改功耗&#10;· 背面供电 · 计算近内存/存内计算&#10;· 数据中心级 DVFS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="870" y="1940" width="240" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="基准测试过时&#10;Linpack / MLPerf / SPEC 的标量值已不适用&#10;→ 需要剖面基准：向量暴露每层主导 τ，为下一笔投资指明方向" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;align=left;spacingLeft=2;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="1940" width="240" height="170" as="geometry" />
+        </mxCell>
+
+        <mxCell id="LG" value="图例 Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=13;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="2190" width="540" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="50" y="2196" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1t" value="τ 理论核心（命题 / 分层 / 公式）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="90" y="2194" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2" style="rounded=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="50" y="2220" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2t" value="技术实现（LogicFolding / UB / Hi-ONE）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="90" y="2218" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="50" y="2244" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3t" value="验证数据 / 结论 / 路线图" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="90" y="2242" width="300" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

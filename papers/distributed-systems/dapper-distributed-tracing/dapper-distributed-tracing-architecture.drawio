@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Dapper - 分布式系统追踪基础设施" id="dapper-distributed-tracing">
+    <mxGraphModel dx="1440" dy="1120" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1120" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="n1" value="被追踪的应用（应用层透明）&#xa;Google 数千个 C++/Java 服务&#xa;（网络搜索 · Ads · Bigtable …）&#xa;无需应用代码协作&#xa;（仅 73/数千 应用需手动干预）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="320" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n2" value="公共库埋点（核心，~1000 行 C++ / ~800 行 Java）&#10;· RPC 框架：trace id / span id 随调用传播&#10;· 线程库：追踪上下文挂线程本地存储&#10;· 控制流库：回调捕获/恢复追踪上下文" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="320" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n3" value="Span / Trace 数据模型&#10;· 每个 RPC = 一个 span（名称、span id、parent id）&#10;· 追踪树：共享 64 位 trace id&#10;· 应用注解（文本 / 键值，带时间戳）&#10;· 双主机 span：时钟偏差校正（客户端先发后收）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="400" width="320" height="170" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n4" value="自适应采样（第 4.4 节）&#10;目标：每单位时间的采样 trace 数&#10;高流量自动低采样（≈1/1024）&#10;低流量自动高采样 &#10;采样概率随 trace 记录（供分析校正）&#10;全量追踪延迟 +16.3% vs 1/1024 下 −0.20%" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="560" width="380" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n5" value="本地日志文件&#10;（span 异步带外写本地磁盘）&#10;写合并，对被追踪应用异步" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="440" y="30" width="280" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n6" value="Dapper 守护进程（每台机器）&#10;从本地日志拉取追踪数据&#10;CPU ≤ 0.3% 单核 · 低优先级调度" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="760" y="30" width="300" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n7" value="区域性 Bigtable 仓库（Depot）&#10;一个 trace 一行 · span 每列&#10;单复合索引：服务名+主机+时间戳&#10;数据保留 ≥ 2 周 · 每日 &gt;1TB" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="30" width="300" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n8" value="DAPI（Depot API）&#10;· 按 trace id 访问任意追踪&#10;· 批量：MapReduce 并行处理全部追踪&#10;· 索引：按服务/主机/时间窗检索" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="440" y="200" width="300" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n9" value="Dapper UI（交互式 Web）&#10;选择服务/时间窗口/执行模式&#10;→ 性能摘要表 + 延迟直方图&#10;→ 单 trace 树视图（全局时间线：&#10;服务器耗时绿 · 网络蓝）&#10;实时模式：直连各机守护进程" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="760" y="200" width="300" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n10" value="衍生工具（平台生态）&#10;· 服务依赖自动推断&#10;· 共享存储/网络流量归因&#10;· 异常监控联动（trace id 链接）&#10;· 应急响应（部分支持）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="380" width="300" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n11" value="关键代价（实测）&#xa;· span 创建/销毁：根 204ns · 非根 176ns；注解 9–40ns&#xa;· 收集：守护进程 CPU ≤0.3% · 网络 &lt;0.01% · 每 span ≈426B&#xa;· 生产数据：中位收集延迟 &lt;15s · 保留 ≥2 周&#xa;效果：Ads Review 延迟降低 2 个数量级 · UI 每周约 750–1000 位工程师" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="790" width="1360" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" value="跨 RPC 传播 trace id/span id&#10;（埋点仅在库层 · 应用透明）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n1" target="n2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e2" value="span 记录；控制流上下传递" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n2" target="n3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e3" value="采样判定（每 trace 记录采样率）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n3" target="n4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e4" value="被采样的 span 才写本地" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n4" target="n5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e5" value="跨机调度：span 数据写本地（带外）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="n3" target="n5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e6" value="守护进程拉取（带外）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n5" target="n6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e7" value="写 Bigtable&#10;（hash(trace_id)&lt;z 才保留）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n6" target="n7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e8" value="查询接口" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n7" target="n8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e9" value="API 数据" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n8" target="n9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e10" value="批量 MapReduce / 索引" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n8" target="n10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e11" value="实时模式直连守护（秒级）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;strokeColor=#9673a6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n9" target="n6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend" value="图例 Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=13;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="950" width="960" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="35" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1t" value="埋点 / 中央仓库（核心设施）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="33" width="400" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="59" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2t" value="数据模型 / 本地日志 / 结果" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="57" width="400" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3" value="" style="rounded=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="83" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3t" value="采样 / 收集（机制）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="81" width="400" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4" value="" style="rounded=0;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="107" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4t" value="分析 / API / 衍生工具（验证·产出）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="105" width="400" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg5" value="" style="rounded=0;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="131" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg5t" value="被追踪应用（透明环境）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="129" width="400" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

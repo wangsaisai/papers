@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Spoken2Sign-Pipeline" id="spoken-sign-language-translation-3d-avatars">
+    <mxGraphModel dx="1440" dy="930" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="930" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="① 词典构建（离线 · Dictionary Construction）" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1400" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="连续手语视频数据集&#xa;Phoenix-2014T（德语·1066 gloss）&#xa;CSL-Daily（中文·2000 gloss）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="2">
+          <mxGeometry x="30" y="50" width="310" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="TwoStream-SLR 手语分割器&#xa;（CSLR 模型 · CTC 损失 + DTW 最优对齐&#xa;· 分割孤立手势 / 生成协同发音过渡）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="2">
+          <mxGeometry x="380" y="50" width="310" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="手势-视频词典&#xa;M 个手势标注 × 多个孤立手势视频" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="2">
+          <mxGeometry x="730" y="50" width="300" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="SMPLSign-X 3D 手势估算（SMPLify-X 手语专用改进）&#xa;HRNet 2D 关键点（伪标注/置信度）→ 优化形状β·姿态θ·表情ψ·方向ζ&#10;新增损失：L_unseen（未见关节回正）· L_upright（上半身直立）· L_smooth（时间平滑）&#10;产出：手势-3D 手势词典（SMPL-X 参数）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="2">
+          <mxGeometry x="1070" y="50" width="300" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="10" value="② 在线翻译（Text2Gloss + 手势检索）" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="300" width="800" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="输入文本（口语）&#xa;例：“风很大”" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="30" y="50" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="mBART Text2Gloss 翻译器&#xa;文本 → 手势标注序列（gloss sequence）&#xa;例：Wind / Strong / Blow" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="30" y="140" width="340" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="手势检索（Sign Retrieval）&#xa;训练 ISLR 模型，从词典中为每个 gloss&#xa;选出置信度最高的 3D 手势" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="420" y="50" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="3D 手势序列 {S₁, S₂, …, S_K}&#xa;（SMPL-X 参数驱动 · 可任意旋转视角）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="420" y="140" width="340" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="20" value="③ 连接与渲染（手语连接器 → 3D 虚拟角色）" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="860" y="300" width="560" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="手语连接器（Sign Connector）&#xa;4 层 MLP：输入前后手势 3D 关节 + 坐标距离，&#xa;预测协同发音持续时间 L̂（L1 损失训练）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="20">
+          <mxGeometry x="30" y="45" width="490" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="参数空间插值生成协同发音 C（过渡动作，&#10;拼成含过渡的完整序列 {S1, C1², S2, …}）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="20">
+          <mxGeometry x="30" y="115" width="490" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="Blender 渲染 3D 手语虚拟角色动画&#xa;（SMP-X 姿态 + 表情参数驱动 · 多视角可看）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="20">
+          <mxGeometry x="30" y="175" width="490" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="30" value="副产品 By-Products（3D 手势增强手语理解）" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="570" width="1400" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="31" value="3D 关键点增强：随机旋转 3D 手势 ±20° 后投影回 2D，增强关键点训练（WLASL +1.46% / MSASL +1.29%）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="30">
+          <mxGeometry x="30" y="45" width="630" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="32" value="多视角理解：正视图 + 60° 侧视关键点双流（TwoStream 网络）提升 Sign2Spoken 回译" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="30">
+          <mxGeometry x="700" y="45" width="620" height="85" as="geometry" />
+        </mxCell>
+
+        <mxCell id="40" value="评估（Evaluation）&#xa;回译 BLEU-4 = 24.16（P-2014T 开发集，超此前最佳 SignDiff 5.9 分）· 3D 估算优于 SMPLify-X / SMPLer-X / OSX&#xa;聋人用户研究：自然度 3.58 · 平滑度 4.04（1-5 分，超 SMPLify-X 两倍以上）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="20" y="770" width="1360" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="50" value="分割" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="51" value="孤立手势入库" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="52" value="逐帧 3D 估算" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="53" value="翻译" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="11" target="12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="54" value="手势标注序列" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;entryX=0.2;entryY=0;" edge="1" parent="1" source="12" target="13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="55" value="检索匹配" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="13" target="14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="56" value="每个 gloss 检索最住 3D 手势" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="6" target="13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="57" value="训练数据（协同发音三元组）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=1;exitY=0.3;entryX=0;entryY=0.3;" edge="1" parent="1" source="5" target="21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="58" value="3D 手势序列" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="14" target="21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="59" value="预测持续时间" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0;" edge="1" parent="1" source="21" target="22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="60" value="完整序列" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0;" edge="1" parent="1" source="22" target="23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="61" value="3D 结果可复用" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="14" target="30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

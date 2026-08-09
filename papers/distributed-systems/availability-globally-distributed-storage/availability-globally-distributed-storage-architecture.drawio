@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Availability in Globally Distributed Storage Systems - 分析框架" id="availability-globally-distributed-storage">
+    <mxGraphModel dx="1440" dy="1320" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1320" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="n1" value="数据源&#xa;Google 生产集群一年观测&#xa;（数十个 cell × 每 cell 1000-7000 节点）&#xa;含计划内维护/升级/重启等全部不可用事件" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="370" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n2" value="组件级可用性刻画&#xa;组件 MTTF：磁盘 10-50 年 · 节点 4.3 月 · 机架 10.2 年&#xa;不可用性来源：节点重启 / 计划内重启 /&#xa;计划外重启 / 未知（图 2-4、表 1-2）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="190" width="370" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n3" value="故障突发定义 Failure Burst&#xa;时间窗口 w=120s 的相邻故障聚类&#xa;结论：37% 的故障属于 ≥2 节点的突发" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="360" width="370" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n4" value="机架亲和度 Rack Affinity&#xa;量化突发是否集中于机架：&#xa;Σ k_i(k_i-1)/2（同机架节点对计数）&#xa;&gt;20 节点突发亲和度 &gt; 0.7 · &gt;40 节点 ≥ 0.9" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="510" width="370" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n5" value="条带可用性马尔可夫模型（§7）&#xa;状态 = 条带可用块数 s…r（状态 r-1 为不可用）&#xa;故障事件可一次波及多个块：λ·p(i,j)&#xa;块恢复速率 ρ（单块串行恢复）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="670" width="370" height="140" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n6" value="多 cell 复制扩展（§7.2）&#xa;每个 cell 视为多 cell 条带中的一个“块”&#xa;转换矩阵张量积 + 跨 cell 恢复项&#xa;跨数据中心故障独立假设" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="770" width="420" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n7" value="验证与输出&#xa;模型预测 vs 生产 cell 实测 MTTF 同量级&#xa;条带 MTTF（天）/ 可用性预测&#xa;用于复制/恢复策略的权衡决策" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="40" y="930" width="420" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p1" value="参数：复制 / 纠删码方案&#xa;R=n 复制 · RS(n,m) 纠删码" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="560" y="420" width="400" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p2" value="参数：恢复率 ρ（§8.2）&#xa;恢复带宽限制 · 恢复队列优先级" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="560" y="530" width="400" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p3" value="参数：块放置策略（§5.2）&#xa;均匀随机 vs 机架感知（避免同机架双块）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="560" y="640" width="400" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p4" value="参数：多 cell 方案与跨 cell 恢复时间&#xa;R=2×2 · RS(6,3)×2 · 恢复 1 天 / 1 小时" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="560" y="810" width="400" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f0" value="分析结论 · Findings（论文第 8 节结果）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=14;verticalAlign=top;align=center;paddingTop=8;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="40" width="380" height="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="f1" value="关联故障是关键（表 3）&#xa;忽略节点故障关联性 ⇒ 可用性被高估至少 2 个数量级&#xa;（RS(8,4) 高估达 8 个数量级）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="f0">
+          <mxGeometry x="15" y="50" width="350" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="f2" value="快速恢复收益有限（§8.2）&#xa;无关联故障：恢复时间 -10% ⇒ 不可用性 -19%&#xa;有关联故障：恢复时间 -90% 仅 -6%" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="f0">
+          <mxGeometry x="15" y="210" width="350" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="f3" value="机架感知放置（§5.2）&#xa;小/中规模突发下条带 MTTF 提高 ≈3 倍" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="f0">
+          <mxGeometry x="15" y="345" width="350" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="f4" value="提高可用性的着眼点（§8.4）&#xa;节点故障率 -10% ⇒ 可用性 +18%&#xa;磁盘故障率 -10% ⇒ 可用性 +&lt;1.5%" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="f0">
+          <mxGeometry x="15" y="450" width="350" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="f5" value="多 cell 复制的威力（表 4）&#xa;R=2×2（1 天恢复）MTTF=1.08E+10 天，比单 cell R=4 高 2 个数量级&#xa;代价：约 6.8 MB/PB/天的跨 cell 带宽" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="f0">
+          <mxGeometry x="15" y="585" width="350" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="f6" value="设计建议（§10 结论）&#xa;· 确定断电时电池切换的可接受速率&#xa;· 减少重启时间（计划内升级是主要来源）&#xa;· 基于故障分类与近期历史的动态恢复延迟" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="f0">
+          <mxGeometry x="15" y="740" width="350" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" value="节点不可用事件（关注 ≥15 分钟）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n1" target="n2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e3" value="故障事件时间序列" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n2" target="n3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e4" value="突发大小 → 机架分布" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n3" target="n4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e5" value="影响 k 个块的故障事件概率 p(i,j)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n4" target="n5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e6" value="各 cell 的转换矩阵 M_i" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n5" target="n6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e6b" value="MTTF / 不可用性预测" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n6" target="n7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e7" value="λ·p(i,j)&#10;进入马氏链故障转移" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="p1" target="n5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="ρ 固定恢复速率" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.55;entryDx=0;entryDy=0;" edge="1" parent="1" source="p2" target="n5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="突发影响条带比例的计算" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.8;entryDx=0;entryDy=0;" edge="1" parent="1" source="p3" target="n5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="跨 cell 恢复项" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="p4" target="n6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e11" value="结论指导设计" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;strokeColor=#9673a6;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n7" target="f0">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="990" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="legend" value="图例 Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=13;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1160" width="620" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="35" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1t" value="数据源 / 系统参数（输入）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="33" width="220" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="59" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2t" value="测量数据（可用性/MTTF）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="57" width="220" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3" value="" style="rounded=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="83" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3t" value="分析方法 / 模型（突发、亲和度、马尔可夫）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="81" width="280" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4" value="" style="rounded=0;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="85" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4t" value="验证 / 输出（MTTF 预测、建议）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="83" width="280" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg5" value="" style="rounded=0;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="109" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg5t" value="风险 / 警示（关联故障的后果）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="107" width="280" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="ArtOfLinearAlgebra-Architecture" id="art-of-linear-algebra">
+    <mxGraphModel dx="1440" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1610" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="la1" value="① 理解矩阵的四个视角 Four Views of a Matrix" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1400" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="la11" value="一个矩阵（整体）&#10;从 ℝⁿ 到 ℝᵐ 的线性变换 A&#10;—— 全书核心：矩阵 = 变换" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="la1">
+          <mxGeometry x="25" y="40" width="320" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="la12" value="mn 个数（逐个元素）&#10;矩阵是数据的存放表格&#10;（存数视角）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="la1">
+          <mxGeometry x="375" y="40" width="320" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="la13" value="n 个列（按列看）&#10;n 个 m 维列向量的集合&#10;（列视角 → P1 模式）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="la1">
+          <mxGeometry x="725" y="40" width="320" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="la14" value="m 个行（按行看）&#10;m 个 n 维行向量的集合&#10;（行视角 → P2 模式）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="la1">
+          <mxGeometry x="1075" y="40" width="320" height="115" as="geometry" />
+        </mxCell>
+
+        <mxCell id="la2" value="② 向量乘法 · 矩阵乘法的视角 Vector x Matrix Multiplication" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="220" width="1400" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="la21" value="向量乘法 视角 1 · 点积 Dot Product&#10;a · b = Σ aᵢbᵢ&#10;对应项相乘再相加 → 得到一个数" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="la2">
+          <mxGeometry x="25" y="40" width="400" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="la22" value="向量乘法 视角 2 · 外积 Outer Product（关键钥匙）&#10;a · bᵀ —— 列乘行&#10;→ 得到秩 1 矩阵" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" vertex="1" parent="la2">
+          <mxGeometry x="455" y="40" width="400" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="la23" value="MM1 行 × 列（点积）&#10;逐元素计算&#10;（教科书标准算法）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="la2">
+          <mxGeometry x="25" y="170" width="320" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="la24" value="MM2 列 × 行&#10;C 的每列 = A 的列的&#10;线性组合（P1）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="la2">
+          <mxGeometry x="375" y="170" width="320" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="la25" value="MM3 行 × 列&#10;C 的每行 = B 的行的&#10;线性组合（P2）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="la2">
+          <mxGeometry x="725" y="170" width="320" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="la26" value="MM4 外积求和（列×行）&#10;C = Σ 列×行 = 若干秩 1 矩阵之和&#10;★ 五种分解的统一视角" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" vertex="1" parent="la2">
+          <mxGeometry x="1075" y="170" width="320" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="la3" value="③ 四种实用模式 Four Patterns（反复出现的视觉模式）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="20" y="570" width="1400" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="la31" value="P1 右乘矩阵 = 对列做线性组合&#10;用于 CR、QR 分解" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="la3">
+          <mxGeometry x="25" y="40" width="320" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="la32" value="P2 左乘矩阵 = 对行做线性组合&#10;用于 LU 分解" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="la3">
+          <mxGeometry x="375" y="40" width="320" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="la33" value="P3 X·D·c 模式（特征展开）&#10;特征值/特征向量 → 微分、差分方程" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="la3">
+          <mxGeometry x="725" y="40" width="320" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="la34" value="P4 U·Σ·Vᵀ 模式（三矩阵·中间对角）&#10;特征值分解、SVD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" vertex="1" parent="la3">
+          <mxGeometry x="1075" y="40" width="320" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="la4" value="④ 五种矩阵分解 Five Matrix Decompositions" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="770" width="1400" height="440" as="geometry" />
+        </mxCell>
+        <mxCell id="la41" value="A = CR（列–行分解）&#10;C: 线性无关的列，R: 行阶梯形&#10;直观证明：列秩 = 行秩&#10;&#10;类比：挑“代表”C + 每人写总结 R，&#10;还原全班发言 A" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="la4">
+          <mxGeometry x="25" y="40" width="255" height="370" as="geometry" />
+        </mxCell>
+        <mxCell id="la42" value="A = LU（高斯消去）&#10;L 下三角 · U 上三角&#10;解 Ax = b 分两步：先解 Lc = b，&#10;再解 Ux = c&#10;&#10;类比：穿鞋脱袜，先鞋带后袜子" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="la4">
+          <mxGeometry x="305" y="40" width="255" height="370" as="geometry" />
+        </mxCell>
+        <mxCell id="la43" value="A = QR（Gram–Schmidt 正交化）&#10;Q: 正交基；R: 三角矩阵&#10;把歪斜的列逐个扶正，&#10;记录每次扶正幅度&#10;&#10;类比：扶正积木并记录角度" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="la4">
+          <mxGeometry x="585" y="40" width="255" height="370" as="geometry" />
+        </mxCell>
+        <mxCell id="la44" value="A = UΣVᵀ（奇异值分解 SVD）&#10;所有矩阵（含长方阵）都可 &#10;A = σ₁u₁v₁ᵀ + σ₂u₂v₂ᵀ + …&#10;秩 1 层按重要性 σ 排序&#10;&#10;类比：照片压缩的基础图层" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="la4">
+          <mxGeometry x="865" y="40" width="255" height="370" as="geometry" />
+        </mxCell>
+        <mxCell id="la45" value="S = QΛQᵀ（对称矩阵的特征值分解）&#10;特征值全为实数 · 特征向量正交&#10;S = λ₁q₁q₁ᵀ + λ₂q₂q₂ᵀ + …&#10;&#10;类比：把性格拆成独立特质" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="la4">
+          <mxGeometry x="1145" y="40" width="255" height="370" as="geometry" />
+        </mxCell>
+
+        <mxCell id="la5c" value="⑤ 统一洞察 · 知识地图 Unified Insights" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1230" width="1400" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="la51" value="洞察 1 · MM4（外积求和）&#10;五种分解都把矩阵拆成&#10;若干个秩 1 矩阵之和" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" vertex="1" parent="la5c">
+          <mxGeometry x="25" y="40" width="430" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="la52" value="洞察 2 · P4（三矩阵·中间对角）&#10;拆完后写成&#10;U·Σ·Vᵀ 形态" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;" vertex="1" parent="la5c">
+          <mxGeometry x="485" y="40" width="430" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="la53" value="知识地图（配套总览图）&#10;特征值地图 + 矩阵世界总览&#10;把整门线代组织成视觉图谱" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="la5c">
+          <mxGeometry x="945" y="40" width="430" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="la6" value="图例 Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=13;align=left;spacingLeft=10;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="20" y="1430" width="780" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="la6a" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="la6">
+          <mxGeometry x="10" y="35" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="la6at" value="矩阵的四个视角 · 核心" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="la6">
+          <mxGeometry x="50" y="33" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="la6b" value="" style="rounded=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="la6">
+          <mxGeometry x="10" y="59" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="la6bt" value="乘法视角 MM1–MM3" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="la6">
+          <mxGeometry x="50" y="57" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="la6c" value="" style="rounded=0;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="la6">
+          <mxGeometry x="10" y="83" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="la6ct" value="外积 / MM4 / 模式 P1–P4 · 统一视角" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="la6">
+          <mxGeometry x="50" y="81" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="la6d" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="la6">
+          <mxGeometry x="10" y="107" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="la6dt" value="五种矩阵分解" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="la6">
+          <mxGeometry x="50" y="105" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="la6e" value="" style="rounded=0;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="la6">
+          <mxGeometry x="10" y="131" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="la6et" value="统一洞察（MM4 + P4）" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="la6">
+          <mxGeometry x="50" y="129" width="340" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="le1" value="外积求和 = MM4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="la22" target="la26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="le2" value="P4 = UΣVᵀ 形态" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="la26" target="la34">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="le3" value="P1 · 列组合" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="la31" target="la41">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="le4" value="P1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="la31" target="la43">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="le5" value="P2 · 行组合" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="la32" target="la42">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="le6" value="P3 · 特征展开" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="la33" target="la45">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="le7" value="P4 · UΣVᵀ" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="la34" target="la44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="le8" value="P4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="la34" target="la45">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="le9" value="所有分解 = 秩 1 矩阵之和" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="la26" target="la51">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="le10" value="组织进总览图" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=12;dashed=1;strokeColor=#9673a6;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="la52" target="la53">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

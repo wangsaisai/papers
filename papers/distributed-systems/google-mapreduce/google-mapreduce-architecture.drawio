@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="MapReduce-执行架构" id="google-mapreduce">
+    <mxGraphModel dx="1440" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="880" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="n01" value="用户程序（User Program）&#10;调用 MapReduce 库提交作业&#10;编写自定义 Map() / Reduce() 函数" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;verticalAlign=middle;align=center;" vertex="1" parent="1">
+          <mxGeometry x="20" y="30" width="220" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n02" value="Master 控制器（协调者）&#10;任务分配 · 容错 · 中间数据管道" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="310" y="30" width="700" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="n03" value="任务状态表&#10;空闲 / 进行中 / 已完成" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="n02">
+          <mxGeometry x="30" y="75" width="300" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="n04" value="中间文件位置管道（Map → Reduce 传递位置信息）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="n02">
+          <mxGeometry x="360" y="75" width="320" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="n05" value="心跳检测（ping Worker）&#xa;失效 Worker 的 Map 任务重调度" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="n02">
+          <mxGeometry x="30" y="135" width="300" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="n06" value="备用任务（Backup）&#10;接近完成时为 in-progress 任务启动副本" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="n02">
+          <mxGeometry x="360" y="135" width="320" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n07" value="GFS 分布式文件系统（全局存储）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;align=center;fontStyle=1;fontSize=13;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="1060" y="30" width="340" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="n08" value="输入文件（64MB 分块·3 副本）→ 数据本地化调度" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="n07">
+          <mxGeometry x="30" y="60" width="280" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="n09" value="输出文件（Reduce 结果·原子提交：临时文件 ∕ rename）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="n07">
+          <mxGeometry x="30" y="125" width="280" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n10" value="作业执行流水线 — 输入 M 个 Map + R 个 Reduce 并行（M=200000，R=5000 典型配置）" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fffaf0;strokeColor=#d79b00;dashed=1;verticalAlign=top;align=center;fontStyle=1;fontSize=14;paddingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="290" width="1400" height="400" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n11" value="Map 工作者（×M）&#10;&#10;① 读取输入分片（本地磁盘优先）&#10;② 解析 kv → 用户 Map() 输出中间 KV&#10;③ 分区函数 hash(key) mod R 分桶&#10;④ 中间结果周期写本地磁盘" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;verticalAlign=middle;align=left;spacingLeft=10;" vertex="1" parent="n10">
+          <mxGeometry x="40" y="60" width="340" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n12" value="Combiner 函数（可选）&#10;适合可交换 + 可结合：&#10;Map 端先本地合并&#10;（如词频局部计数）&#10;减少网络传输量" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="n10">
+          <mxGeometry x="450" y="60" width="180" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n16" value="中间结果（Map 本地磁盘）&#10;R 个 key 分区文件&#10;按键增量有序&#10;——位置上报 Master" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;verticalAlign=middle;align=center;" vertex="1" parent="n10">
+          <mxGeometry x="690" y="60" width="200" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n14" value="Reduce 工作者（×R）&#10;&#10;① 经 Master 得知中间数据位置&#10;② RPC 从 Map 本地磁盘拉取分区数据&#10;③ 按键排序聚合相同 key&#10;④ 用户 Reduce() 合并 → 写入输出文件" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;verticalAlign=middle;align=left;spacingLeft=10;" vertex="1" parent="n10">
+          <mxGeometry x="950" y="60" width="400" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n15" value="输出文件（局部）— 完成后写回 GFS 全局输出文件" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="n10">
+          <mxGeometry x="950" y="270" width="400" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n18" value="实测性能：Sort 891s（当时 TeraSort 纪录 1057s）· 关闭备用任务多花 44%（1283s）· 中途 kill 200/1746 台 Worker 仅 +5%（933s）&#10;容错设计：输出原子提交（临时文件 + rename）；确定性的 Map/Reduce 保证任意故障下输出一致；自动跳过损坏记录" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="20" y="720" width="860" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="n19" value="状态体现：worker 失效仅重做其 Map 任务（中间结果在本地盘）；Reduce 输出已在全局文件系统免重跑；master 为单点（故障则中止由客户端重试）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="910" y="720" width="500" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e01" value="提交作业&#10;（启动 大量程序副本）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n01" target="n02">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e02" value="读取输入数据（输入位置本地化优先）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n08" target="n11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e03" value="分配 Map 任务（空闲 Worker）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n02" target="n11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e04" value="combiner 可选：Map 端预合并" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.4;exitDx=0;exitDy=0;entryX=0;entryY=0.4;entryDx=0;entryDy=0;" edge="1" parent="1" source="n11" target="n12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e05" value="中间 KV 按分区写盘" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.6;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n12" target="n16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e06" value="中间数据位置上报" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;strokeColor=#6c8ebf;exitX=0;exitY=0;exitDx=0;exitDy=0;entryX=0.6;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="n16" target="n02">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e07" value="位置信息 + Reduce 任务分配" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="n02" target="n14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e08" value="RPC 拉取中间数据" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="n16" target="n14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e09" value="结果写回 GFS（原子提交）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n14" target="n15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" value="完成全部 Map/Reduce 后唤醒用户" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="n15" target="n09">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" value="备份任务（备用副本）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;strokeColor=#b85450;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n06" target="n11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" value="失效判定与心跳" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n05" target="n11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

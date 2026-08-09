@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Full Derivation of the Wave Kinetic Equation" id="wave-kinetic-equation-full-derivation">
+    <mxGraphModel dx="1440" dy="1120" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1120" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="t0" value="波动力学方程的完整推导（Full Derivation of the Wave Kinetic Equation）&#10;定理 1.1 证明结构图：NLS 迭代 → 费曼图（三元树）→ 正则对 → 收敛估计" style="container=1;rounded=1;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;dashed=1;verticalAlign=middle;align=center;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1400" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n01" value="设定｜非线性薛定谔方程（NLS 作为微观系统）&#10;d ≥ 3，大环面 T_L^d（扭曲拉普拉斯 Δ_β）&#10;w = λu 拟设：守恒 L² 范数 λ；散焦/聚焦均适用&#10;β 一般（丢番图条件，Lebesgue 零集 Z 的补集，引理 A.1）&#10;随机初始数据（DAT）：û_in(k) = √n_in(k)·η_k，η_k iid（高斯）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="110" width="420" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="n02" value="标度与时间尺度&#10;非线性强度：α = λ²·L^(-d)（弱非线性）&#10;标度律：α·L ≈ 1（特殊数学意义）&#10;动力学时间尺度：T_kin = 1/(2α²) = L^(2d)/(2λ⁴)&#10;（高斯超收缩性估计：‖u‖∞ ≈ L^(-d/2)，非线性项量级 α）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="500" y="110" width="420" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="n03" value="目标｜波动力学方程（WKE）&#10;频率振幅 E|û(t,k)|² 的有效动力学&#10;（玻尔兹曼方程的波类比，波湍流核心对象）&#10;自 Peierls（1928）以来只有启发式推导&#10;——尚无任何非线性色散系统的严格结果" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="980" y="110" width="420" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n04" value="步骤 1｜NLS 迭代 = 三元树（费曼图）&#10;迭代展开解：各项对应满三元树（Feynman 图）&#10;组合结构 + 概率估计共同作用&#10;（先验：与 Lanford 定理对应：N→∞, r→0 的玻尔兹曼-格拉德尺度）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="320" width="420" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="n05" value="步骤 2｜识别主导图：正则对（Regular Couples）&#10;(a) 主导阶图＝正则对：给出 WKE 的核&#10;(b) 其余（近似主导的）图：需逐类分析&#10;其贡献抵消或可忽略（费曼图组合学的核心）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="500" y="320" width="420" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="n06" value="步骤 3｜余项控制与概率临界性&#10;(c) 控制迭代余项：图数量阶乘增长 vs 概率衰减&#10;（概率临界，需精细的组合-概率平衡）&#10;随机相位假设（随机相位）＋高斯超收缩性&#10;均为界估工具" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="980" y="320" width="420" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n07" value="步骤 4｜二阶矩收敛估计（关键量）&#10;在 t ∈ [0, δ·T_kin]（O(1)·T_kin）上：&#10;limsup sup E|û(t,k) − n(t/T_kin, k)|² = 0（L → ∞）&#10;（期望仅在 NLS 光滑解集合上取，概率 ≥ 1 − L^(-A)）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="500" y="520" width="440" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="n08" value="定理 1.1｜完整推导 WKE（绿色·主定理）&#10;从立方 NLS（d ≥ 3、热力学极限、α·L ≈ 1）出发&#10;在动力学时间尺度 O(1)·α^(-2) 上严格推导波动力学方程&#10;⟹ 波湍流理论的核心猜想（自 1929 起）首次得到严格证明" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="500" y="710" width="440" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="n09" value="对应关系｜Lanford 定理的波类比&#10;粒子系统：N → ∞、r → 0、Nr^(d-1) ≈ 1&#10;波系统：L → ∞、α → 0、αL ≈ 1&#10;两者的统计极限统一性（本工作新范式）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="710" width="420" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="n10" value="后续影响｜打开新方向&#10;O(1)·T_kin 时间尺度（短于全生命周期）&#10;后续工作：任意长时间推导（波动力学推广）&#10;以及混沌传播与高阶统计（同组后续论文）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="980" y="710" width="420" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e01" value="随机初值 + 弱非线性设定" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n01" target="n04">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e02" value="α·L≈1 与 T_kin 给时间尺度" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n02" target="n04">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e03" value="概率性质（超收缩）支撑估计" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.7;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n02" target="n06">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e04" value="迭代分解（展开到三元树）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n04" target="n05">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e05" value="正则对主导；其余类分析" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n05" target="n06">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e06" value="图估计（控制总和）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n06" target="n07">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e07" value="核心量（二阶矩误差）→ 定理" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n07" target="n08">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e08" value="类比：Lanford（粒子）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n08" target="n09">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e09" value="继续：长时间 + 混沌传播" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="n08" target="n10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

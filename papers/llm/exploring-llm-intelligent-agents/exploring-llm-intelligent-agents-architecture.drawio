@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="LLM-Agents-Survey" id="exploring-llm-intelligent-agents">
+    <mxGraphModel dx="1440" dy="1140" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1140" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="纯 LLM（只说不做的理论家）&#xa;局限：上下文长度受限 · 知识更新周期长 · 无法直接使用外部工具（计算器 / SQL / 解释器）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="380" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="智能体机制（Agent）&#xa;自主性 · 感知环境 · 决策 · 行动&#xa;学习型：RL-based / LLM-based" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="540" y="30" width="380" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="LLM-based Agent（本文主题）&#xa;= LLM 大脑 + 智能体手脚&#xa;优势：NLP 与综合知识 · 零样本/少样本 · 自然语言人机交互" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="30" width="380" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="10" value="单智能体系统 · 五元组 V = (L, O, M, A, R) — LLM 做大脑，配齐记忆、目标、动作、反思" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="180" width="1400" height="390" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="目标 O（Objective）&#xa;必须达到的最终状态 ·&#xa;驱动任务分解与规划" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="40" y="60" width="220" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="LLM L（大脑核心）&#xa;基于观察、记忆与奖励制定策略并决策 · 无需额外训练 · 推理参数（如 temperature）可动态调整" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="560" y="60" width="280" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="动作 A（Action）&#xa;工具使用（API/计算器/解释器）&#xa;工具规划（ChatCoT/TPTU/ToolLLM）&#xa;工具创建（Cai 等 / CRAFT）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="1140" y="60" width="220" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="记忆 M（Memory）&#xa;短期记忆（上下文窗口）&#xa;长期记忆（知识图谱/向量库）&#xa;记忆检索（RAG 等）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="40" y="230" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="反思 R（Rethink）&#xa;上下文学习（ReAct/Reflexion）&#xa;监督学习（CoH/过程监督）&#xa;强化学习（Retroformer/REX）&#xa;模块化协调（DIVERSITY/DEPS）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="1140" y="230" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="环境（Environment）&#xa;计算机 / 游戏 / 代码&#xa;真实世界 / 模拟" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="320" y="240" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="17" value="工具（Tool）&#xa;计算器 · 代码解释器&#xa;机械臂 · 搜索引擎…" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="10">
+          <mxGeometry x="900" y="240" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="20" value="多智能体系统（MAS）· 图 G(V, E) — V=智能体节点，E=消息传递边" style="swimlane;startSize=32;whiteSpace=wrap;html=1;fillColor=#fafafa;strokeColor=#505050;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="20" y="620" width="1400" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="智能体间关系（Relationship）" style="swimlane;startSize=28;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" vertex="1" parent="20">
+          <mxGeometry x="40" y="60" width="400" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="合作型（MetaGPT/ChatDev）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="21">
+          <mxGeometry x="20" y="40" width="170" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="竞争型（ChatEval）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="21">
+          <mxGeometry x="210" y="40" width="170" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="24" value="混合型（狼人杀）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="21">
+          <mxGeometry x="20" y="100" width="170" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="25" value="层次型（AutoGen 树状分解）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="21">
+          <mxGeometry x="210" y="100" width="170" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="26" value="合作/竞争/混合/层次决定智能体间交互与协作机制" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fillColor=none;" vertex="1" parent="21">
+          <mxGeometry x="20" y="160" width="360" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="27" value="规划类型（Planning Type）" style="swimlane;startSize=28;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=12;" vertex="1" parent="20">
+          <mxGeometry x="490" y="60" width="420" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="28" value="CPDE 集中式规划分布式执行&#xa;中央 LLM 为所有智能体统一规划 → 各自独立执行；全局优化，但单点故障 / 延迟 / 不适合实时" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="27">
+          <mxGeometry x="20" y="40" width="380" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="29" value="DPDE 分布式规划分布式执行&#xa;每智能体独立 LLM 规划 + 局部通信协调；鲁棒 / 可扩展，但难达全局最优、协调开销大" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="27">
+          <mxGeometry x="20" y="130" width="380" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="30" value="信息交换（Information Exchange）" style="swimlane;startSize=28;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" vertex="1" parent="20">
+          <mxGeometry x="960" y="60" width="400" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="31" value="无通信：仅局部信息独立规划执行" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="30">
+          <mxGeometry x="20" y="40" width="360" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="32" value="带通信：消息传递 / 广播 / 点对点" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="30">
+          <mxGeometry x="20" y="105" width="360" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="33" value="共享记忆：集中式数据结构，所有智能体可读写（有争用 / 同步问题）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="30">
+          <mxGeometry x="20" y="170" width="360" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="40" value="数据集与基准&#xa;HotpotQA · APPS · MBPP · HumanEval · WebShop · FEVER · ToolBench&#xa;AgentBench · SmartPlay · MLAgentBench · MetaTool" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="970" width="420" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="41" value="应用领域&#xa;自然科学（数学/化学/生物）· 社会科学（经济/政治/心理/教育）&#xa;工程系统（计算机/机器人/电力/交通/医疗）· 通用领域" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="500" y="970" width="420" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="42" value="挑战与展望&#xa;上下文长度与幻觉 · 动态扩展与资源分配 · 安全与信任（权限管理）&#xa;评估标准缺失 · 成本（LLM 级联）· 涌现行为可控性" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="960" y="970" width="440" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="50" value="结合：用 LLM 做认知与策略，用智能体机制补足感知与行动" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;" edge="1" parent="1" source="2" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="51" value="结合" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="52" value="决策" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="12" target="13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="53" value="任务分解 / 规划" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="12" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="54" value="读写记忆" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.15;exitY=1;exitDx=0;exitDy=0;entryX=0.8;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="12" target="14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="55" value="反思 / 重新规划" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.85;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="12" target="15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="56" value="执行动作 / 使用工具" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="13" target="17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="57" value="环境反馈写入记忆" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;dashed=1;exitX=1;exitY=0.5;entryX=0.3;entryY=0.5;" edge="1" parent="1" source="16" target="14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="58" value="观察 / 交互" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="13" target="16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="59" value=" MAS 由单智能体扩展而来：多角色协调 + 规划范式 + 通信协议" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="10" target="20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
