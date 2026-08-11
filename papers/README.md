@@ -15,6 +15,7 @@
 | └─ wanghong | 王红团队系列 | 2 |
 | information-retrieval | 信息检索 | 1 |
 | research-methodology | 科研方法论 | 1 |
+| cognitive-neuroscience | 认知神经科学 | 1 |
 
 ## 论文索引
 
@@ -63,3 +64,4 @@
 | math-foundations | mathematical-theory-communication | A Mathematical Theory of Communication（中文译本） | 1948 | 2026-07-19 | 香农定义熵，推导出无失真压缩和噪声信道下可靠通信的理论极限 |
 | information-retrieval | anatomy-web-search-engine | The Anatomy of a Large-Scale Hypertextual Web Search Engine | 1998 | 2026-07-19 | 利用链接分析（PageRank）实现高质量网络搜索 |
 | research-methodology | how-to-read-paper | How to Read a Paper | 2016 | 2026-07-19 | 三遍阅读法让你高效吃透一篇论文 |
+| cognitive-neuroscience | compressive-learning-higher-order-network | Compressive learning scaffolds higher-order network structure to enhance human knowledge acquisition | 2026-07 | 2026-08-11 | 先学知识网络的"枢纽骨架"再学细节，学习更快，脑机制在背侧前扣带回 |

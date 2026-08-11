@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="压缩式学习架构" id="compressive-learning">
+    <mxGraphModel dx="1800" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1900" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="压缩式学习（Compressive Learning）全景图：先建骨架，再学细节" style="text;html=1;align=center;fontSize=20;fontStyle=1;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="1800" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="net" value="1. 人工知识网络构建&#xa;（Knowledge Network Construction）" style="swimlane;startSize=34;html=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="380" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="img" value="16 张黑白图像&#xa;（随机映射到节点）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" vertex="1" parent="net">
+          <mxGeometry x="80" y="50" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="lattice" value="晶格网络（Lattice）&#xa;不均匀性最低" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="net">
+          <mxGeometry x="20" y="130" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="random" value="随机网络（Random，Erdős–Rényi）&#xa;中等不均匀性" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="net">
+          <mxGeometry x="20" y="184" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="smallworld" value="小世界网络（Small-world）&#xa;中等不均匀性" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="net">
+          <mxGeometry x="20" y="238" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="scalefree" value="无标度网络（Scale-free，BA 模型）&#xa;不均匀性最高：枢纽 + 叶" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="net">
+          <mxGeometry x="20" y="292" width="340" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="svd" value="SVD 可压缩性分析（式 1-4）：&#xa;不均匀性越大 → 越可压缩 → 假设 I 更可学习" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="net">
+          <mxGeometry x="20" y="356" width="340" height="44" as="geometry" />
+        </mxCell>
+
+        <mxCell id="pre" value="2. 预热学习：Learning I（200 试次）&#xa;（Pre-learning Paths）" style="swimlane;startSize=50;html=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=14;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="500" y="80" width="400" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="rw" value="RandomWalk&#xa;随机游走原始顺序" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="pre">
+          <mxGeometry x="120" y="60" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="h2l" value="HubToLeaf&#xa;按节点度降序：先枢纽后叶" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="pre">
+          <mxGeometry x="120" y="150" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="l2h" value="LeafToHub&#xa;按节点度升序：先叶后枢纽" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="pre">
+          <mxGeometry x="120" y="240" width="160" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="same" value="控制变量：三组图像完全相同、频率相同，&#xa;仅顺序不同 → 差异只能来自学习顺序" style="text;html=1;whiteSpace=wrap;align=center;fontSize=12;fillColor=none;" vertex="1" parent="pre">
+          <mxGeometry x="60" y="330" width="280" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="learn2" value="3. 正式学习：Learning II（800 / 600 试次）&#xa;（Random-walk Learning）" style="swimlane;startSize=50;html=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=14;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="980" y="80" width="340" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="seq" value="完全相同的随机游走图像序列&#xa;（仅比较此阶段表现）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="learn2">
+          <mxGeometry x="60" y="70" width="220" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="scaffold" value="先建好的网络骨架&#xa;（Network Skeleton）:&#xa;枢纽子结构 = 骨架" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="learn2">
+          <mxGeometry x="60" y="170" width="220" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="out" value="习得的关系网络&#xa;（Learned Knowledge Network）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcc99;strokeColor=#d79b00;" vertex="1" parent="learn2">
+          <mxGeometry x="60" y="300" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="evi" value="4. 三层证据（Evidence）" style="swimlane;startSize=34;html=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="1400" y="80" width="440" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="beh1" value="实验 1（N=160）：无标度组学习最优&#xa;χ²(3)=143.92, p&lt;0.001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="evi">
+          <mxGeometry x="40" y="50" width="360" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="beh2" value="实验 2（N=238）：HubToLeaf 组最优&#xa;HubToLeaf vs RandomWalk z=10.73, p&lt;0.001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="evi">
+          <mxGeometry x="40" y="110" width="360" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="meg" value="实验 3（MEG，N=40）：背侧前扣带回 dACC&#xa;RSA 表征强度更强，峰值 p=0.004" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="evi">
+          <mxGeometry x="40" y="170" width="360" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="mod" value="两阶段计算模型（AICc）：&#xa;单步 OS 模型显著更差；&#xa;高阶结构模型（ME / SR / HG）胜出" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="evi">
+          <mxGeometry x="40" y="230" width="360" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="concl" value="结论：先启动不均匀高阶结构（HubToLeaf），&#xa;建立压缩骨架 → 促进后续网络学习" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" vertex="1" parent="evi">
+          <mxGeometry x="40" y="320" width="360" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="img" target="lattice">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="img" target="random">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="img" target="smallworld">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="img" target="scalefree">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="lattice" target="svd">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="random" target="svd">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="smallworld" target="svd">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="scalefree" target="svd">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="实验 1：随机游走" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="net" target="rw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="实验 2 / 3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="net" target="h2l">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" value="实验 3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="net" target="l2h">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" value="预热路径决定骨架" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="rw" target="learn2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" value="预热路径决定骨架" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="h2l" target="learn2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" value="预热路径决定骨架" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="l2h" target="learn2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="seq" target="scaffold">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="scaffold" target="out">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" value="行为验证" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.15;" edge="1" parent="1" source="out" target="beh1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e18" value="神经验证" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;fontSize=11;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="out" target="beh2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
