@@ -1,7 +1,7 @@
 ---
 name: paper-reader
 display_name: 论文翻译与解读
-version: 2.3.0
+version: 2.4.0
 description: >
   论文翻译与解读 Skill。每篇论文一个独立文件夹，完整翻译正文（引用/参考文献不译），
   通俗易懂地解读论文核心价值（用类比帮助理解）。
@@ -79,8 +79,7 @@ papers/<topic>/<paper-slug>/
 ├── <原始文件名>.pdf      # 论文原文（mv 至此，文件名不变）
 ├── translation.md        # 完整翻译
 ├── interpretation.md     # 通俗解读
-├── architecture.drawio   # 论文架构图（drawio-skill 生成）
-└── architecture.drawio.png # 架构图导出 PNG（嵌入 XML，双击可编辑）
+└── architecture.drawio   # 论文架构图（drawio-skill 生成）
 ```
 
 ### Step 1 — 解析原文
@@ -218,7 +217,7 @@ papers/<topic>/<paper-slug>/
 
 ### Step 4 — 生成论文架构图
 
-> **用 `drawio-skill` 生成**：加载 `drawio-skill`，按其 SKILL.md 的流程与规范执行（含 draw.io CLI 导出）。
+> **用 `drawio-skill` 生成**：加载 `drawio-skill`，按其 SKILL.md 的流程与规范执行（仅绘制 `.drawio` 源文件，不要求 CLI 导出 PNG/SVG）。
 
 **目标**：用一张架构图呈现论文"系统怎么解决这个问题"的全景——输入 → 核心组件/模块 → 数据流 → 输出，让读者 30 秒看懂论文骨架。
 
@@ -228,12 +227,11 @@ papers/<topic>/<paper-slug>/
 2. **图主题**：论文方法/系统全景图（单篇一个架构图）。架构类论文画系统组件与数据流；方法类论文画训练/推理流水线或算法流程；纯理论论文画核心框架与证明依赖关系
 3. **画图步骤**：
    - 基于 `translation.md` / `interpretation.md` 确定图的核心组件与连接关系（组件 3-15 个，过多则分层：系统层、模块层）
-   - 按 `drawio-skill` 的 SKILL.md 生成 `.drawio` XML 并本地导出 PNG/SVG
+   - 按 `drawio-skill` 的 SKILL.md 生成 `.drawio` XML（可用其 `scripts/validate.py` 校验 XML 结构）
    - 组件命名用中英对照（如"向量索引（Vector Index）"），与解读一致
 4. **输出文件**（放在论文文件夹内）：
    - 源文件 `papers/<topic>/<paper-slug>/architecture.drawio`
-   - 导出图 `papers/<topic>/<paper-slug>/architecture.drawio.png`（用 `--embed-diagram` 导出，双击可恢复编辑）
-5. **失败降级**：draw.io CLI 不可用 / 导出失败时，告知用户并保留 `.drawio` 源文件，不阻塞其他步骤
+5. **不做导出**：不生成 PNG/SVG/PDF 导出图，也不生成浏览器查看链接文件；用户需要可视化时自行用 draw.io 打开 `.drawio`
 
 ### Step 5 — 生成/更新索引
 
@@ -270,7 +268,7 @@ papers/<topic>/<paper-slug>/
 全部产物写出后向用户交付：
 
 1. 简述论文归属（`papers/<topic>/<slug>/`）、是否新建了主题/子主题
-2. 给出产物清单：原 PDF 位置、`translation.md`（篇幅）、`interpretation.md`、`architecture.drawio(.png)`
+2. 给出产物清单：原 PDF 位置、`translation.md`（篇幅）、`interpretation.md`、`architecture.drawio`
 3. 提示关键差异点：如文章过长采用分段、arXiv 无 PDF 用摘要页、产物为覆盖/更新
 4. 请用户抽查翻译某一段，或确认整体可接受；本次处理才算完成，用户反馈的问题立即修正
 
