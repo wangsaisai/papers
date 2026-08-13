@@ -1,6 +1,6 @@
 # 波动力学理论中的混沌传播与高阶统计量（Propagation of Chaos and the Higher Order Statistics in the Wave Kinetic Theory）
 
-**作者**: Yu Deng（邓宇）, Zaher Hani
+**作者**: Yu Deng（邓煜）, Zaher Hani
 **翻译日期**: 2026-07-19
 
 ---

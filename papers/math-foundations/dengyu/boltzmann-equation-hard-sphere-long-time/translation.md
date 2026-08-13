@@ -1,6 +1,6 @@
 # 从硬球动力学长时间推导玻尔兹曼方程（Long Time Derivation of the Boltzmann Equation from Hard Sphere Dynamics）
 
-**作者**: Yu Deng（邓宇）, Zaher Hani, Xiao Ma（马骁）
+**作者**: Yu Deng（邓煜）, Zaher Hani, Xiao Ma（马骁）
 **翻译日期**: 2026-07-19
 
 ---

@@ -1,6 +1,6 @@
 # 波动力学方程的完整推导（Full Derivation of the Wave Kinetic Equation）
 
-**作者**: Yu Deng（邓宇）, Zaher Hani
+**作者**: Yu Deng（邓煜）, Zaher Hani
 **翻译日期**: 2026-07-19
 
 ---

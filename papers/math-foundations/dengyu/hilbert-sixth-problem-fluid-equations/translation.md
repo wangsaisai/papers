@@ -1,6 +1,6 @@
 # 希尔伯特第六问题：通过玻尔兹曼动力学理论推导流体方程（Hilbert's Sixth Problem: Derivation of Fluid Equations via Boltzmann's Kinetic Theory）
 
-**作者**: Yu Deng（邓宇）, Zaher Hani, Xiao Ma（马骁）
+**作者**: Yu Deng（邓煜）, Zaher Hani, Xiao Ma（马骁）
 **翻译日期**: 2026-07-19
 
 ---

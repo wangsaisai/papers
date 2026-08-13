@@ -1,6 +1,6 @@
 # 平面中 Furstenberg 集的估计（Furstenberg Sets Estimate in the Plane）
 
-**作者**: Kevin Ren, Hong Wang（王红）
+**作者**: Kevin Ren, Hong Wang（王虹）
 **翻译日期**: 2026-07-19
 
 ---

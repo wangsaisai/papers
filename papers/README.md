@@ -11,11 +11,12 @@
 | llm | 大语言模型 | 4 |
 | ai-applications | AI 应用 | 2 |
 | math-foundations | 数学与算法基础 | 9 |
-| └─ dengyu | 邓宇团队系列 | 4 |
-| └─ wanghong | 王红团队系列 | 2 |
+| └─ dengyu | 邓煜团队系列 | 4 |
+| └─ wanghong | 王虹团队系列 | 2 |
 | information-retrieval | 信息检索 | 1 |
 | research-methodology | 科研方法论 | 1 |
 | cognitive-neuroscience | 认知神经科学 | 1 |
+| ai-agents | AI 智能体 | 1 |
 
 ## 论文索引
 
@@ -65,3 +66,4 @@
 | information-retrieval | anatomy-web-search-engine | The Anatomy of a Large-Scale Hypertextual Web Search Engine | 1998 | 2026-07-19 | 利用链接分析（PageRank）实现高质量网络搜索 |
 | research-methodology | how-to-read-paper | How to Read a Paper | 2016 | 2026-07-19 | 三遍阅读法让你高效吃透一篇论文 |
 | cognitive-neuroscience | compressive-learning-higher-order-network | Compressive learning scaffolds higher-order network structure to enhance human knowledge acquisition | 2026-07 | 2026-08-11 | 先学知识网络的"枢纽骨架"再学细节，学习更快，脑机制在背侧前扣带回 |
+| ai-agents | self-evolving-coding-agents | Self-Evolving Coding Agents | 2026-08 | 2026-08-12 | 综述梳理"会自我进化的编程智能体"：5类进化对象×3种时机×3类证据的分类框架 |

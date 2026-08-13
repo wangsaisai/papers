@@ -1,6 +1,6 @@
 # 凸集并集的体积估计与三维 Kakeya 集猜想（Volume Estimates for Unions of Convex Sets, and the Kakeya Set Conjecture in Three Dimensions）
 
-**作者**: Hong Wang（王红）, Joshua Zahl
+**作者**: Hong Wang（王虹）, Joshua Zahl
 **翻译日期**: 2026-07-19
 
 ---
