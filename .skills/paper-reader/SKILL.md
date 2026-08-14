@@ -1,7 +1,7 @@
 ---
 name: paper-reader
 display_name: 论文翻译与解读
-version: 2.4.0
+version: 2.5.0
 description: >
   论文翻译与解读 Skill。每篇论文一个独立文件夹，完整翻译正文（引用/参考文献不译），
   通俗易懂地解读论文核心价值（用类比帮助理解）。
@@ -79,8 +79,10 @@ papers/<topic>/<paper-slug>/
 ├── <原始文件名>.pdf      # 论文原文（mv 至此，文件名不变）
 ├── translation.md        # 完整翻译
 ├── interpretation.md     # 通俗解读
-└── architecture.drawio   # 论文架构图（drawio-skill 生成）
+└── architecture.md       # 论文架构图（Mermaid，GitHub 直接渲染）
 ```
+
+> 存量论文文件夹中可能同时存在 `<slug>-architecture.drawio`（历史遗留）与 `architecture.md`（现行产物）。遇到旧 drawio 文件**不要删除**，只按现状新增/更新 `architecture.md`。
 
 ### Step 1 — 解析原文
 
@@ -217,7 +219,7 @@ papers/<topic>/<paper-slug>/
 
 ### Step 4 — 生成论文架构图
 
-> **用 `drawio-skill` 生成**：加载 `drawio-skill`，按其 SKILL.md 的流程与规范执行（仅绘制 `.drawio` 源文件，不要求 CLI 导出 PNG/SVG）。
+> **用 Mermaid 生成**：直接用 Mermaid `flowchart` 语法编写，不依赖任何绘图 Skill 或外部工具。产物写入 Markdown 文件的 ```mermaid 围栏代码块，GitHub / GitLab 直接渲染。
 
 **目标**：用一张架构图呈现论文"系统怎么解决这个问题"的全景——输入 → 核心组件/模块 → 数据流 → 输出，让读者 30 秒看懂论文骨架。
 
@@ -227,11 +229,14 @@ papers/<topic>/<paper-slug>/
 2. **图主题**：论文方法/系统全景图（单篇一个架构图）。架构类论文画系统组件与数据流；方法类论文画训练/推理流水线或算法流程；纯理论论文画核心框架与证明依赖关系
 3. **画图步骤**：
    - 基于 `translation.md` / `interpretation.md` 确定图的核心组件与连接关系（组件 3-15 个，过多则分层：系统层、模块层）
-   - 按 `drawio-skill` 的 SKILL.md 生成 `.drawio` XML（可用其 `scripts/validate.py` 校验 XML 结构）
-   - 组件命名用中英对照（如"向量索引（Vector Index）"），与解读一致
+   - 用 Mermaid `flowchart TD` 绘制：组件用节点 `A["组件名（Component Name）"]`，相关组件用 `subgraph "分组名" ... end` 分组，连接用 `-->`，有含义的边加标签 `-->|"数据"|`
+   - 组件命名用中英对照（如"向量索引（Vector Index）"），与解读一致；文字较多时用 `<br/>` 换行
 4. **输出文件**（放在论文文件夹内）：
-   - 源文件 `papers/<topic>/<paper-slug>/architecture.drawio`
-5. **不做导出**：不生成 PNG/SVG/PDF 导出图，也不生成浏览器查看链接文件；用户需要可视化时自行用 draw.io 打开 `.drawio`
+   - `papers/<topic>/<paper-slug>/architecture.md`，内容为 ```mermaid 围栏代码块（GitHub 直接渲染）
+5. **语法红线**：
+   - 所有节点/边标签用双引号包裹（`["..."]`、`-->|"..."|`），引号内含 `"` 时转义为 `&quot;`
+   - Mermaid flowchart **不支持嵌套 subgraph**，分层时只建一层 subgraph，不要嵌套
+   - 不生成 PNG/SVG 导出文件；用户需要图片时自行用 mermaid-cli 导出
 
 ### Step 5 — 生成/更新索引
 
@@ -268,7 +273,7 @@ papers/<topic>/<paper-slug>/
 全部产物写出后向用户交付：
 
 1. 简述论文归属（`papers/<topic>/<slug>/`）、是否新建了主题/子主题
-2. 给出产物清单：原 PDF 位置、`translation.md`（篇幅）、`interpretation.md`、`architecture.drawio`
+2. 给出产物清单：原 PDF 位置、`translation.md`（篇幅）、`interpretation.md`、`architecture.md`
 3. 提示关键差异点：如文章过长采用分段、arXiv 无 PDF 用摘要页、产物为覆盖/更新
 4. 请用户抽查翻译某一段，或确认整体可接受；本次处理才算完成，用户反馈的问题立即修正
 
