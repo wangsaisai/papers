@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Attention">
+    <mxGraphModel>
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="v1" value="源句&#xa;Source Sentence&#xa;x₁…xₜₓ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="40" width="230" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="v2" value="前向 RNN&#xa;Forward RNN&#xa;顺序读入 x₁→xₜₓ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="430" y="180" width="210" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="v3" value="后向 RNN&#xa;Backward RNN&#xa;逆序读入 xₜₓ→x₁" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="880" y="180" width="210" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="v4" value="注解 hⱼ&#xa;Annotation&#xa;前向 ⊕ 后向状态拼接（双向编码器输出）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="640" y="320" width="230" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="v5" value="对齐模型 a&#xa;Alignment Model&#xa;eᵢⱼ = a(sᵢ₋₁, hⱼ)，单层前馈网络" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="370" y="460" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="v6" value="注意力权重 αᵢⱼ&#xa;Attention Weights&#xa;softmax：exp(eᵢⱼ) / Σₖ exp(eᵢₖ)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="660" y="460" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="v7" value="上下文向量 cᵢ&#xa;Context Vector&#xa;cᵢ = Σⱼ αᵢⱼ hⱼ（加权求和）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="950" y="460" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="v8" value="解码器隐藏状态 sᵢ₋₁&#xa;Decoder Hidden State&#xa;上一时刻状态（时间循环）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="370" y="600" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="v9" value="解码器 RNN&#xa;Decoder RNN&#xa;sᵢ = f(sᵢ₋₁, yᵢ₋₁, cᵢ)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="660" y="600" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="v10" value="输出层&#xa;Output Layer (maxout + softmax)&#xa;p(yᵢ|·) = g(yᵢ₋₁, sᵢ, cᵢ)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="950" y="600" width="220" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="v11" value="目标词 yᵢ&#xa;Target Word&#xa;逐词生成译文" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="660" y="740" width="220" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" value="顺序读入" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v1" target="v2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="逆序读入" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v1" target="v3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="前向状态" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v2" target="v4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="后向状态" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v3" target="v4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="注解 hⱼ" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v4" target="v5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="加权求和" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v4" target="v7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="eᵢⱼ → softmax 归一化" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v5" target="v6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="权重 αᵢⱼ" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v6" target="v7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="sᵢ₋₁" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v8" target="v5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="sᵢ₋₁" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v8" target="v9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" value="cᵢ" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v7" target="v9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" value="sᵢ, cᵢ" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v9" target="v10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" value="p(yᵢ|y₁…yᵢ₋₁, x)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v10" target="v11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" value="上一时刻 yᵢ₋₁" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.3;exitY=0;exitDx=0;exitDy=0;entryX=0.3;entryY=1;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v11" target="v9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend" value="图例 Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="210" height="126" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1" value="" style="rounded=0;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="30" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1t" value="输入数据" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="28" width="150" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="54" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2t" value="编码器 / 解码器组件" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="52" width="150" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" value="" style="rounded=0;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="78" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3t" value="注意力机制" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="76" width="150" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="102" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4t" value="表示与输出" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="100" width="150" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

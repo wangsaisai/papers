@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Adam-Architecture">
+    <mxGraphModel>
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="90" value="随机目标函数 / Stochastic Objective&#xa;f_t(θ): minibatch 抽样 + dropout 等噪声" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="600" y="40" width="300" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="91" value="梯度 / Gradient&#xa;g_t = ∇_θ f_t(θ_{t−1})" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="600" y="190" width="300" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="92" value="一阶矩估计 / First Moment Estimate&#xa;m_t = β₁·m_{t−1} + (1−β₁)·g_t&#xa;β₁ = 0.9 (类似动量)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="250" y="330" width="340" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="93" value="二阶矩估计 / Second Moment Estimate&#xa;v_t = β₂·v_{t−1} + (1−β₂)·g_t²&#xa;β₂ = 0.999" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="860" y="330" width="340" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="94" value="偏差校正一阶矩 / Bias-corrected m̂_t&#xa;m̂_t = m_t / (1−β₁^t)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="250" y="500" width="340" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="95" value="偏差校正二阶矩 / Bias-corrected v̂_t&#xa;v̂_t = v_t / (1−β₂^t); 消除从 0 初始化产生的早期偏差" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="860" y="500" width="340" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="96" value="参数更新 / Parameter Update&#xa;θ_t = θ_{t−1} − α·m̂_t / (√v̂_t + ε)&#xa;α = 0.001, ε = 10^-8; 每参数自适应步长, 有效步长 ≤ α" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="500" y="670" width="400" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="97" value="AdaGrad (对比 / Compare)&#xa;θ ← θ − α·g / √Σg²: 累加全部历史梯度平方,&#xa;步长只减不增; 擅长稀疏梯度" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="250" y="850" width="420" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="98" value="RMSProp (对比 / Compare)&#xa;对缩放后的梯度再做动量, 无偏差校正;&#xa;适合非平稳目标; β₂ 接近 1 时早期步长过大易发散" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="860" y="850" width="420" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="110" value="图例 / Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="940" width="190" height="126" as="geometry" />
+        </mxCell>
+        <mxCell id="111" value="" style="rounded=0;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="110">
+          <mxGeometry x="10" y="30" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="111t" value="目标函数 / Objective" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="110">
+          <mxGeometry x="50" y="28" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="112" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="110">
+          <mxGeometry x="10" y="54" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="112t" value="矩估计与更新" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="110">
+          <mxGeometry x="50" y="52" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="113" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="110">
+          <mxGeometry x="10" y="78" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="113t" value="偏差校正" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="110">
+          <mxGeometry x="50" y="76" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="114" value="" style="rounded=0;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="110">
+          <mxGeometry x="10" y="102" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="114t" value="对比方法" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="110">
+          <mxGeometry x="50" y="100" width="130" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="300" value="求梯度" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="90" target="91">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="301" value="g_t" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="91" target="92">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="302" value="g_t² (逐元素平方)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="91" target="93">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="303" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="92" target="94">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="304" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="93" target="95">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="305" value="m̂_t" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.3;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="94" target="96">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="306" value="v̂_t" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.7;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="95" target="96">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="307" value="t ← t+1 (循环至收敛)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="96" target="90">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="725" />
+              <mxPoint x="200" y="20" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="308" value="稀疏梯度能力 / sparse gradients" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;exitX=0.6;exitY=0;exitDx=0;exitDy=0;entryX=0.3;entryY=1;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="97" target="96">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="502" y="810" />
+              <mxPoint x="620" y="810" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="309" value="非平稳目标能力 / non-stationary objectives" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;exitX=0.4;exitY=0;exitDx=0;exitDy=0;entryX=0.7;entryY=1;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="98" target="96">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1028" y="810" />
+              <mxPoint x="780" y="810" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

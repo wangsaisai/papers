@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Dropout-Architecture">
+    <mxGraphModel>
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="60" value="训练小批量 / Training Mini-batch&#xa;SGD 小批量训练样本" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="360" y="30" width="260" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="61" value="标准网络前向 / Standard Forward&#xa;所有隐藏单元在场;&#xa;特征检测器共同适应 (co-adaptation)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="60" y="180" width="300" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="62" value="标准反向传播 / Standard Backprop&#xa;更新所有权重" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="60" y="340" width="300" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="63" value="过拟合 / Overfitting&#xa;训练集拟合得很好,&#xa;held-out 测试集表现差" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="60" y="500" width="300" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="64" value="Dropout 随机丢弃 / Random Omission&#xa;每训练样本, 每个隐藏单元以 0.5 概率移除&#xa;(输入层可 0.2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="600" y="180" width="320" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="65" value="随机子网络 / Stochastic Sub-network&#xa;每次训练样本几乎对应不同子网络;&#xa;共享仍在场单元的权重" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="600" y="340" width="320" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="66" value="反向传播 + SGD / Backprop with SGD&#xa;更新共享权重" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="600" y="500" width="320" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="67" value="Max-norm 权重约束 / Weight Constraint&#xa;每单元输入权重设 L2 范数上限, 超限按比例缩放;&#xa;代替权重衰减, 支持大学习率" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="600" y="660" width="320" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="68" value="防共同适应 / No Co-adaptation&#xa;每个单元学会独立有用的特征, 泛化提升" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="600" y="820" width="320" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="69" value="均值网络 / Mean Network (测试时)&#xa;所有隐藏单元在场, 输出权重减半" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="300" y="980" width="340" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="70" value="≈ 2^N 个子网络的集成 / Ensemble of 2^N Sub-nets&#xa;单隐藏层 + softmax 时与几何平均严格等价" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="720" y="980" width="420" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="80" value="图例 / Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="30" width="200" height="126" as="geometry" />
+        </mxCell>
+        <mxCell id="81" value="" style="rounded=0;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="80">
+          <mxGeometry x="10" y="30" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="81t" value="数据 / 基线 Baseline" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="80">
+          <mxGeometry x="50" y="28" width="140" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="82" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="80">
+          <mxGeometry x="10" y="54" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="82t" value="Dropout 机制" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="80">
+          <mxGeometry x="50" y="52" width="140" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="83" value="" style="rounded=0;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="80">
+          <mxGeometry x="10" y="78" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="83t" value="过拟合问题" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="80">
+          <mxGeometry x="50" y="76" width="140" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="84" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="80">
+          <mxGeometry x="10" y="102" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="84t" value="测试阶段" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="80">
+          <mxGeometry x="50" y="100" width="140" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="200" value="训练样本" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="60" target="61">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="201" value="训练样本" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="60" target="64">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="202" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="61" target="62">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="203" value="权重共同适应" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="62" target="63">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="204" value="0.5 概率掩码" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="64" target="65">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="205" value="子网络前向" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="65" target="66">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="206" value="超限则按比例缩放" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="66" target="67">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="207" value="训练结果" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="67" target="68">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="208" value="下一训练样本 (循环)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="67" target="64">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1050" y="705" />
+              <mxPoint x="1050" y="225" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="209" value="训练完成后" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="68" target="69">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="664" y="950" />
+              <mxPoint x="470" y="950" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="210" value="几何平均近似" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="69" target="70">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

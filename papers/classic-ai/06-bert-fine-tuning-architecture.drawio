@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="BERT-FineTuning">
+    <mxGraphModel>
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="v1" value="输入文本&#xa;Input Text" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="40" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="v2" value="长文本处理 (截断 / 分层池化)&#xa;Long-Text Processing (Truncation / Hierarchical)&#xa;head+tail 截断: 前128 + 后382 tokens (最优)&#xa;分层: 分段过 BERT + 均值/最大/自注意力池化" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="60" y="220" width="260" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="v3" value="BERT 预训练模型&#xa;Pre-trained BERT Model" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;startSize=40;" vertex="1" parent="1">
+          <mxGeometry x="40" y="410" width="520" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="b1" value="12 层双向 Transformer 编码器&#xa;12-Layer Bidirectional Transformer&#xa;12 self-attention heads, hidden 768" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="v3">
+          <mxGeometry x="20" y="60" width="230" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="b2" value="[CLS] + [SEP] 输入标记&#xa;[CLS] + [SEP] Tokens&#xa;序列上限 512 tokens" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="v3">
+          <mxGeometry x="20" y="160" width="230" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="b3" value="[CLS] 最终隐藏状态 h&#xa;Final [CLS] Hidden State h&#xa;整段文本的表示 (顶层特征最优)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="v3">
+          <mxGeometry x="270" y="60" width="230" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="b4" value="WordPiece 词表 30,000&#xa;WordPiece Vocabulary 30k" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="v3">
+          <mxGeometry x="270" y="160" width="230" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="v4" value="文本分类头&#xa;Classification Head&#xa;p(c|h) = softmax(W · h)&#xa;任务相关参数矩阵 W" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="60" y="790" width="260" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="v5" value="预测标签&#xa;Predicted Label" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="980" width="260" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c1" value="三种微调策略&#xa;Three Fine-Tuning Strategies" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=13;startSize=40;" vertex="1" parent="1">
+          <mxGeometry x="680" y="40" width="560" height="800" as="geometry" />
+        </mxCell>
+        <mxCell id="s1" value="① 进一步预训练&#xa;Further Pre-Training&#xa;within-task 任务内 / in-domain 领域内 / cross-domain 跨领域&#xa;继续使用 MLM 掩码语言模型 + NSP 下一句预测目标&#xa;在目标任务 / 同领域数据上继续训练 BERT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="c1">
+          <mxGeometry x="30" y="60" width="500" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" value="② 多任务微调&#xa;Multi-Task Fine-Tuning&#xa;多个相关任务共享 BERT 主体与 Embedding 层&#xa;每个任务独立私有分类头 (private classifier)&#xa;联合微调后以更低学习率回到目标任务收尾" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="c1">
+          <mxGeometry x="30" y="280" width="500" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" value="③ 目标任务微调&#xa;Target-Task Fine-Tuning&#xa;逐层递减学习率: eta(k-1) = xi * eta(k), xi=0.95, lr=2e-5&#xa;顶层 [CLS] 特征最佳; 小学习率防灾难性遗忘&#xa;Adam 优化器 + slanted triangular 学习率 (2e-5, warm-up 0.1)&#xa;head+tail 截断 + 层选择 (顶层 / 最后4层池化)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=10;verticalAlign=top;" vertex="1" parent="c1">
+          <mxGeometry x="30" y="500" width="500" height="220" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="v1" target="v2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="分词 / 截断≤512" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v2" target="v3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="[CLS] h → softmax(W·h)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v3" target="v4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="类别概率 p(c|h)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="v4" target="v5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="微调 Fine-Tune" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="c1" target="v3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="任务专用分类层" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="1" source="c1" target="v4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend" value="图例 Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="940" y="900" width="280" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="30" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1t" value="BERT 模型 / 分类输出" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="28" width="220" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="54" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2t" value="进一步预训练 (继续预训练)" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="52" width="220" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" value="" style="rounded=0;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="78" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3t" value="多任务微调" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="76" width="220" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" value="" style="rounded=0;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="102" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4t" value="目标任务微调 (逐层学习率)" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="100" width="220" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

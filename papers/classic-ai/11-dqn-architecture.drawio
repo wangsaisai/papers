@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="DQN-Architecture">
+    <mxGraphModel>
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="10" value="Atari 模拟器 (ALE)&#xa;环境 / Environment E" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="170" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="原始帧 / Raw Frame&#xa;x_t (210×160 RGB)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="300" y="60" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="预处理 φ / Preprocessing&#xa;灰度化→下采样 110×84→裁剪 84×84;&#xa;最近 4 帧堆叠 (84×84×4)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="550" y="60" width="220" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="14" value="Q 网络 / Q-Network (CNN)" style="swimlane;startSize=30;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="270" width="960" height="230" as="geometry" />
+        </mxCell>
+        <mxCell id="30" value="卷积层 1 / Conv Layer 1&#xa;16 个 8×8 卷积核, 步长 4, ReLU" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="14">
+          <mxGeometry x="30" y="60" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="31" value="卷积层 2 / Conv Layer 2&#xa;32 个 4×4 卷积核, 步长 2, ReLU" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="14">
+          <mxGeometry x="270" y="60" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="32" value="全连接层 / FC Layer&#xa;256 个 ReLU 单元" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="14">
+          <mxGeometry x="510" y="60" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="33" value="输出层 / Output Layer&#xa;线性层, 每个合法动作一个输出 (4~18)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="14">
+          <mxGeometry x="750" y="60" width="180" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="15" value="ε-贪心动作选择 / ε-greedy Selection&#xa;以 1−ε 选 max Q, 以 ε 随机; ε 从 1 退火到 0.1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="270" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="执行动作 / Execute Action&#xa;a_t → 模拟器; 奖励截断为 ±1 (reward clipping)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="1420" y="270" width="210" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="17" value="经验回放记忆 / Replay Memory D&#xa;存最近 100 万帧转移样本 (φ, a, r, φ′)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="510" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="18" value="小批量采样 / Minibatch&#xa;从 D 均匀随机抽取 32 条" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1430" y="510" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="19" value="目标网络 / Target Network&#xa;y = r + γ·max_a′ Q(φ′,a′;θ)&#xa;(θ 取上一轮固定参数; 终态时 y = r)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="1140" y="680" width="220" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="40" value="损失与梯度更新 / Loss &amp; Gradient Update&#xa;L = (y − Q(φ,a;θ))²; SGD (RMSProp, 批量 32)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="1430" y="680" width="200" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="50" value="图例 / Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="820" width="220" height="174" as="geometry" />
+        </mxCell>
+        <mxCell id="51" value="" style="rounded=0;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="50">
+          <mxGeometry x="10" y="30" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="51t" value="环境 / Environment" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="50">
+          <mxGeometry x="50" y="28" width="160" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="52" value="" style="rounded=0;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="50">
+          <mxGeometry x="10" y="54" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="52t" value="输入处理 / Preprocessing" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="50">
+          <mxGeometry x="50" y="52" width="160" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="53" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="50">
+          <mxGeometry x="10" y="78" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="53t" value="Q 网络 / Q-Network" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="50">
+          <mxGeometry x="50" y="76" width="160" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="54" value="" style="rounded=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="50">
+          <mxGeometry x="10" y="102" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="54t" value="决策与执行 / Action" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="50">
+          <mxGeometry x="50" y="100" width="160" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="55" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="50">
+          <mxGeometry x="10" y="126" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="55t" value="记忆与采样 / Replay" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="50">
+          <mxGeometry x="50" y="124" width="160" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="56" value="" style="rounded=0;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="50">
+          <mxGeometry x="10" y="150" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="56t" value="目标与损失 / Target &amp; Loss" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="50">
+          <mxGeometry x="50" y="148" width="160" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="100" value="屏幕帧 x_t" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="10" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="101" value="灰度化 / 缩放" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="11" target="12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="102" value="输入 84×84×4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="12" target="30">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="660" y="240" />
+              <mxPoint x="280" y="240" />
+              <mxPoint x="280" y="330" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="103" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="30" target="31">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="104" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="31" target="32">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="105" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="32" target="33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="106" value="Q(s,a) 全部动作" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="33" target="15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="107" value="a_t (贪心 1−ε / 随机 ε)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="15" target="16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="108" value="执行 a_t; 返回 x_{t+1}, r_t" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="16" target="10">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1700" y="320" />
+              <mxPoint x="1700" y="20" />
+              <mxPoint x="125" y="20" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="109" value="转移样本 (φ,a,r,φ′)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="16" target="17">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1525" y="440" />
+              <mxPoint x="1184" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="110" value="均匀随机采样 e ~ D" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="17" target="18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="111" value="小批量 (φ,a,r,φ′)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.64;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="18" target="19">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1530" y="620" />
+              <mxPoint x="1280" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="112" value="max_a′ Q(φ′,a′;θ)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.12;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="33" target="19">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="880" y="610" />
+              <mxPoint x="1167" y="610" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="113" value="目标值 y_j" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="19" target="40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="114" value="梯度下降更新 θ (RMSProp)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.51;entryY=1;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="40" target="14">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1520" y="830" />
+              <mxPoint x="530" y="830" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

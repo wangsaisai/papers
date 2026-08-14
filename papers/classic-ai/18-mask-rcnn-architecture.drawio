@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram id="mask-rcnn-architecture" name="Mask R-CNN Architecture">
+    <mxGraphModel dx="1000" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1240" pageHeight="1300" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="输入图像&#xa;Input Image" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="230" y="40" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="卷积骨干 + 特征金字塔 · FPN Backbone&#xa;从整图提取多尺度特征" style="swimlane;startSize=32;html=1;whiteSpace=wrap;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="120" y="140" width="490" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="自底向上路径 + 自顶向下 + 侧向连接&#xa;Bottom-up Path with Top-down &amp; Lateral Connections" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f6ff;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="3">
+          <mxGeometry x="20" y="45" width="450" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="多尺度特征金字塔&#xa;Multi-Scale Feature Pyramid" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f6ff;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="3">
+          <mxGeometry x="20" y="120" width="450" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="RPN 区域候选网络&#xa;Region Proposal Network (anchors 5 尺度 × 3 宽高比)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="210" y="410" width="300" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="RoIAlign 兴趣区域对齐&#xa;不取整 x/16 · 每 bin 4 点双线性插值 (关键算子)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="200" y="535" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="网络头 Head · 每个 RoI 上并行三条分支&#xa;与 Faster R-CNN 相同的两阶段结构" style="swimlane;startSize=32;html=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=12;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="120" y="690" width="490" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="分类分支 Class Branch&#xa;全连接 + softmax&#xa;类别标签" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="8">
+          <mxGeometry x="20" y="45" width="140" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="框回归分支 Box Regression&#xa;全连接&#xa;边框偏移 (x, y, w, h)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="8">
+          <mxGeometry x="175" y="45" width="140" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="掩码分支 Mask Branch&#xa;全卷积 FCN&#xa;3×3 卷积 + 2×2 反卷积&#xa;28×28 二值掩码 · 逐像素 sigmoid" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="8">
+          <mxGeometry x="330" y="45" width="140" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="输出 Outputs&#xa;检测: 类别 + 边框 (经 NMS)&#xa;分割: m×m 实例掩码" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="180" y="1030" width="360" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="RoIPool vs RoIAlign 对比 (论文图 3)&#xa;ROI 特征提取算子" style="swimlane;startSize=32;html=1;whiteSpace=wrap;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=12;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="700" y="535" width="480" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="17" value="RoIPool (旧算子)&#xa;坐标取整 [x/16]&#xa;边界取整 + 分箱取整&#xa;→ 特征与输入错位&#xa;(分类健壮, 掩码受损)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#8a8a8a;fontColor=#555555;fontSize=11;verticalAlign=middle;" vertex="1" parent="16">
+          <mxGeometry x="20" y="45" width="210" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="18" value="RoIAlign (本论文)&#xa;不取整 x/16&#xa;每 bin 均匀采 4 点&#xa;双线性插值 + max/avg 聚合&#xa;→ 像素级精确对齐" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;verticalAlign=middle;" vertex="1" parent="16">
+          <mxGeometry x="250" y="45" width="210" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="19" value="图例 Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="700" y="850" width="180" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="20" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="19">
+          <mxGeometry x="10" y="30" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="19">
+          <mxGeometry x="10" y="54" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="" style="rounded=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="19">
+          <mxGeometry x="10" y="78" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="" style="rounded=0;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="19">
+          <mxGeometry x="10" y="102" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="24" value="" style="rounded=0;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="19">
+          <mxGeometry x="10" y="126" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="25" value="输入 / 输出" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="19">
+          <mxGeometry x="50" y="28" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="26" value="卷积骨干 (FPN)" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="19">
+          <mxGeometry x="50" y="52" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="27" value="区域候选 (RPN)" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="19">
+          <mxGeometry x="50" y="76" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="28" value="对齐算子 (RoIAlign)" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="19">
+          <mxGeometry x="50" y="100" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="29" value="掩码分支" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" vertex="1" parent="19">
+          <mxGeometry x="50" y="124" width="120" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="30" value="要点: 训练多任务损失 L = Lcls + Lbox + Lmask · 推理时掩码分支仅对 NMS 后得分前 100 的框运行 · 掩码与类别预测解耦 (逐像素 sigmoid, 类别间不竞争)" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=12;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1160" width="700" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="40" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="41" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="3" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="42" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="43" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.05;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7" target="9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="44" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7" target="10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="45" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.95;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="7" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="46" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="9" target="12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="47" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="10" target="12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="48" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="11" target="12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="49" value="本论文提出的关键算子" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=11;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="7" target="18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

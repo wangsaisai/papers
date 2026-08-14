@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="UNet-Architecture">
+    <mxGraphModel>
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="2" value="输入图像 Input Image Tile&#xa;572×572×1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="特征图 Feature Map&#xa;284×284×64（收缩 1）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="190" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="特征图 Feature Map&#xa;140×140×128（收缩 2）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="340" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="特征图 Feature Map&#xa;68×68×256（收缩 3）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="490" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="特征图 Feature Map&#xa;32×32×512（收缩 4）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="640" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="瓶颈 Bottleneck&#xa;30×30×1024（3×3 卷积+ReLU ×2）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="450" y="640" width="280" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="特征图 Feature Map&#xa;52×52×512（扩张 4）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="950" y="490" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="特征图 Feature Map&#xa;104×104×256（扩张 3）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="950" y="340" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="特征图 Feature Map&#xa;200×200×128（扩张 2）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="950" y="190" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="特征图 Feature Map&#xa;392×392×64（扩张 1）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="950" y="40" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="分割图 Segmentation Map&#xa;388×388×2（每像素类别）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="40" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="弹性形变数据扩增&#xa;Elastic Deformation Augmentation&#xa;（3×3 网格随机位移，σ≈10px）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="40" y="780" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="加权损失 Weighted Loss&#xa;像素交叉熵 × 权重图 w(x)（贴边细胞分隔线加重，w0=10, σ≈5）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="730" y="780" width="300" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="15" value="图例 Legend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#999999;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="780" width="320" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="15">
+          <mxGeometry x="10" y="30" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="17" value="两个 3×3 卷积 + ReLU" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="15">
+          <mxGeometry x="50" y="28" width="250" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="18" value="" style="rounded=0;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="15">
+          <mxGeometry x="10" y="54" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="19" value="2×2 最大池化 /2（通道数翻倍）" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="15">
+          <mxGeometry x="50" y="52" width="250" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="20" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="15">
+          <mxGeometry x="10" y="78" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="上采样 + 2×2 上卷积（通道减半）" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="15">
+          <mxGeometry x="50" y="76" width="250" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="" style="rounded=0;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="15">
+          <mxGeometry x="10" y="102" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="23" value="1×1 卷积（64 通道→类别数）" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="15">
+          <mxGeometry x="50" y="100" width="250" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="24" value="" style="rounded=0;html=1;dashed=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="15">
+          <mxGeometry x="10" y="126" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="25" value="复制并裁剪 copy and crop（跳连）" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="15">
+          <mxGeometry x="50" y="124" width="250" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="30" value="两个 3×3 卷积 + ReLU&#xa;2× (3×3 conv + ReLU)" style="html=1;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="2" target="3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="31" value="2×2 最大池化 /2（通道数翻倍）" style="html=1;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="32" value="" style="html=1;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="33" value="2×2 最大池化 /2（通道数翻倍）" style="html=1;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="34" value="两个 3×3 卷积 + ReLU" style="html=1;rounded=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="35" value="上采样 + 2×2 上卷积（通道减半）" style="html=1;rounded=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="7" target="8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="36" value="" style="html=1;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="8" target="9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="37" value="" style="html=1;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="9" target="10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="38" value="" style="html=1;rounded=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="10" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="39" value="1×1 卷积（64 通道→2 类）" style="html=1;rounded=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="11" target="12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="40" value="复制并裁剪 copy and crop" style="html=1;rounded=1;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontColor=#d79b00;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="2" target="11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="41" value="复制并裁剪 copy and crop" style="html=1;rounded=1;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontColor=#d79b00;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="3" target="10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="42" value="复制并裁剪 copy and crop" style="html=1;rounded=1;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontColor=#d79b00;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="4" target="9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="43" value="复制并裁剪 copy and crop" style="html=1;rounded=1;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontColor=#d79b00;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="5" target="8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="44" value="训练时生成形变样本" style="html=1;rounded=1;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="13" target="2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="310" y="815" />
+              <mxPoint x="310" y="20" />
+              <mxPoint x="165" y="20" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="45" value="计算与真值分割图的偏差" style="html=1;rounded=1;dashed=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=#ffffff;" edge="1" parent="1" source="14" target="12">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="880" y="20" />
+              <mxPoint x="1405" y="20" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
