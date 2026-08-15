@@ -7,7 +7,7 @@
 
 - `papers/<topic>/<slug>/` — 每篇论文一个文件夹，含 `translation.md`（全译）、`interpretation.md`（通俗解读）、`architecture.md`（Mermaid 架构图）、原 PDF（经 `mv` 移入，文件名永不改）
 - `papers/README.md` — 主题分类表 + 论文索引表；每新增一篇必须同步更新数量与索引行
-- `classic-ai/` — 特例：文件夹与产物文件用 `NN-<slug>` 编号前缀（如 `04-transformer-architecture.md`），其余主题用裸 `architecture.md`
+- `classic-ai/` — 特例：文件夹与产物文件用 `NN-<slug>` 编号前缀（如 `04-transformer-architecture.md`）
 - `article-structure.md` / `article-structure.drawio` — 由 `tmp/gen_structure_drawio.py` 生成的仓库结构图，日常不更新
 - `tmp/` — 已 gitignore 的临时区，杂散 PDF 会落在那里
 
