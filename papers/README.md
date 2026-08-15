@@ -8,6 +8,7 @@
 | database-systems | 数据库系统 | 5 |
 | distributed-systems | 分布式系统 | 10 |
 | ml-systems | 机器学习系统 | 1 |
+| time-scaling-theory | 时间缩放理论 | 1 |
 | llm | 大语言模型 | 4 |
 | ai-applications | AI 应用 | 2 |
 | math-foundations | 数学与算法基础 | 9 |
@@ -33,7 +34,7 @@
 | distributed-systems | heracles-resource-efficiency | Heracles: Improving Resource Efficiency at Scale | 2015 | 2026-07-18 | 让延迟敏感服务和批处理任务安全共享服务器，将平均利用率提升到 90% |
 | distributed-systems | declarative-imperative-distributed-logic | The Declarative Imperative: Experiences and Conjectures in Distributed Logic | 2013 | 2026-07-18 | 用数据库查询语言 Datalog 的思路来简化并行和分布式编程 |
 | distributed-systems | minflow | MinFlow: High-performance and Cost-efficient Data Passing for I/O-intensive Stateful Serverless Analytics | 2024-02 | 2026-07-18 | 用多级中转+交错调度让一半shuffle流量走本地内存，速度提10倍、成本砍98% |
-| ml-systems | time-scaling-theory | A Time Scaling Theory for Multi-Layer Electronic Systems | 2026-05 | 2026-07-19 | 不再靠缩小晶体管，而是用压缩时间作为统一标尺来推动芯片进步 |
+| time-scaling-theory | time-scaling-theory | A Time Scaling Theory for Multi-Layer Electronic Systems | 2026-05 | 2026-07-19 | 不再靠缩小晶体管，而是用压缩时间作为统一标尺来推动芯片进步 |
 | ml-systems | tensorflow-large-scale-machine-learning | TensorFlow: Large-Scale Machine Learning on Heterogeneous Distributed Systems | 2015 | 2026-07-18 | 用数据流图统一从手机到超大规模集群的深度学习模型训练和部署 |
 | llm | exploring-llm-intelligent-agents | Exploring Large Language Model Based Intelligent Agents: Definitions, Methods, and Prospects | 2024-01 | 2026-07-18 | 综述了用大语言模型构建智能体的方法与前景 |
 | llm | llm-augmented-llms-composition | LLM Augmented LLMs: Expanding Capabilities Through Composition | 2024-01 | 2026-07-18 | 将多个专用小模型组合到大模型上实现新能力，无需重新训练 |
@@ -68,21 +69,21 @@
 | research-methodology | how-to-read-paper | How to Read a Paper | 2016 | 2026-07-19 | 三遍阅读法让你高效吃透一篇论文 |
 | cognitive-neuroscience | compressive-learning-higher-order-network | Compressive learning scaffolds higher-order network structure to enhance human knowledge acquisition | 2026-07 | 2026-08-11 | 先学知识网络的"枢纽骨架"再学细节，学习更快，脑机制在背侧前扣带回 |
 | ai-agents | self-evolving-coding-agents | Self-Evolving Coding Agents | 2026-08 | 2026-08-12 | 综述梳理"会自我进化的编程智能体"：5类进化对象×3种时机×3类证据的分类框架 |
-| classic-ai | 01-distributed-representations-of-words-word2vec | 01-word2vec：Efficient Estimation of Word Representations in Vector Space | 2013 | 2026-08-14 | 分布式词表示起点，Skip-gram 让词义向量化，NLP 表示学习的开端 |
-| classic-ai | 02-sequence-to-sequence-learning | 02-Seq2Seq：Sequence to Sequence Learning with Neural Networks | 2014 | 2026-08-14 | 用两个 LSTM 把任意长度序列映射为序列，机器翻译的端到端范式 |
-| classic-ai | 03-neural-machine-translation-attention-bahdanau | 03-Attention：Neural Machine Translation by Jointly Learning to Align and Translate | 2014 | 2026-08-14 | 引入注意力机制，解码时动态对齐输入，解决长句翻译瓶颈 |
-| classic-ai | 04-attention-is-all-you-need | 04-Transformer：Attention Is All You Need | 2017 | 2026-08-14 | 纯注意力架构取代 RNN/CNN，现代 LLM 的地基 |
+| classic-ai | 01-word2vec | 01-word2vec：Efficient Estimation of Word Representations in Vector Space | 2013 | 2026-08-14 | 分布式词表示起点，Skip-gram 让词义向量化，NLP 表示学习的开端 |
+| classic-ai | 02-seq2seq | 02-Seq2Seq：Sequence to Sequence Learning with Neural Networks | 2014 | 2026-08-14 | 用两个 LSTM 把任意长度序列映射为序列，机器翻译的端到端范式 |
+| classic-ai | 03-attention | 03-Attention：Neural Machine Translation by Jointly Learning to Align and Translate | 2014 | 2026-08-14 | 引入注意力机制，解码时动态对齐输入，解决长句翻译瓶颈 |
+| classic-ai | 04-transformer | 04-Transformer：Attention Is All You Need | 2017 | 2026-08-14 | 纯注意力架构取代 RNN/CNN，现代 LLM 的地基 |
 | classic-ai | 05-bert | 05-BERT：Pre-training of Deep Bidirectional Transformers for Language Understanding | 2018 | 2026-08-14 | 掩码语言建模+双向 Transformer，预训练-微调范式奠基之作 |
-| classic-ai | 06-language-models-are-unsupervised-multitask-learners-gpt2 | 06-BERT 微调：How to Fine-Tune BERT for Text Classification？※ | 2019 | 2026-08-14 | ※文件名为 GPT-2，实际内容是复旦的 BERT 微调论文，解读/翻译均以实际内容为准 |
-| classic-ai | 07-language-models-are-few-shot-learners-gpt3 | 07-GPT-3：Language Models are Few-Shot Learners | 2020 | 2026-08-14 | 千亿参数规模定律，上下文学习（In-Context Learning）诞生 |
-| classic-ai | 08-training-language-models-to-follow-instructions-rlhf | 08-RLHF：Training Language Models to Follow Instructions with Human Feedback | 2022 | 2026-08-14 | 用人类反馈强化学习让模型对齐指令，ChatGPT 的技术源头 |
-| classic-ai | 09-generative-adversarial-networks-gan | 09-GAN：Generative Adversarial Networks | 2014 | 2026-08-14 | 生成器与判别器对抗博弈，生成模型的里程碑 |
-| classic-ai | 10-denoising-diffusion-probabilistic-models-ddpm | 10-DDPM：Denoising Diffusion Probabilistic Models | 2020 | 2026-08-14 | 扩散模型奠基，逐步去噪生成，Stable Diffusion 等的基础 |
-| classic-ai | 11-playing-atari-deep-reinforcement-learning-dqn | 11-DQN：Playing Atari with Deep Reinforcement Learning | 2013 | 2026-08-14 | 深度 Q 网络，从像素直接学习玩游戏，深度强化学习起点 |
+| classic-ai | 06-bert-fine-tuning | 06-BERT 微调：How to Fine-Tune BERT for Text Classification？ | 2019 | 2026-08-14 | 系统实验 BERT 文本分类微调策略，提出"继续预训练+多任务微调+目标任务微调"三步法 |
+| classic-ai | 07-gpt3 | 07-GPT-3：Language Models are Few-Shot Learners | 2020 | 2026-08-14 | 千亿参数规模定律，上下文学习（In-Context Learning）诞生 |
+| classic-ai | 08-rlhf | 08-RLHF：Training Language Models to Follow Instructions with Human Feedback | 2022 | 2026-08-14 | 用人类反馈强化学习让模型对齐指令，ChatGPT 的技术源头 |
+| classic-ai | 09-gan | 09-GAN：Generative Adversarial Networks | 2014 | 2026-08-14 | 生成器与判别器对抗博弈，生成模型的里程碑 |
+| classic-ai | 10-ddpm | 10-DDPM：Denoising Diffusion Probabilistic Models | 2020 | 2026-08-14 | 扩散模型奠基，逐步去噪生成，Stable Diffusion 等的基础 |
+| classic-ai | 11-dqn | 11-DQN：Playing Atari with Deep Reinforcement Learning | 2013 | 2026-08-14 | 深度 Q 网络，从像素直接学习玩游戏，深度强化学习起点 |
 | classic-ai | 12-dropout | 12-Dropout：Improving Neural Networks by Preventing Co-Adaptation | 2014 | 2026-08-14 | 随机丢弃神经元抑制过拟合，最常用的正则化技巧 |
 | classic-ai | 13-adam | 13-Adam：A Method for Stochastic Optimization | 2015 | 2026-08-14 | 自适应学习率优化器，训练神经网络的默认选择 |
-| classic-ai | 14-batch-normalization | 14-BatchNorm：Batch Normalization | 2015 | 2026-08-14 | 归一化层内激活稳定训练，让深层网络可以训练 |
-| classic-ai | 15-deep-residual-learning-resnet | 15-ResNet：Deep Residual Learning for Image Recognition | 2015 | 2026-08-14 | 残差连接让百层网络可训练，CV 架构设计基石 |
-| classic-ai | 16-u-net | 16-U-Net：Convolutional Networks for Biomedical Image Segmentation | 2015 | 2026-08-14 | 编码-解码+跳跃连接，图像分割经典架构 |
-| classic-ai | 17-you-only-look-once-yolo | 17-YOLO：You Only Look Once | 2016 | 2026-08-14 | 单阶段实时目标检测，速度与精度的平衡 |
-| classic-ai | 18-mask-r-cnn | 18-Mask R-CNN | 2017 | 2026-08-14 | 检测+分割统一框架，实例分割的经典方法 |
+| classic-ai | 14-batchnorm | 14-BatchNorm：Batch Normalization | 2015 | 2026-08-14 | 归一化层内激活稳定训练，让深层网络可以训练 |
+| classic-ai | 15-resnet | 15-ResNet：Deep Residual Learning for Image Recognition | 2015 | 2026-08-14 | 残差连接让百层网络可训练，CV 架构设计基石 |
+| classic-ai | 16-unet | 16-U-Net：Convolutional Networks for Biomedical Image Segmentation | 2015 | 2026-08-14 | 编码-解码+跳跃连接，图像分割经典架构 |
+| classic-ai | 17-yolo | 17-YOLO：You Only Look Once | 2016 | 2026-08-14 | 单阶段实时目标检测，速度与精度的平衡 |
+| classic-ai | 18-mask-rcnn | 18-Mask R-CNN | 2017 | 2026-08-14 | 检测+分割统一框架，实例分割的经典方法 |

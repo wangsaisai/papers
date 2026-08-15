@@ -1,5 +1,3 @@
-> ⚠️ 注意：该 PDF 文件名标注为 GPT-2（Language Models are Unsupervised Multitask Learners），但实际内容为复旦大学团队发表的《How to Fine-Tune BERT for Text Classification?》（arXiv:1905.05583）。以下翻译严格忠实于 PDF 的实际内容。
-
 # 如何为文本分类任务微调 BERT？（How to Fine-Tune BERT for Text Classification?）
 **作者**: Chi Sun, Xipeng Qiu, Yige Xu, Xuanjing Huang
 **翻译日期**: 2026-08-14

@@ -1,6 +1,6 @@
 # 06-bert-fine-tuning-interpretation 解读：把 BERT 接到文本分类任务上，怎么微调才能榨干它
 
-> ⚠️ 文件内容说明：本次任务指定的源文件 `06-language-models-are-unsupervised-multitask-learners-gpt2.txt` 实际内容**不是 GPT-2 论文**，而是复旦大学孙驰等发表的《How to Fine-Tune BERT for Text Classification?》（arXiv:1905.05583，2020 年 2 月版，即 BERT 文本分类微调论文）。本解读忠实于该文件的实际内容，如需 GPT-2 论文解读，请重新提取正确的 PDF 后告知。
+> 本文解读的论文为复旦大学孙驰等发表的《How to Fine-Tune BERT for Text Classification?》（arXiv:1905.05583）。
 
 ## 一句话总结
 
