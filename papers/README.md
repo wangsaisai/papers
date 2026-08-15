@@ -17,7 +17,7 @@
 | information-retrieval | 信息检索 | 1 |
 | research-methodology | 科研方法论 | 1 |
 | cognitive-neuroscience | 认知神经科学 | 1 |
-| ai-agents | AI 智能体 | 1 |
+| ai-agents | AI 智能体 | 2 |
 | programming-languages | 编程语言 | 1 |
 | classic-ai | AI 经典论文 | 18 |
 
@@ -70,6 +70,7 @@
 | research-methodology | [how-to-read-paper](research-methodology/how-to-read-paper/translation.md) | How to Read a Paper | 2016 | 2026-07-19 | 三遍阅读法让你高效吃透一篇论文 |
 | cognitive-neuroscience | [compressive-learning-higher-order-network](cognitive-neuroscience/compressive-learning-higher-order-network/translation.md) | Compressive learning scaffolds higher-order network structure to enhance human knowledge acquisition | 2026-07 | 2026-08-11 | 先学知识网络的"枢纽骨架"再学细节，学习更快，脑机制在背侧前扣带回 |
 | ai-agents | [self-evolving-coding-agents](ai-agents/self-evolving-coding-agents/translation.md) | Self-Evolving Coding Agents | 2026-08 | 2026-08-12 | 综述梳理"会自我进化的编程智能体"：5类进化对象×3种时机×3类证据的分类框架 |
+| ai-agents | [ouroboros-self-developing-coding-agent](ai-agents/ouroboros-self-developing-coding-agent/translation.md) | Ouroboros: A Self-Developing Frontier Coding Agent with Reviewed Core Evolution | 2026-08 | 2026-08-15 | 让编程智能体自己改自己核心代码但必须过评审闸门，Terminal-Bench 等三基准新高，并有 161 天活体部署 Hope |
 | programming-languages | [spatiotemporal-composability-programming-paradigm](programming-languages/spatiotemporal-composability-programming-paradigm/translation.md) | A Programming Paradigm for Spatiotemporal Composability | 2026 | 2026-08-15 | 把效应与余效应提升为运行时机制（可逆转效应+响应式余效应），为插拔式动态组合提供可证明无痕的形式基础与 Cordis 实现 |
 | classic-ai | [01-word2vec](classic-ai/01-word2vec/01-word2vec-translation.md) | 01-word2vec：Efficient Estimation of Word Representations in Vector Space | 2013 | 2026-08-14 | 分布式词表示起点，Skip-gram 让词义向量化，NLP 表示学习的开端 |
 | classic-ai | [02-seq2seq](classic-ai/02-seq2seq/02-seq2seq-translation.md) | 02-Seq2Seq：Sequence to Sequence Learning with Neural Networks | 2014 | 2026-08-14 | 用两个 LSTM 把任意长度序列映射为序列，机器翻译的端到端范式 |
