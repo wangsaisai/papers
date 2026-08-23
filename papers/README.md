@@ -7,7 +7,7 @@
 | storage-systems | 存储系统 | 9 |
 | database-systems | 数据库系统 | 5 |
 | distributed-systems | 分布式系统 | 10 |
-| ml-systems | 机器学习系统 | 1 |
+| ml-systems | 机器学习系统 | 2 |
 | time-scaling-theory | 时间缩放理论 | 1 |
 | llm | 大语言模型 | 4 |
 | ai-applications | AI 应用 | 2 |
@@ -37,6 +37,7 @@
 | distributed-systems | [minflow](distributed-systems/minflow/translation.md) | MinFlow: High-performance and Cost-efficient Data Passing for I/O-intensive Stateful Serverless Analytics | 2024-02 | 2026-07-18 | 用多级中转+交错调度让一半shuffle流量走本地内存，速度提10倍、成本砍98% |
 | time-scaling-theory | [time-scaling-theory](time-scaling-theory/translation.md) | A Time Scaling Theory for Multi-Layer Electronic Systems | 2026-05 | 2026-07-19 | 不再靠缩小晶体管，而是用压缩时间作为统一标尺来推动芯片进步 |
 | ml-systems | [tensorflow-large-scale-machine-learning](ml-systems/tensorflow-large-scale-machine-learning/translation.md) | TensorFlow: Large-Scale Machine Learning on Heterogeneous Distributed Systems | 2015 | 2026-07-18 | 用数据流图统一从手机到超大规模集群的深度学习模型训练和部署 |
+| ml-systems | [free-token-edge-native-moe-serving](ml-systems/free-token-edge-native-moe-serving/translation.md) | FreeToken: Efficient Edge-Native MoE Serving with Bandwidth-Adaptive Execution | 2026-08 | 2026-08-22 | 让个人电脑（从笔记本到工作站）能流畅运行原本需要数据中心才能跑的大模型 |
 | llm | [exploring-llm-intelligent-agents](llm/exploring-llm-intelligent-agents/translation.md) | Exploring Large Language Model Based Intelligent Agents: Definitions, Methods, and Prospects | 2024-01 | 2026-07-18 | 综述了用大语言模型构建智能体的方法与前景 |
 | llm | [llm-augmented-llms-composition](llm/llm-augmented-llms-composition/translation.md) | LLM Augmented LLMs: Expanding Capabilities Through Composition | 2024-01 | 2026-07-18 | 将多个专用小模型组合到大模型上实现新能力，无需重新训练 |
 | llm | [understanding-llms-training-inference](llm/understanding-llms-training-inference/translation.md) | Understanding LLMs: A Comprehensive Overview from Training to Inference | 2024-01 | 2026-07-18 | 系统梳理大语言模型从训练到推理的关键技术和未来方向 |
